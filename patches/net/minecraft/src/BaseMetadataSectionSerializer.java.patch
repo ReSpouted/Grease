@@ -1,0 +1,179 @@
+--- net/minecraft/src/BaseMetadataSectionSerializer.java
++++ net/minecraft/src/BaseMetadataSectionSerializer.java
+@@ -4,92 +4,99 @@
+ import com.google.gson.JsonParseException;
+ 
+ public abstract class BaseMetadataSectionSerializer implements MetadataSectionSerializer {
+-	protected float func_110487_a(JsonElement var1, String var2, Float var3, float var4, float var5) {
+-		var2 = this.getSectionName() + "->" + var2;
+-		if(var1 == null) {
+-			if(var3 == null) {
+-				throw new JsonParseException("Missing " + var2 + ": expected float");
+-			} else {
+-				return var3.floatValue();
+-			}
+-		} else if(!var1.isJsonPrimitive()) {
+-			throw new JsonParseException("Invalid " + var2 + ": expected float, was " + var1);
+-		} else {
+-			try {
+-				float var6 = var1.getAsFloat();
+-				if(var6 < var4) {
+-					throw new JsonParseException("Invalid " + var2 + ": expected float >= " + var4 + ", was " + var6);
+-				} else if(var6 > var5) {
+-					throw new JsonParseException("Invalid " + var2 + ": expected float <= " + var5 + ", was " + var6);
+-				} else {
+-					return var6;
+-				}
+-			} catch (NumberFormatException var7) {
+-				throw new JsonParseException("Invalid " + var2 + ": expected float, was " + var1, var7);
+-			}
+-		}
+-	}
+-
+-	protected int func_110485_a(JsonElement var1, String var2, Integer var3, int var4, int var5) {
+-		var2 = this.getSectionName() + "->" + var2;
+-		if(var1 == null) {
+-			if(var3 == null) {
+-				throw new JsonParseException("Missing " + var2 + ": expected int");
+-			} else {
+-				return var3.intValue();
+-			}
+-		} else if(!var1.isJsonPrimitive()) {
+-			throw new JsonParseException("Invalid " + var2 + ": expected int, was " + var1);
+-		} else {
+-			try {
+-				int var6 = var1.getAsInt();
+-				if(var6 < var4) {
+-					throw new JsonParseException("Invalid " + var2 + ": expected int >= " + var4 + ", was " + var6);
+-				} else if(var6 > var5) {
+-					throw new JsonParseException("Invalid " + var2 + ": expected int <= " + var5 + ", was " + var6);
+-				} else {
+-					return var6;
+-				}
+-			} catch (NumberFormatException var7) {
+-				throw new JsonParseException("Invalid " + var2 + ": expected int, was " + var1, var7);
+-			}
+-		}
+-	}
+-
+-	protected String func_110486_a(JsonElement var1, String var2, String var3, int var4, int var5) {
+-		var2 = this.getSectionName() + "->" + var2;
+-		if(var1 == null) {
+-			if(var3 == null) {
+-				throw new JsonParseException("Missing " + var2 + ": expected string");
+-			} else {
+-				return var3;
+-			}
+-		} else if(!var1.isJsonPrimitive()) {
+-			throw new JsonParseException("Invalid " + var2 + ": expected string, was " + var1);
+-		} else {
+-			String var6 = var1.getAsString();
+-			if(var6.length() < var4) {
+-				throw new JsonParseException("Invalid " + var2 + ": expected string length >= " + var4 + ", was " + var6);
+-			} else if(var6.length() > var5) {
+-				throw new JsonParseException("Invalid " + var2 + ": expected string length <= " + var5 + ", was " + var6);
++	protected float func_110487_a(JsonElement par1JsonElement, String par2Str, Float par3, float par4, float par5) {
++		par2Str = this.getSectionName() + "->" + par2Str;
++
++		if (par1JsonElement == null) {
++			if (par3 == null) {
++				throw new JsonParseException("Missing " + par2Str + ": expected float");
++			} else {
++				return par3.floatValue();
++			}
++		} else if (!par1JsonElement.isJsonPrimitive()) {
++			throw new JsonParseException("Invalid " + par2Str + ": expected float, was " + par1JsonElement);
++		} else {
++			try {
++				float var6 = par1JsonElement.getAsFloat();
++
++				if (var6 < par4) {
++					throw new JsonParseException("Invalid " + par2Str + ": expected float >= " + par4 + ", was " + var6);
++				} else if (var6 > par5) {
++					throw new JsonParseException("Invalid " + par2Str + ": expected float <= " + par5 + ", was " + var6);
++				} else {
++					return var6;
++				}
++			} catch (NumberFormatException var7) {
++				throw new JsonParseException("Invalid " + par2Str + ": expected float, was " + par1JsonElement, var7);
++			}
++		}
++	}
++
++	protected int func_110485_a(JsonElement par1JsonElement, String par2Str, Integer par3, int par4, int par5) {
++		par2Str = this.getSectionName() + "->" + par2Str;
++
++		if (par1JsonElement == null) {
++			if (par3 == null) {
++				throw new JsonParseException("Missing " + par2Str + ": expected int");
++			} else {
++				return par3.intValue();
++			}
++		} else if (!par1JsonElement.isJsonPrimitive()) {
++			throw new JsonParseException("Invalid " + par2Str + ": expected int, was " + par1JsonElement);
++		} else {
++			try {
++				int var6 = par1JsonElement.getAsInt();
++
++				if (var6 < par4) {
++					throw new JsonParseException("Invalid " + par2Str + ": expected int >= " + par4 + ", was " + var6);
++				} else if (var6 > par5) {
++					throw new JsonParseException("Invalid " + par2Str + ": expected int <= " + par5 + ", was " + var6);
++				} else {
++					return var6;
++				}
++			} catch (NumberFormatException var7) {
++				throw new JsonParseException("Invalid " + par2Str + ": expected int, was " + par1JsonElement, var7);
++			}
++		}
++	}
++
++	protected String func_110486_a(JsonElement par1JsonElement, String par2Str, String par3Str, int par4, int par5) {
++		par2Str = this.getSectionName() + "->" + par2Str;
++
++		if (par1JsonElement == null) {
++			if (par3Str == null) {
++				throw new JsonParseException("Missing " + par2Str + ": expected string");
++			} else {
++				return par3Str;
++			}
++		} else if (!par1JsonElement.isJsonPrimitive()) {
++			throw new JsonParseException("Invalid " + par2Str + ": expected string, was " + par1JsonElement);
++		} else {
++			String var6 = par1JsonElement.getAsString();
++
++			if (var6.length() < par4) {
++				throw new JsonParseException("Invalid " + par2Str + ": expected string length >= " + par4 + ", was " + var6);
++			} else if (var6.length() > par5) {
++				throw new JsonParseException("Invalid " + par2Str + ": expected string length <= " + par5 + ", was " + var6);
+ 			} else {
+ 				return var6;
+ 			}
+ 		}
+ 	}
+ 
+-	protected boolean func_110484_a(JsonElement var1, String var2, Boolean var3) {
+-		var2 = this.getSectionName() + "->" + var2;
+-		if(var1 == null) {
+-			if(var3 == null) {
+-				throw new JsonParseException("Missing " + var2 + ": expected boolean");
++	protected boolean func_110484_a(JsonElement par1JsonElement, String par2Str, Boolean par3) {
++		par2Str = this.getSectionName() + "->" + par2Str;
++
++		if (par1JsonElement == null) {
++			if (par3 == null) {
++				throw new JsonParseException("Missing " + par2Str + ": expected boolean");
+ 			} else {
+-				return var3.booleanValue();
++				return par3.booleanValue();
+ 			}
+-		} else if(!var1.isJsonPrimitive()) {
+-			throw new JsonParseException("Invalid " + var2 + ": expected boolean, was " + var1);
++		} else if (!par1JsonElement.isJsonPrimitive()) {
++			throw new JsonParseException("Invalid " + par2Str + ": expected boolean, was " + par1JsonElement);
+ 		} else {
+-			boolean var4 = var1.getAsBoolean();
++			boolean var4 = par1JsonElement.getAsBoolean();
+ 			return var4;
+ 		}
+ 	}

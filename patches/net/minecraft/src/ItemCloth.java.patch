@@ -1,0 +1,46 @@
+--- net/minecraft/src/ItemCloth.java
++++ net/minecraft/src/ItemCloth.java
+@@ -1,21 +1,31 @@
+ package net.minecraft.src;
+ 
+ public class ItemCloth extends ItemBlock {
+-	public ItemCloth(int var1) {
+-		super(var1);
++	public ItemCloth(int par1) {
++		super(par1);
+ 		this.setMaxDamage(0);
+ 		this.setHasSubtypes(true);
+ 	}
+ 
+-	public Icon getIconFromDamage(int var1) {
+-		return Block.cloth.getIcon(2, BlockColored.getBlockFromDye(var1));
+-	}
+-
+-	public int getMetadata(int var1) {
+-		return var1;
+-	}
+-
+-	public String getUnlocalizedName(ItemStack var1) {
+-		return super.getUnlocalizedName() + "." + ItemDye.a[BlockColored.getBlockFromDye(var1.getItemDamage())];
++	/**
++	 * Gets an icon index based on an item's damage value
++	 */
++	public Icon getIconFromDamage(int par1) {
++		return Block.cloth.getIcon(2, BlockColored.getBlockFromDye(par1));
++	}
++
++	/**
++	 * Returns the metadata of the block which this Item (ItemBlock) can place
++	 */
++	public int getMetadata(int par1) {
++		return par1;
++	}
++
++	/**
++	 * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have different
++	 * names based on their damage or NBT.
++	 */
++	public String getUnlocalizedName(ItemStack par1ItemStack) {
++		return super.getUnlocalizedName() + "." + ItemDye.dyeColorNames[BlockColored.getBlockFromDye(par1ItemStack.getItemDamage())];
+ 	}
+ }

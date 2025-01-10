@@ -1,0 +1,27 @@
+--- net/minecraft/src/EntityAINearestAttackableTargetSorter.java
++++ net/minecraft/src/EntityAINearestAttackableTargetSorter.java
+@@ -5,17 +5,17 @@
+ public class EntityAINearestAttackableTargetSorter implements Comparator {
+ 	private final Entity theEntity;
+ 
+-	public EntityAINearestAttackableTargetSorter(Entity var1) {
+-		this.theEntity = var1;
++	public EntityAINearestAttackableTargetSorter(Entity par1Entity) {
++		this.theEntity = par1Entity;
+ 	}
+ 
+-	public int compareDistanceSq(Entity var1, Entity var2) {
+-		double var3 = this.theEntity.getDistanceSqToEntity(var1);
+-		double var5 = this.theEntity.getDistanceSqToEntity(var2);
++	public int compareDistanceSq(Entity par1Entity, Entity par2Entity) {
++		double var3 = this.theEntity.getDistanceSqToEntity(par1Entity);
++		double var5 = this.theEntity.getDistanceSqToEntity(par2Entity);
+ 		return var3 < var5 ? -1 : (var3 > var5 ? 1 : 0);
+ 	}
+ 
+-	public int compare(Object var1, Object var2) {
+-		return this.compareDistanceSq((Entity)var1, (Entity)var2);
++	public int compare(Object par1Obj, Object par2Obj) {
++		return this.compareDistanceSq((Entity)par1Obj, (Entity)par2Obj);
+ 	}
+ }

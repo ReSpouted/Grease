@@ -1,0 +1,13 @@
+--- net/minecraft/src/BlockDirt.java
++++ net/minecraft/src/BlockDirt.java
+@@ -1,8 +1,8 @@
+ package net.minecraft.src;
+ 
+ public class BlockDirt extends Block {
+-	protected BlockDirt(int var1) {
+-		super(var1, Material.ground);
++	protected BlockDirt(int par1) {
++		super(par1, Material.ground);
+ 		this.setCreativeTab(CreativeTabs.tabBlock);
+ 	}
+ }

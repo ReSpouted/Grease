@@ -1,0 +1,82 @@
+--- net/minecraft/src/Packet17Sleep.java
++++ net/minecraft/src/Packet17Sleep.java
+@@ -11,37 +11,48 @@
+ 	public int bedZ;
+ 	public int field_73622_e;
+ 
+-	public Packet17Sleep() {
+-	}
+-
+-	public Packet17Sleep(Entity var1, int var2, int var3, int var4, int var5) {
+-		this.field_73622_e = var2;
+-		this.bedX = var3;
+-		this.bedY = var4;
+-		this.bedZ = var5;
+-		this.entityID = var1.entityId;
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.entityID = var1.readInt();
+-		this.field_73622_e = var1.readByte();
+-		this.bedX = var1.readInt();
+-		this.bedY = var1.readByte();
+-		this.bedZ = var1.readInt();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeInt(this.entityID);
+-		var1.writeByte(this.field_73622_e);
+-		var1.writeInt(this.bedX);
+-		var1.writeByte(this.bedY);
+-		var1.writeInt(this.bedZ);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleSleep(this);
+-	}
+-
++	public Packet17Sleep() {}
++
++	public Packet17Sleep(Entity par1Entity, int par2, int par3, int par4, int par5) {
++		this.field_73622_e = par2;
++		this.bedX = par3;
++		this.bedY = par4;
++		this.bedZ = par5;
++		this.entityID = par1Entity.entityId;
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.entityID = par1DataInput.readInt();
++		this.field_73622_e = par1DataInput.readByte();
++		this.bedX = par1DataInput.readInt();
++		this.bedY = par1DataInput.readByte();
++		this.bedZ = par1DataInput.readInt();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeInt(this.entityID);
++		par1DataOutput.writeByte(this.field_73622_e);
++		par1DataOutput.writeInt(this.bedX);
++		par1DataOutput.writeByte(this.bedY);
++		par1DataOutput.writeInt(this.bedZ);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleSleep(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 14;
+ 	}

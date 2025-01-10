@@ -1,0 +1,24 @@
+--- net/minecraft/src/PackMetadataSection.java
++++ net/minecraft/src/PackMetadataSection.java
+@@ -1,16 +1,16 @@
+ package net.minecraft.src;
+ 
+ public class PackMetadataSection implements MetadataSection {
+-	private final String a;
++	private final String packDescription;
+ 	private final int packFormat;
+ 
+-	public PackMetadataSection(String var1, int var2) {
+-		this.a = var1;
+-		this.packFormat = var2;
++	public PackMetadataSection(String par1Str, int par2) {
++		this.packDescription = par1Str;
++		this.packFormat = par2;
+ 	}
+ 
+ 	public String getPackDescription() {
+-		return this.a;
++		return this.packDescription;
+ 	}
+ 
+ 	public int getPackFormat() {

@@ -1,0 +1,12 @@
+--- net/minecraft/src/DemoWorldServer.java
++++ net/minecraft/src/DemoWorldServer.java
+@@ -6,7 +6,7 @@
+ 	private static final long demoWorldSeed = (long)"North Carolina".hashCode();
+ 	public static final WorldSettings demoWorldSettings = (new WorldSettings(demoWorldSeed, EnumGameType.SURVIVAL, true, false, WorldType.DEFAULT)).enableBonusChest();
+ 
+-	public DemoWorldServer(MinecraftServer var1, ISaveHandler var2, String var3, int var4, Profiler var5, ILogAgent var6) {
+-		super(var1, var2, var3, var4, demoWorldSettings, var5, var6);
++	public DemoWorldServer(MinecraftServer par1MinecraftServer, ISaveHandler par2ISaveHandler, String par3Str, int par4, Profiler par5Profiler, ILogAgent par6ILogAgent) {
++		super(par1MinecraftServer, par2ISaveHandler, par3Str, par4, demoWorldSettings, par5Profiler, par6ILogAgent);
+ 	}
+ }

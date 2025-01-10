@@ -1,0 +1,33 @@
+--- net/minecraft/src/WorldTemplate.java
++++ net/minecraft/src/WorldTemplate.java
+@@ -3,20 +3,21 @@
+ import argo.jdom.JsonNode;
+ 
+ public class WorldTemplate extends ValueObject {
+-	public String a;
+-	public String b;
+-	public String c;
+-	public String d;
++	public String field_110734_a;
++	public String field_110732_b;
++	public String field_110733_c;
++	public String field_110731_d;
+ 
+-	public static WorldTemplate func_110730_a(JsonNode var0) {
++	public static WorldTemplate func_110730_a(JsonNode par0JsonNode) {
+ 		WorldTemplate var1 = new WorldTemplate();
+ 
+ 		try {
+-			var1.a = var0.getNumberValue(new Object[]{"id"});
+-			var1.b = var0.getStringValue(new Object[]{"name"});
+-			var1.c = var0.getStringValue(new Object[]{"version"});
+-			var1.d = var0.getStringValue(new Object[]{"author"});
++			var1.field_110734_a = par0JsonNode.getNumberValue(new Object[] {"id"});
++			var1.field_110732_b = par0JsonNode.getStringValue(new Object[] {"name"});
++			var1.field_110733_c = par0JsonNode.getStringValue(new Object[] {"version"});
++			var1.field_110731_d = par0JsonNode.getStringValue(new Object[] {"author"});
+ 		} catch (IllegalArgumentException var3) {
++			;
+ 		}
+ 
+ 		return var1;

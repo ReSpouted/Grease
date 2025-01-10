@@ -1,0 +1,15 @@
+--- net/minecraft/src/EnumSkyBlock.java
++++ net/minecraft/src/EnumSkyBlock.java
+@@ -3,10 +3,9 @@
+ public enum EnumSkyBlock {
+ 	Sky(15),
+ 	Block(0);
+-
+ 	public final int defaultLightValue;
+ 
+-	private EnumSkyBlock(int var3) {
+-		this.defaultLightValue = var3;
++	private EnumSkyBlock(int par3) {
++		this.defaultLightValue = par3;
+ 	}
+ }

@@ -1,0 +1,62 @@
+--- net/minecraft/src/ThreadLanServerFind.java
++++ net/minecraft/src/ThreadLanServerFind.java
+@@ -7,28 +7,34 @@
+ import java.net.SocketTimeoutException;
+ 
+ public class ThreadLanServerFind extends Thread {
++
++	/** The LanServerList */
+ 	private final LanServerList localServerList;
+-	private final InetAddress b;
+-	private final MulticastSocket c;
+-
+-	public ThreadLanServerFind(LanServerList var1) {
++
++	/** InetAddress for 224.0.2.60 */
++	private final InetAddress broadcastAddress;
++
++	/** The socket we're using to receive packets on. */
++	private final MulticastSocket socket;
++
++	public ThreadLanServerFind(LanServerList par1LanServerList) throws IOException {
+ 		super("LanServerDetector");
+-		this.localServerList = var1;
++		this.localServerList = par1LanServerList;
+ 		this.setDaemon(true);
+-		this.c = new MulticastSocket(4445);
+-		this.b = InetAddress.getByName("224.0.2.60");
+-		this.c.setSoTimeout(5000);
+-		this.c.joinGroup(this.b);
++		this.socket = new MulticastSocket(4445);
++		this.broadcastAddress = InetAddress.getByName("224.0.2.60");
++		this.socket.setSoTimeout(5000);
++		this.socket.joinGroup(this.broadcastAddress);
+ 	}
+ 
+ 	public void run() {
+ 		byte[] var2 = new byte[1024];
+ 
+-		while(!this.isInterrupted()) {
++		while (!this.isInterrupted()) {
+ 			DatagramPacket var1 = new DatagramPacket(var2, var2.length);
+ 
+ 			try {
+-				this.c.receive(var1);
++				this.socket.receive(var1);
+ 			} catch (SocketTimeoutException var5) {
+ 				continue;
+ 			} catch (IOException var6) {
+@@ -42,10 +48,11 @@
+ 		}
+ 
+ 		try {
+-			this.c.leaveGroup(this.b);
++			this.socket.leaveGroup(this.broadcastAddress);
+ 		} catch (IOException var4) {
++			;
+ 		}
+ 
+-		this.c.close();
++		this.socket.close();
+ 	}
+ }

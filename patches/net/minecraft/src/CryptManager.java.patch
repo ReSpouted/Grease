@@ -1,0 +1,165 @@
+--- net/minecraft/src/CryptManager.java
++++ net/minecraft/src/CryptManager.java
+@@ -34,13 +34,17 @@
+ import org.bouncycastle.jce.provider.BouncyCastleProvider;
+ 
+ public class CryptManager {
++
++	/**
++	 * Generate a new shared secret AES key from a secure random source
++	 */
+ 	public static SecretKey createNewSharedKey() {
+ 		CipherKeyGenerator var0 = new CipherKeyGenerator();
+ 		var0.init(new KeyGenerationParameters(new SecureRandom(), 128));
+ 		return new SecretKeySpec(var0.generateKey(), "AES");
+ 	}
+ 
+-	public static KeyPair generateKeyPair() {
++	public static KeyPair createNewKeyPair() {
+ 		try {
+ 			KeyPairGenerator var0 = KeyPairGenerator.getInstance("RSA");
+ 			var0.initialize(1024);
+@@ -52,22 +56,28 @@
+ 		}
+ 	}
+ 
+-	public static byte[] getServerIdHash(String var0, PublicKey var1, SecretKey var2) {
++	/**
++	 * Compute a serverId hash for use by sendSessionRequest()
++	 */
++	public static byte[] getServerIdHash(String par0Str, PublicKey par1PublicKey, SecretKey par2SecretKey) {
+ 		try {
+-			return digestOperation("SHA-1", new byte[][]{var0.getBytes("ISO_8859_1"), var2.getEncoded(), var1.getEncoded()});
++			return digestOperation("SHA-1", new byte[][] {par0Str.getBytes("ISO_8859_1"), par2SecretKey.getEncoded(), par1PublicKey.getEncoded()});
+ 		} catch (UnsupportedEncodingException var4) {
+ 			var4.printStackTrace();
+ 			return null;
+ 		}
+ 	}
+ 
+-	private static byte[] digestOperation(String var0, byte[]... var1) {
++	/**
++	 * Compute a message digest on arbitrary byte[] data
++	 */
++	private static byte[] digestOperation(String par0Str, byte[] ... par1ArrayOfByte) {
+ 		try {
+-			MessageDigest var2 = MessageDigest.getInstance(var0);
+-			byte[][] var3 = var1;
+-			int var4 = var1.length;
++			MessageDigest var2 = MessageDigest.getInstance(par0Str);
++			byte[][] var3 = par1ArrayOfByte;
++			int var4 = par1ArrayOfByte.length;
+ 
+-			for(int var5 = 0; var5 < var4; ++var5) {
++			for (int var5 = 0; var5 < var4; ++var5) {
+ 				byte[] var6 = var3[var5];
+ 				var2.update(var6);
+ 			}
+@@ -79,9 +89,12 @@
+ 		}
+ 	}
+ 
+-	public static PublicKey decodePublicKey(byte[] var0) {
++	/**
++	 * Create a new PublicKey from encoded X.509 data
++	 */
++	public static PublicKey decodePublicKey(byte[] par0ArrayOfByte) {
+ 		try {
+-			X509EncodedKeySpec var1 = new X509EncodedKeySpec(var0);
++			X509EncodedKeySpec var1 = new X509EncodedKeySpec(par0ArrayOfByte);
+ 			KeyFactory var2 = KeyFactory.getInstance("RSA");
+ 			return var2.generatePublic(var1);
+ 		} catch (NoSuchAlgorithmException var3) {
+@@ -94,21 +107,33 @@
+ 		return null;
+ 	}
+ 
+-	public static SecretKey decryptSharedKey(PrivateKey var0, byte[] var1) {
+-		return new SecretKeySpec(decryptData(var0, var1), "AES");
+-	}
+-
+-	public static byte[] encryptData(Key var0, byte[] var1) {
+-		return cipherOperation(1, var0, var1);
+-	}
+-
+-	public static byte[] decryptData(Key var0, byte[] var1) {
+-		return cipherOperation(2, var0, var1);
+-	}
+-
+-	private static byte[] cipherOperation(int var0, Key var1, byte[] var2) {
++	/**
++	 * Decrypt shared secret AES key using RSA private key
++	 */
++	public static SecretKey decryptSharedKey(PrivateKey par0PrivateKey, byte[] par1ArrayOfByte) {
++		return new SecretKeySpec(decryptData(par0PrivateKey, par1ArrayOfByte), "AES");
++	}
++
++	/**
++	 * Encrypt byte[] data with RSA public key
++	 */
++	public static byte[] encryptData(Key par0Key, byte[] par1ArrayOfByte) {
++		return cipherOperation(1, par0Key, par1ArrayOfByte);
++	}
++
++	/**
++	 * Decrypt byte[] data with RSA private key
++	 */
++	public static byte[] decryptData(Key par0Key, byte[] par1ArrayOfByte) {
++		return cipherOperation(2, par0Key, par1ArrayOfByte);
++	}
++
++	/**
++	 * Encrypt or decrypt byte[] data using the specified key
++	 */
++	private static byte[] cipherOperation(int par0, Key par1Key, byte[] par2ArrayOfByte) {
+ 		try {
+-			return createTheCipherInstance(var0, var1.getAlgorithm(), var1).doFinal(var2);
++			return createTheCipherInstance(par0, par1Key.getAlgorithm(), par1Key).doFinal(par2ArrayOfByte);
+ 		} catch (IllegalBlockSizeException var4) {
+ 			var4.printStackTrace();
+ 		} catch (BadPaddingException var5) {
+@@ -119,10 +144,13 @@
+ 		return null;
+ 	}
+ 
+-	private static Cipher createTheCipherInstance(int var0, String var1, Key var2) {
++	/**
++	 * Creates the Cipher Instance.
++	 */
++	private static Cipher createTheCipherInstance(int par0, String par1Str, Key par2Key) {
+ 		try {
+-			Cipher var3 = Cipher.getInstance(var1);
+-			var3.init(var0, var2);
++			Cipher var3 = Cipher.getInstance(par1Str);
++			var3.init(par0, par2Key);
+ 			return var3;
+ 		} catch (InvalidKeyException var4) {
+ 			var4.printStackTrace();
+@@ -136,18 +164,21 @@
+ 		return null;
+ 	}
+ 
+-	private static BufferedBlockCipher createBufferedBlockCipher(boolean var0, Key var1) {
++	/**
++	 * Create a new BufferedBlockCipher instance
++	 */
++	private static BufferedBlockCipher createBufferedBlockCipher(boolean par0, Key par1Key) {
+ 		BufferedBlockCipher var2 = new BufferedBlockCipher(new CFBBlockCipher(new AESFastEngine(), 8));
+-		var2.init(var0, new ParametersWithIV(new KeyParameter(var1.getEncoded()), var1.getEncoded(), 0, 16));
++		var2.init(par0, new ParametersWithIV(new KeyParameter(par1Key.getEncoded()), par1Key.getEncoded(), 0, 16));
+ 		return var2;
+ 	}
+ 
+-	public static OutputStream encryptOuputStream(SecretKey var0, OutputStream var1) {
+-		return new CipherOutputStream(var1, createBufferedBlockCipher(true, var0));
++	public static OutputStream encryptOuputStream(SecretKey par0SecretKey, OutputStream par1OutputStream) {
++		return new CipherOutputStream(par1OutputStream, createBufferedBlockCipher(true, par0SecretKey));
+ 	}
+ 
+-	public static InputStream decryptInputStream(SecretKey var0, InputStream var1) {
+-		return new CipherInputStream(var1, createBufferedBlockCipher(false, var0));
++	public static InputStream decryptInputStream(SecretKey par0SecretKey, InputStream par1InputStream) {
++		return new CipherInputStream(par1InputStream, createBufferedBlockCipher(false, par0SecretKey));
+ 	}
+ 
+ 	static {

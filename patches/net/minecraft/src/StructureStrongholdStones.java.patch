@@ -1,0 +1,44 @@
+--- net/minecraft/src/StructureStrongholdStones.java
++++ net/minecraft/src/StructureStrongholdStones.java
+@@ -3,18 +3,21 @@
+ import java.util.Random;
+ 
+ class StructureStrongholdStones extends StructurePieceBlockSelector {
+-	private StructureStrongholdStones() {
+-	}
++	private StructureStrongholdStones() {}
+ 
+-	public void selectBlocks(Random var1, int var2, int var3, int var4, boolean var5) {
+-		if(var5) {
++	/**
++	 * picks Block Ids and Metadata (Silverfish)
++	 */
++	public void selectBlocks(Random par1Random, int par2, int par3, int par4, boolean par5) {
++		if (par5) {
+ 			this.selectedBlockId = Block.stoneBrick.blockID;
+-			float var6 = var1.nextFloat();
+-			if(var6 < 0.2F) {
++			float var6 = par1Random.nextFloat();
++
++			if (var6 < 0.2F) {
+ 				this.selectedBlockMetaData = 2;
+-			} else if(var6 < 0.5F) {
++			} else if (var6 < 0.5F) {
+ 				this.selectedBlockMetaData = 1;
+-			} else if(var6 < 0.55F) {
++			} else if (var6 < 0.55F) {
+ 				this.selectedBlockId = Block.silverfish.blockID;
+ 				this.selectedBlockMetaData = 2;
+ 			} else {
+@@ -24,10 +27,9 @@
+ 			this.selectedBlockId = 0;
+ 			this.selectedBlockMetaData = 0;
+ 		}
+-
+ 	}
+ 
+-	StructureStrongholdStones(StructureStrongholdPieceWeight2 var1) {
++	StructureStrongholdStones(StructureStrongholdPieceWeight2 par1StructureStrongholdPieceWeight2) {
+ 		this();
+ 	}
+ }

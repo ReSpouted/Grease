@@ -1,0 +1,15 @@
+--- net/minecraft/src/BiomeGenBeach.java
++++ net/minecraft/src/BiomeGenBeach.java
+@@ -1,9 +1,9 @@
+ package net.minecraft.src;
+ 
+ public class BiomeGenBeach extends BiomeGenBase {
+-	public BiomeGenBeach(int var1) {
+-		super(var1);
+-		this.K.clear();
++	public BiomeGenBeach(int par1) {
++		super(par1);
++		this.spawnableCreatureList.clear();
+ 		this.topBlock = (byte)Block.sand.blockID;
+ 		this.fillerBlock = (byte)Block.sand.blockID;
+ 		this.theBiomeDecorator.treesPerChunk = -999;

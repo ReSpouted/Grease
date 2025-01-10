@@ -1,0 +1,89 @@
+--- net/minecraft/src/Packet253ServerAuthData.java
++++ net/minecraft/src/Packet253ServerAuthData.java
+@@ -6,45 +6,56 @@
+ import java.security.PublicKey;
+ 
+ public class Packet253ServerAuthData extends Packet {
+-	private String a;
+-	private PublicKey b;
++	private String serverId;
++	private PublicKey publicKey;
+ 	private byte[] verifyToken = new byte[0];
+ 
+-	public Packet253ServerAuthData() {
+-	}
+-
+-	public Packet253ServerAuthData(String var1, PublicKey var2, byte[] var3) {
+-		this.a = var1;
+-		this.b = var2;
+-		this.verifyToken = var3;
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.a = readString(var1, 20);
+-		this.b = CryptManager.decodePublicKey(readBytesFromStream(var1));
+-		this.verifyToken = readBytesFromStream(var1);
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		writeString(this.a, var1);
+-		writeByteArray(var1, this.b.getEncoded());
+-		writeByteArray(var1, this.verifyToken);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleServerAuthData(this);
+-	}
+-
++	public Packet253ServerAuthData() {}
++
++	public Packet253ServerAuthData(String par1Str, PublicKey par2PublicKey, byte[] par3ArrayOfByte) {
++		this.serverId = par1Str;
++		this.publicKey = par2PublicKey;
++		this.verifyToken = par3ArrayOfByte;
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.serverId = readString(par1DataInput, 20);
++		this.publicKey = CryptManager.decodePublicKey(readBytesFromStream(par1DataInput));
++		this.verifyToken = readBytesFromStream(par1DataInput);
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		writeString(this.serverId, par1DataOutput);
++		writeByteArray(par1DataOutput, this.publicKey.getEncoded());
++		writeByteArray(par1DataOutput, this.verifyToken);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleServerAuthData(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+-		return 2 + this.a.length() * 2 + 2 + this.b.getEncoded().length + 2 + this.verifyToken.length;
++		return 2 + this.serverId.length() * 2 + 2 + this.publicKey.getEncoded().length + 2 + this.verifyToken.length;
+ 	}
+ 
+ 	public String getServerId() {
+-		return this.a;
++		return this.serverId;
+ 	}
+ 
+ 	public PublicKey getPublicKey() {
+-		return this.b;
++		return this.publicKey;
+ 	}
+ 
+ 	public byte[] getVerifyToken() {

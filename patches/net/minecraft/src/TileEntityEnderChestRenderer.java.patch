@@ -1,0 +1,70 @@
+--- net/minecraft/src/TileEntityEnderChestRenderer.java
++++ net/minecraft/src/TileEntityEnderChestRenderer.java
+@@ -5,41 +5,48 @@
+ 
+ public class TileEntityEnderChestRenderer extends TileEntitySpecialRenderer {
+ 	private static final ResourceLocation field_110637_a = new ResourceLocation("textures/entity/chest/ender.png");
++
++	/** The Ender Chest Chest's model. */
+ 	private ModelChest theEnderChestModel = new ModelChest();
+ 
+-	public void renderEnderChest(TileEntityEnderChest var1, double var2, double var4, double var6, float var8) {
++	/**
++	 * Helps to render Ender Chest.
++	 */
++	public void renderEnderChest(TileEntityEnderChest par1TileEntityEnderChest, double par2, double par4, double par6, float par8) {
+ 		int var9 = 0;
+-		if(var1.hasWorldObj()) {
+-			var9 = var1.getBlockMetadata();
++
++		if (par1TileEntityEnderChest.hasWorldObj()) {
++			var9 = par1TileEntityEnderChest.getBlockMetadata();
+ 		}
+ 
+ 		this.bindTexture(field_110637_a);
+ 		GL11.glPushMatrix();
+ 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+ 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+-		GL11.glTranslatef((float)var2, (float)var4 + 1.0F, (float)var6 + 1.0F);
++		GL11.glTranslatef((float)par2, (float)par4 + 1.0F, (float)par6 + 1.0F);
+ 		GL11.glScalef(1.0F, -1.0F, -1.0F);
+ 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+ 		short var10 = 0;
+-		if(var9 == 2) {
++
++		if (var9 == 2) {
+ 			var10 = 180;
+ 		}
+ 
+-		if(var9 == 3) {
++		if (var9 == 3) {
+ 			var10 = 0;
+ 		}
+ 
+-		if(var9 == 4) {
++		if (var9 == 4) {
+ 			var10 = 90;
+ 		}
+ 
+-		if(var9 == 5) {
++		if (var9 == 5) {
+ 			var10 = -90;
+ 		}
+ 
+ 		GL11.glRotatef((float)var10, 0.0F, 1.0F, 0.0F);
+ 		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+-		float var11 = var1.prevLidAngle + (var1.lidAngle - var1.prevLidAngle) * var8;
++		float var11 = par1TileEntityEnderChest.prevLidAngle + (par1TileEntityEnderChest.lidAngle - par1TileEntityEnderChest.prevLidAngle) * par8;
+ 		var11 = 1.0F - var11;
+ 		var11 = 1.0F - var11 * var11 * var11;
+ 		this.theEnderChestModel.chestLid.rotateAngleX = -(var11 * (float)Math.PI / 2.0F);
+@@ -49,7 +56,7 @@
+ 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+ 	}
+ 
+-	public void renderTileEntityAt(TileEntity var1, double var2, double var4, double var6, float var8) {
+-		this.renderEnderChest((TileEntityEnderChest)var1, var2, var4, var6, var8);
++	public void renderTileEntityAt(TileEntity par1TileEntity, double par2, double par4, double par6, float par8) {
++		this.renderEnderChest((TileEntityEnderChest)par1TileEntity, par2, par4, par6, par8);
+ 	}
+ }

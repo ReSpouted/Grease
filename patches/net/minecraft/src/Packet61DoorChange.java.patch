@@ -1,0 +1,88 @@
+--- net/minecraft/src/Packet61DoorChange.java
++++ net/minecraft/src/Packet61DoorChange.java
+@@ -12,40 +12,51 @@
+ 	public int posZ;
+ 	private boolean disableRelativeVolume;
+ 
+-	public Packet61DoorChange() {
+-	}
+-
+-	public Packet61DoorChange(int var1, int var2, int var3, int var4, int var5, boolean var6) {
+-		this.sfxID = var1;
+-		this.posX = var2;
+-		this.posY = var3;
+-		this.posZ = var4;
+-		this.auxData = var5;
+-		this.disableRelativeVolume = var6;
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.sfxID = var1.readInt();
+-		this.posX = var1.readInt();
+-		this.posY = var1.readByte() & 255;
+-		this.posZ = var1.readInt();
+-		this.auxData = var1.readInt();
+-		this.disableRelativeVolume = var1.readBoolean();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeInt(this.sfxID);
+-		var1.writeInt(this.posX);
+-		var1.writeByte(this.posY & 255);
+-		var1.writeInt(this.posZ);
+-		var1.writeInt(this.auxData);
+-		var1.writeBoolean(this.disableRelativeVolume);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleDoorChange(this);
+-	}
+-
++	public Packet61DoorChange() {}
++
++	public Packet61DoorChange(int par1, int par2, int par3, int par4, int par5, boolean par6) {
++		this.sfxID = par1;
++		this.posX = par2;
++		this.posY = par3;
++		this.posZ = par4;
++		this.auxData = par5;
++		this.disableRelativeVolume = par6;
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.sfxID = par1DataInput.readInt();
++		this.posX = par1DataInput.readInt();
++		this.posY = par1DataInput.readByte() & 255;
++		this.posZ = par1DataInput.readInt();
++		this.auxData = par1DataInput.readInt();
++		this.disableRelativeVolume = par1DataInput.readBoolean();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeInt(this.sfxID);
++		par1DataOutput.writeInt(this.posX);
++		par1DataOutput.writeByte(this.posY & 255);
++		par1DataOutput.writeInt(this.posZ);
++		par1DataOutput.writeInt(this.auxData);
++		par1DataOutput.writeBoolean(this.disableRelativeVolume);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleDoorChange(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 21;
+ 	}

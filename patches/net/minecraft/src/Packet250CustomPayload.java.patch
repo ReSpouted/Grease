@@ -1,0 +1,104 @@
+--- net/minecraft/src/Packet250CustomPayload.java
++++ net/minecraft/src/Packet250CustomPayload.java
+@@ -5,49 +5,67 @@
+ import java.io.IOException;
+ 
+ public class Packet250CustomPayload extends Packet {
+-	public String a;
++
++	/** Name of the 'channel' used to send data */
++	public String channel;
++
++	/** Length of the data to be read */
+ 	public int length;
++
++	/** Any data */
+ 	public byte[] data;
+ 
+-	public Packet250CustomPayload() {
+-	}
+-
+-	public Packet250CustomPayload(String var1, byte[] var2) {
+-		this.a = var1;
+-		this.data = var2;
+-		if(var2 != null) {
+-			this.length = var2.length;
+-			if(this.length > Short.MAX_VALUE) {
++	public Packet250CustomPayload() {}
++
++	public Packet250CustomPayload(String par1Str, byte[] par2ArrayOfByte) {
++		this.channel = par1Str;
++		this.data = par2ArrayOfByte;
++
++		if (par2ArrayOfByte != null) {
++			this.length = par2ArrayOfByte.length;
++
++			if (this.length > 32767) {
+ 				throw new IllegalArgumentException("Payload may not be larger than 32k");
+ 			}
+ 		}
+-
+ 	}
+ 
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.a = readString(var1, 20);
+-		this.length = var1.readShort();
+-		if(this.length > 0 && this.length < Short.MAX_VALUE) {
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.channel = readString(par1DataInput, 20);
++		this.length = par1DataInput.readShort();
++
++		if (this.length > 0 && this.length < 32767) {
+ 			this.data = new byte[this.length];
+-			var1.readFully(this.data);
+-		}
+-
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		writeString(this.a, var1);
+-		var1.writeShort((short)this.length);
+-		if(this.data != null) {
+-			var1.write(this.data);
+-		}
+-
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleCustomPayload(this);
+-	}
+-
++			par1DataInput.readFully(this.data);
++		}
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		writeString(this.channel, par1DataOutput);
++		par1DataOutput.writeShort((short)this.length);
++
++		if (this.data != null) {
++			par1DataOutput.write(this.data);
++		}
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleCustomPayload(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+-		return 2 + this.a.length() * 2 + 2 + this.length;
++		return 2 + this.channel.length() * 2 + 2 + this.length;
+ 	}
+ }

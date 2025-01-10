@@ -1,0 +1,183 @@
+--- net/minecraft/src/EntityMinecartFurnace.java
++++ net/minecraft/src/EntityMinecartFurnace.java
+@@ -5,12 +5,12 @@
+ 	public double pushX;
+ 	public double pushZ;
+ 
+-	public EntityMinecartFurnace(World var1) {
+-		super(var1);
++	public EntityMinecartFurnace(World par1World) {
++		super(par1World);
+ 	}
+ 
+-	public EntityMinecartFurnace(World var1, double var2, double var4, double var6) {
+-		super(var1, var2, var4, var6);
++	public EntityMinecartFurnace(World par1World, double par2, double par4, double par6) {
++		super(par1World, par2, par4, par6);
+ 	}
+ 
+ 	public int getMinecartType() {
+@@ -22,39 +22,45 @@
+ 		this.dataWatcher.addObject(16, new Byte((byte)0));
+ 	}
+ 
++	/**
++	 * Called to update the entity's position/logic.
++	 */
+ 	public void onUpdate() {
+ 		super.onUpdate();
+-		if(this.fuel > 0) {
++
++		if (this.fuel > 0) {
+ 			--this.fuel;
+ 		}
+ 
+-		if(this.fuel <= 0) {
++		if (this.fuel <= 0) {
+ 			this.pushX = this.pushZ = 0.0D;
+ 		}
+ 
+ 		this.setMinecartPowered(this.fuel > 0);
+-		if(this.isMinecartPowered() && this.ab.nextInt(4) == 0) {
++
++		if (this.isMinecartPowered() && this.rand.nextInt(4) == 0) {
+ 			this.worldObj.spawnParticle("largesmoke", this.posX, this.posY + 0.8D, this.posZ, 0.0D, 0.0D, 0.0D);
+ 		}
+-
+ 	}
+ 
+-	public void killMinecart(DamageSource var1) {
+-		super.killMinecart(var1);
+-		if(!var1.isExplosion()) {
++	public void killMinecart(DamageSource par1DamageSource) {
++		super.killMinecart(par1DamageSource);
++
++		if (!par1DamageSource.isExplosion()) {
+ 			this.entityDropItem(new ItemStack(Block.furnaceIdle, 1), 0.0F);
+ 		}
+-
+ 	}
+ 
+-	protected void updateOnTrack(int var1, int var2, int var3, double var4, double var6, int var8, int var9) {
+-		super.updateOnTrack(var1, var2, var3, var4, var6, var8, var9);
++	protected void updateOnTrack(int par1, int par2, int par3, double par4, double par6, int par8, int par9) {
++		super.updateOnTrack(par1, par2, par3, par4, par6, par8, par9);
+ 		double var10 = this.pushX * this.pushX + this.pushZ * this.pushZ;
+-		if(var10 > 1.0E-4D && this.motionX * this.motionX + this.motionZ * this.motionZ > 0.001D) {
++
++		if (var10 > 1.0E-4D && this.motionX * this.motionX + this.motionZ * this.motionZ > 0.001D) {
+ 			var10 = (double)MathHelper.sqrt_double(var10);
+ 			this.pushX /= var10;
+ 			this.pushZ /= var10;
+-			if(this.pushX * this.motionX + this.pushZ * this.motionZ < 0.0D) {
++
++			if (this.pushX * this.motionX + this.pushZ * this.motionZ < 0.0D) {
+ 				this.pushX = 0.0D;
+ 				this.pushZ = 0.0D;
+ 			} else {
+@@ -62,70 +68,79 @@
+ 				this.pushZ = this.motionZ;
+ 			}
+ 		}
+-
+ 	}
+ 
+ 	protected void applyDrag() {
+ 		double var1 = this.pushX * this.pushX + this.pushZ * this.pushZ;
+-		if(var1 > 1.0E-4D) {
++
++		if (var1 > 1.0E-4D) {
+ 			var1 = (double)MathHelper.sqrt_double(var1);
+ 			this.pushX /= var1;
+ 			this.pushZ /= var1;
+ 			double var3 = 0.05D;
+-			this.motionX *= (double)0.8F;
++			this.motionX *= 0.800000011920929D;
+ 			this.motionY *= 0.0D;
+-			this.motionZ *= (double)0.8F;
++			this.motionZ *= 0.800000011920929D;
+ 			this.motionX += this.pushX * var3;
+ 			this.motionZ += this.pushZ * var3;
+ 		} else {
+-			this.motionX *= (double)0.98F;
++			this.motionX *= 0.9800000190734863D;
+ 			this.motionY *= 0.0D;
+-			this.motionZ *= (double)0.98F;
++			this.motionZ *= 0.9800000190734863D;
+ 		}
+ 
+ 		super.applyDrag();
+ 	}
+ 
+-	public boolean interactFirst(EntityPlayer var1) {
+-		ItemStack var2 = var1.inventory.getCurrentItem();
+-		if(var2 != null && var2.itemID == Item.coal.itemID) {
+-			if(!var1.capabilities.isCreativeMode && --var2.stackSize == 0) {
+-				var1.inventory.setInventorySlotContents(var1.inventory.currentItem, (ItemStack)null);
++	/**
++	 * First layer of player interaction
++	 */
++	public boolean interactFirst(EntityPlayer par1EntityPlayer) {
++		ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
++
++		if (var2 != null && var2.itemID == Item.coal.itemID) {
++			if (!par1EntityPlayer.capabilities.isCreativeMode && --var2.stackSize == 0) {
++				par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack)null);
+ 			}
+ 
+ 			this.fuel += 3600;
+ 		}
+ 
+-		this.pushX = this.posX - var1.posX;
+-		this.pushZ = this.posZ - var1.posZ;
++		this.pushX = this.posX - par1EntityPlayer.posX;
++		this.pushZ = this.posZ - par1EntityPlayer.posZ;
+ 		return true;
+ 	}
+ 
+-	protected void writeEntityToNBT(NBTTagCompound var1) {
+-		super.writeEntityToNBT(var1);
+-		var1.setDouble("PushX", this.pushX);
+-		var1.setDouble("PushZ", this.pushZ);
+-		var1.setShort("Fuel", (short)this.fuel);
++	/**
++	 * (abstract) Protected helper method to write subclass entity data to NBT.
++	 */
++	protected void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
++		super.writeEntityToNBT(par1NBTTagCompound);
++		par1NBTTagCompound.setDouble("PushX", this.pushX);
++		par1NBTTagCompound.setDouble("PushZ", this.pushZ);
++		par1NBTTagCompound.setShort("Fuel", (short)this.fuel);
+ 	}
+ 
+-	protected void readEntityFromNBT(NBTTagCompound var1) {
+-		super.readEntityFromNBT(var1);
+-		this.pushX = var1.getDouble("PushX");
+-		this.pushZ = var1.getDouble("PushZ");
+-		this.fuel = var1.getShort("Fuel");
++	/**
++	 * (abstract) Protected helper method to read subclass entity data from NBT.
++	 */
++	protected void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
++		super.readEntityFromNBT(par1NBTTagCompound);
++		this.pushX = par1NBTTagCompound.getDouble("PushX");
++		this.pushZ = par1NBTTagCompound.getDouble("PushZ");
++		this.fuel = par1NBTTagCompound.getShort("Fuel");
+ 	}
+ 
+ 	protected boolean isMinecartPowered() {
+ 		return (this.dataWatcher.getWatchableObjectByte(16) & 1) != 0;
+ 	}
+ 
+-	protected void setMinecartPowered(boolean var1) {
+-		if(var1) {
++	protected void setMinecartPowered(boolean par1) {
++		if (par1) {
+ 			this.dataWatcher.updateObject(16, Byte.valueOf((byte)(this.dataWatcher.getWatchableObjectByte(16) | 1)));
+ 		} else {
+ 			this.dataWatcher.updateObject(16, Byte.valueOf((byte)(this.dataWatcher.getWatchableObjectByte(16) & -2)));
+ 		}
+-
+ 	}
+ 
+ 	public Block getDefaultDisplayTile() {

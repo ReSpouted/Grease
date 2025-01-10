@@ -1,0 +1,19 @@
+--- net/minecraft/src/VillageAgressor.java
++++ net/minecraft/src/VillageAgressor.java
+@@ -3,11 +3,12 @@
+ class VillageAgressor {
+ 	public EntityLivingBase agressor;
+ 	public int agressionTime;
++
+ 	final Village villageObj;
+ 
+-	VillageAgressor(Village var1, EntityLivingBase var2, int var3) {
+-		this.villageObj = var1;
+-		this.agressor = var2;
+-		this.agressionTime = var3;
++	VillageAgressor(Village par1Village, EntityLivingBase par2EntityLivingBase, int par3) {
++		this.villageObj = par1Village;
++		this.agressor = par2EntityLivingBase;
++		this.agressionTime = par3;
+ 	}
+ }

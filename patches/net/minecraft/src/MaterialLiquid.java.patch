@@ -1,0 +1,27 @@
+--- net/minecraft/src/MaterialLiquid.java
++++ net/minecraft/src/MaterialLiquid.java
+@@ -1,16 +1,22 @@
+ package net.minecraft.src;
+ 
+ public class MaterialLiquid extends Material {
+-	public MaterialLiquid(MapColor var1) {
+-		super(var1);
++	public MaterialLiquid(MapColor par1MapColor) {
++		super(par1MapColor);
+ 		this.setReplaceable();
+ 		this.setNoPushMobility();
+ 	}
+ 
++	/**
++	 * Returns if blocks of these materials are liquids.
++	 */
+ 	public boolean isLiquid() {
+ 		return true;
+ 	}
+ 
++	/**
++	 * Returns if this material is considered solid or not
++	 */
+ 	public boolean blocksMovement() {
+ 		return false;
+ 	}

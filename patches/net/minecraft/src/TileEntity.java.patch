@@ -1,0 +1,273 @@
+--- net/minecraft/src/TileEntity.java
++++ net/minecraft/src/TileEntity.java
+@@ -5,102 +5,155 @@
+ import net.minecraft.server.MinecraftServer;
+ 
+ public class TileEntity {
+-	private static Map a = new HashMap();
+-	private static Map b = new HashMap();
++
++	/**
++	 * A HashMap storing string names of classes mapping to the actual java.lang.Class type.
++	 */
++	private static Map nameToClassMap = new HashMap();
++
++	/**
++	 * A HashMap storing the classes and mapping to the string names (reverse of nameToClassMap).
++	 */
++	private static Map classToNameMap = new HashMap();
++
++	/** The reference to the world. */
+ 	protected World worldObj;
++
++	/** The x coordinate of the tile entity. */
+ 	public int xCoord;
++
++	/** The y coordinate of the tile entity. */
+ 	public int yCoord;
++
++	/** The z coordinate of the tile entity. */
+ 	public int zCoord;
+ 	protected boolean tileEntityInvalid;
+ 	public int blockMetadata = -1;
++
++	/** the Block type that this TileEntity is contained within */
+ 	public Block blockType;
+ 
+-	private static void addMapping(Class var0, String var1) {
+-		if(a.containsKey(var1)) {
+-			throw new IllegalArgumentException("Duplicate id: " + var1);
++	/**
++	 * Adds a new two-way mapping between the class and its string name in both hashmaps.
++	 */
++	private static void addMapping(Class par0Class, String par1Str) {
++		if (nameToClassMap.containsKey(par1Str)) {
++			throw new IllegalArgumentException("Duplicate id: " + par1Str);
+ 		} else {
+-			a.put(var1, var0);
+-			b.put(var0, var1);
++			nameToClassMap.put(par1Str, par0Class);
++			classToNameMap.put(par0Class, par1Str);
+ 		}
+ 	}
+ 
++	/**
++	 * Returns the worldObj for this tileEntity.
++	 */
+ 	public World getWorldObj() {
+ 		return this.worldObj;
+ 	}
+ 
+-	public void setWorldObj(World var1) {
+-		this.worldObj = var1;
++	/**
++	 * Sets the worldObj for this tileEntity.
++	 */
++	public void setWorldObj(World par1World) {
++		this.worldObj = par1World;
+ 	}
+ 
++	/**
++	 * Returns true if the worldObj isn't null.
++	 */
+ 	public boolean hasWorldObj() {
+ 		return this.worldObj != null;
+ 	}
+ 
+-	public void readFromNBT(NBTTagCompound var1) {
+-		this.xCoord = var1.getInteger("x");
+-		this.yCoord = var1.getInteger("y");
+-		this.zCoord = var1.getInteger("z");
++	/**
++	 * Reads a tile entity from NBT.
++	 */
++	public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
++		this.xCoord = par1NBTTagCompound.getInteger("x");
++		this.yCoord = par1NBTTagCompound.getInteger("y");
++		this.zCoord = par1NBTTagCompound.getInteger("z");
+ 	}
+ 
+-	public void writeToNBT(NBTTagCompound var1) {
+-		String var2 = (String)b.get(this.getClass());
+-		if(var2 == null) {
++	/**
++	 * Writes a tile entity to NBT.
++	 */
++	public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
++		String var2 = (String)classToNameMap.get(this.getClass());
++
++		if (var2 == null) {
+ 			throw new RuntimeException(this.getClass() + " is missing a mapping! This is a bug!");
+ 		} else {
+-			var1.setString("id", var2);
+-			var1.setInteger("x", this.xCoord);
+-			var1.setInteger("y", this.yCoord);
+-			var1.setInteger("z", this.zCoord);
++			par1NBTTagCompound.setString("id", var2);
++			par1NBTTagCompound.setInteger("x", this.xCoord);
++			par1NBTTagCompound.setInteger("y", this.yCoord);
++			par1NBTTagCompound.setInteger("z", this.zCoord);
+ 		}
+ 	}
+ 
+-	public void updateEntity() {
+-	}
++	/**
++	 * Allows the entity to update its state. Overridden in most subclasses, e.g. the mob spawner uses this to count ticks
++	 * and creates a new spawn inside its implementation.
++	 */
++	public void updateEntity() {}
+ 
+-	public static TileEntity createAndLoadEntity(NBTTagCompound var0) {
++	/**
++	 * Creates a new entity and loads its data from the specified NBT.
++	 */
++	public static TileEntity createAndLoadEntity(NBTTagCompound par0NBTTagCompound) {
+ 		TileEntity var1 = null;
+ 
+ 		try {
+-			Class var2 = (Class)a.get(var0.getString("id"));
+-			if(var2 != null) {
++			Class var2 = (Class)nameToClassMap.get(par0NBTTagCompound.getString("id"));
++
++			if (var2 != null) {
+ 				var1 = (TileEntity)var2.newInstance();
+ 			}
+ 		} catch (Exception var3) {
+ 			var3.printStackTrace();
+ 		}
+ 
+-		if(var1 != null) {
+-			var1.readFromNBT(var0);
++		if (var1 != null) {
++			var1.readFromNBT(par0NBTTagCompound);
+ 		} else {
+-			MinecraftServer.getServer().getLogAgent().logWarning("Skipping TileEntity with id " + var0.getString("id"));
++			MinecraftServer.getServer().getLogAgent().logWarning("Skipping TileEntity with id " + par0NBTTagCompound.getString("id"));
+ 		}
+ 
+ 		return var1;
+ 	}
+ 
++	/**
++	 * Returns block data at the location of this entity (client-only).
++	 */
+ 	public int getBlockMetadata() {
+-		if(this.blockMetadata == -1) {
++		if (this.blockMetadata == -1) {
+ 			this.blockMetadata = this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord);
+ 		}
+ 
+ 		return this.blockMetadata;
+ 	}
+ 
++	/**
++	 * Called when an the contents of an Inventory change, usually
++	 */
+ 	public void onInventoryChanged() {
+-		if(this.worldObj != null) {
++		if (this.worldObj != null) {
+ 			this.blockMetadata = this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord);
+ 			this.worldObj.markTileEntityChunkModified(this.xCoord, this.yCoord, this.zCoord, this);
+-			if(this.getBlockType() != null) {
++
++			if (this.getBlockType() != null) {
+ 				this.worldObj.func_96440_m(this.xCoord, this.yCoord, this.zCoord, this.getBlockType().blockID);
+ 			}
+ 		}
+-
+ 	}
+ 
+-	public double getDistanceFrom(double var1, double var3, double var5) {
+-		double var7 = (double)this.xCoord + 0.5D - var1;
+-		double var9 = (double)this.yCoord + 0.5D - var3;
+-		double var11 = (double)this.zCoord + 0.5D - var5;
++	/**
++	 * Returns the square of the distance between this entity and the passed in coordinates.
++	 */
++	public double getDistanceFrom(double par1, double par3, double par5) {
++		double var7 = (double)this.xCoord + 0.5D - par1;
++		double var9 = (double)this.yCoord + 0.5D - par3;
++		double var11 = (double)this.zCoord + 0.5D - par5;
+ 		return var7 * var7 + var9 * var9 + var11 * var11;
+ 	}
+ 
+@@ -108,48 +161,70 @@
+ 		return 4096.0D;
+ 	}
+ 
++	/**
++	 * Gets the block type at the location of this entity (client-only).
++	 */
+ 	public Block getBlockType() {
+-		if(this.blockType == null) {
++		if (this.blockType == null) {
+ 			this.blockType = Block.blocksList[this.worldObj.getBlockId(this.xCoord, this.yCoord, this.zCoord)];
+ 		}
+ 
+ 		return this.blockType;
+ 	}
+ 
++	/**
++	 * Overriden in a sign to provide the text.
++	 */
+ 	public Packet getDescriptionPacket() {
+ 		return null;
+ 	}
+ 
++	/**
++	 * returns true if tile entity is invalid, false otherwise
++	 */
+ 	public boolean isInvalid() {
+ 		return this.tileEntityInvalid;
+ 	}
+ 
++	/**
++	 * invalidates a tile entity
++	 */
+ 	public void invalidate() {
+ 		this.tileEntityInvalid = true;
+ 	}
+ 
++	/**
++	 * validates a tile entity
++	 */
+ 	public void validate() {
+ 		this.tileEntityInvalid = false;
+ 	}
+ 
+-	public boolean receiveClientEvent(int var1, int var2) {
++	/**
++	 * Called when a client event is received with the event number and argument, see World.sendClientEvent
++	 */
++	public boolean receiveClientEvent(int par1, int par2) {
+ 		return false;
+ 	}
+ 
++	/**
++	 * Causes the TileEntity to reset all it's cached values for it's container block, blockID, metaData and in the case of
++	 * chests, the adjcacent chest check
++	 */
+ 	public void updateContainingBlockInfo() {
+ 		this.blockType = null;
+ 		this.blockMetadata = -1;
+ 	}
+ 
+-	public void func_85027_a(CrashReportCategory var1) {
+-		var1.addCrashSectionCallable("Name", new CallableTileEntityName(this));
+-		CrashReportCategory.addBlockCrashInfo(var1, this.xCoord, this.yCoord, this.zCoord, this.getBlockType().blockID, this.getBlockMetadata());
+-		var1.addCrashSectionCallable("Actual block type", new CallableTileEntityID(this));
+-		var1.addCrashSectionCallable("Actual block data value", new CallableTileEntityData(this));
++	public void func_85027_a(CrashReportCategory par1CrashReportCategory) {
++		par1CrashReportCategory.addCrashSectionCallable("Name", new CallableTileEntityName(this));
++		CrashReportCategory.addBlockCrashInfo(par1CrashReportCategory, this.xCoord, this.yCoord, this.zCoord, this.getBlockType().blockID, this.getBlockMetadata());
++		par1CrashReportCategory.addCrashSectionCallable("Actual block type", new CallableTileEntityID(this));
++		par1CrashReportCategory.addCrashSectionCallable("Actual block data value", new CallableTileEntityData(this));
+ 	}
+ 
+ 	static Map getClassToNameMap() {
+-		return b;
++		return classToNameMap;
+ 	}
+ 
+ 	static {

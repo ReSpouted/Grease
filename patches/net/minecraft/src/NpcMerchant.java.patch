@@ -1,0 +1,54 @@
+--- net/minecraft/src/NpcMerchant.java
++++ net/minecraft/src/NpcMerchant.java
+@@ -1,33 +1,36 @@
+ package net.minecraft.src;
+ 
+ public class NpcMerchant implements IMerchant {
++
++	/** Instance of Merchants Inventory. */
+ 	private InventoryMerchant theMerchantInventory;
++
++	/** This merchant's current player customer. */
+ 	private EntityPlayer customer;
++
++	/** The MerchantRecipeList instance. */
+ 	private MerchantRecipeList recipeList;
+ 
+-	public NpcMerchant(EntityPlayer var1) {
+-		this.customer = var1;
+-		this.theMerchantInventory = new InventoryMerchant(var1, this);
++	public NpcMerchant(EntityPlayer par1EntityPlayer) {
++		this.customer = par1EntityPlayer;
++		this.theMerchantInventory = new InventoryMerchant(par1EntityPlayer, this);
+ 	}
+ 
+ 	public EntityPlayer getCustomer() {
+ 		return this.customer;
+ 	}
+ 
+-	public void setCustomer(EntityPlayer var1) {
+-	}
++	public void setCustomer(EntityPlayer par1EntityPlayer) {}
+ 
+-	public MerchantRecipeList getRecipes(EntityPlayer var1) {
++	public MerchantRecipeList getRecipes(EntityPlayer par1EntityPlayer) {
+ 		return this.recipeList;
+ 	}
+ 
+-	public void setRecipes(MerchantRecipeList var1) {
+-		this.recipeList = var1;
+-	}
+-
+-	public void useRecipe(MerchantRecipe var1) {
+-	}
+-
+-	public void func_110297_a_(ItemStack var1) {
+-	}
++	public void setRecipes(MerchantRecipeList par1MerchantRecipeList) {
++		this.recipeList = par1MerchantRecipeList;
++	}
++
++	public void useRecipe(MerchantRecipe par1MerchantRecipe) {}
++
++	public void func_110297_a_(ItemStack par1ItemStack) {}
+ }

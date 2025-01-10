@@ -1,0 +1,18 @@
+--- net/minecraft/src/CallableLevelTime.java
++++ net/minecraft/src/CallableLevelTime.java
+@@ -5,12 +5,12 @@
+ class CallableLevelTime implements Callable {
+ 	final WorldInfo worldInfoInstance;
+ 
+-	CallableLevelTime(WorldInfo var1) {
+-		this.worldInfoInstance = var1;
++	CallableLevelTime(WorldInfo par1WorldInfo) {
++		this.worldInfoInstance = par1WorldInfo;
+ 	}
+ 
+ 	public String callLevelTime() {
+-		return String.format("%d game time, %d day time", new Object[]{Long.valueOf(WorldInfo.func_85126_g(this.worldInfoInstance)), Long.valueOf(WorldInfo.getWorldTime(this.worldInfoInstance))});
++		return String.format("%d game time, %d day time", new Object[] {Long.valueOf(WorldInfo.func_85126_g(this.worldInfoInstance)), Long.valueOf(WorldInfo.getWorldTime(this.worldInfoInstance))});
+ 	}
+ 
+ 	public Object call() {

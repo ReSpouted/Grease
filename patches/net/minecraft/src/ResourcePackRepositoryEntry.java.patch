@@ -1,0 +1,91 @@
+--- net/minecraft/src/ResourcePackRepositoryEntry.java
++++ net/minecraft/src/ResourcePackRepositoryEntry.java
+@@ -7,47 +7,48 @@
+ import org.apache.commons.io.IOUtils;
+ 
+ public class ResourcePackRepositoryEntry {
+-	private final File b;
++	private final File resourcePackFile;
+ 	private ResourcePack reResourcePack;
+ 	private PackMetadataSection rePackMetadataSection;
+-	private BufferedImage e;
++	private BufferedImage texturePackIcon;
+ 	private ResourceLocation locationTexturePackIcon;
++
+ 	final ResourcePackRepository reResourcePackRepository;
+ 
+-	private ResourcePackRepositoryEntry(ResourcePackRepository var1, File var2) {
+-		this.reResourcePackRepository = var1;
+-		this.b = var2;
++	private ResourcePackRepositoryEntry(ResourcePackRepository par1ResourcePackRepository, File par2File) {
++		this.reResourcePackRepository = par1ResourcePackRepository;
++		this.resourcePackFile = par2File;
+ 	}
+ 
+ 	public void updateResourcePack() throws IOException {
+-		this.reResourcePack = (ResourcePack)(this.b.isDirectory() ? new FolderResourcePack(this.b) : new FileResourcePack(this.b));
++		this.reResourcePack = (ResourcePack)(this.resourcePackFile.isDirectory() ? new FolderResourcePack(this.resourcePackFile) : new FileResourcePack(this.resourcePackFile));
+ 		this.rePackMetadataSection = (PackMetadataSection)this.reResourcePack.getPackMetadata(this.reResourcePackRepository.rprMetadataSerializer, "pack");
+ 
+ 		try {
+-			this.e = this.reResourcePack.getPackImage();
++			this.texturePackIcon = this.reResourcePack.getPackImage();
+ 		} catch (IOException var2) {
++			;
+ 		}
+ 
+-		if(this.e == null) {
+-			this.e = this.reResourcePackRepository.rprDefaultResourcePack.getPackImage();
++		if (this.texturePackIcon == null) {
++			this.texturePackIcon = this.reResourcePackRepository.rprDefaultResourcePack.getPackImage();
+ 		}
+ 
+ 		this.closeResourcePack();
+ 	}
+ 
+-	public void bindTexturePackIcon(TextureManager var1) {
+-		if(this.locationTexturePackIcon == null) {
+-			this.locationTexturePackIcon = var1.getDynamicTextureLocation("texturepackicon", new DynamicTexture(this.e));
++	public void bindTexturePackIcon(TextureManager par1TextureManager) {
++		if (this.locationTexturePackIcon == null) {
++			this.locationTexturePackIcon = par1TextureManager.getDynamicTextureLocation("texturepackicon", new DynamicTexture(this.texturePackIcon));
+ 		}
+ 
+-		var1.bindTexture(this.locationTexturePackIcon);
++		par1TextureManager.bindTexture(this.locationTexturePackIcon);
+ 	}
+ 
+ 	public void closeResourcePack() {
+-		if(this.reResourcePack instanceof Closeable) {
++		if (this.reResourcePack instanceof Closeable) {
+ 			IOUtils.closeQuietly((Closeable)this.reResourcePack);
+ 		}
+-
+ 	}
+ 
+ 	public ResourcePack getResourcePack() {
+@@ -62,8 +63,8 @@
+ 		return this.rePackMetadataSection == null ? EnumChatFormatting.RED + "Invalid pack.mcmeta (or missing \'pack\' section)" : this.rePackMetadataSection.getPackDescription();
+ 	}
+ 
+-	public boolean equals(Object var1) {
+-		return this == var1 ? true : (var1 instanceof ResourcePackRepositoryEntry ? this.toString().equals(var1.toString()) : false);
++	public boolean equals(Object par1Obj) {
++		return this == par1Obj ? true : (par1Obj instanceof ResourcePackRepositoryEntry ? this.toString().equals(par1Obj.toString()) : false);
+ 	}
+ 
+ 	public int hashCode() {
+@@ -71,10 +72,10 @@
+ 	}
+ 
+ 	public String toString() {
+-		return String.format("%s:%s:%d", new Object[]{this.b.getName(), this.b.isDirectory() ? "folder" : "zip", Long.valueOf(this.b.lastModified())});
++		return String.format("%s:%s:%d", new Object[] {this.resourcePackFile.getName(), this.resourcePackFile.isDirectory() ? "folder" : "zip", Long.valueOf(this.resourcePackFile.lastModified())});
+ 	}
+ 
+-	ResourcePackRepositoryEntry(ResourcePackRepository var1, File var2, ResourcePackRepositoryFilter var3) {
+-		this(var1, var2);
++	ResourcePackRepositoryEntry(ResourcePackRepository par1ResourcePackRepository, File par2File, ResourcePackRepositoryFilter par3ResourcePackRepositoryFilter) {
++		this(par1ResourcePackRepository, par2File);
+ 	}
+ }

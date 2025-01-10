@@ -1,0 +1,130 @@
+--- net/minecraft/src/HttpUtil.java
++++ net/minecraft/src/HttpUtil.java
+@@ -18,13 +18,18 @@
+ import net.minecraft.server.MinecraftServer;
+ 
+ public class HttpUtil {
+-	public static String buildPostString(Map var0) {
++
++	/**
++	 * Builds an encoded HTTP POST content string from a string map
++	 */
++	public static String buildPostString(Map par0Map) {
+ 		StringBuilder var1 = new StringBuilder();
+-		Iterator var2 = var0.entrySet().iterator();
++		Iterator var2 = par0Map.entrySet().iterator();
+ 
+-		while(var2.hasNext()) {
++		while (var2.hasNext()) {
+ 			Entry var3 = (Entry)var2.next();
+-			if(var1.length() > 0) {
++
++			if (var1.length() > 0) {
+ 				var1.append('&');
+ 			}
+ 
+@@ -34,7 +39,7 @@
+ 				var6.printStackTrace();
+ 			}
+ 
+-			if(var3.getValue() != null) {
++			if (var3.getValue() != null) {
+ 				var1.append('=');
+ 
+ 				try {
+@@ -48,48 +53,53 @@
+ 		return var1.toString();
+ 	}
+ 
+-	public static String sendPost(ILogAgent var0, URL var1, Map var2, boolean var3) {
+-		return sendPost(var0, var1, buildPostString(var2), var3);
++	/**
++	 * Sends a HTTP POST request to the given URL with data from a map
++	 */
++	public static String sendPost(ILogAgent par0ILogAgent, URL par1URL, Map par2Map, boolean par3) {
++		return sendPost(par0ILogAgent, par1URL, buildPostString(par2Map), par3);
+ 	}
+ 
+-	private static String sendPost(ILogAgent var0, URL var1, String var2, boolean var3) {
++	/**
++	 * Sends a HTTP POST request to the given URL with data from a string
++	 */
++	private static String sendPost(ILogAgent par0ILogAgent, URL par1URL, String par2Str, boolean par3) {
+ 		try {
+ 			Proxy var4 = MinecraftServer.getServer() == null ? null : MinecraftServer.getServer().getServerProxy();
+-			if(var4 == null) {
++
++			if (var4 == null) {
+ 				var4 = Proxy.NO_PROXY;
+ 			}
+ 
+-			HttpURLConnection var5 = (HttpURLConnection)var1.openConnection(var4);
++			HttpURLConnection var5 = (HttpURLConnection)par1URL.openConnection(var4);
+ 			var5.setRequestMethod("POST");
+ 			var5.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+-			var5.setRequestProperty("Content-Length", "" + var2.getBytes().length);
++			var5.setRequestProperty("Content-Length", "" + par2Str.getBytes().length);
+ 			var5.setRequestProperty("Content-Language", "en-US");
+ 			var5.setUseCaches(false);
+ 			var5.setDoInput(true);
+ 			var5.setDoOutput(true);
+ 			DataOutputStream var6 = new DataOutputStream(var5.getOutputStream());
+-			var6.writeBytes(var2);
++			var6.writeBytes(par2Str);
+ 			var6.flush();
+ 			var6.close();
+ 			BufferedReader var7 = new BufferedReader(new InputStreamReader(var5.getInputStream()));
+ 			StringBuffer var9 = new StringBuffer();
+-
+-			while(true) {
+-				String var8 = var7.readLine();
+-				if(var8 == null) {
+-					var7.close();
+-					return var9.toString();
+-				}
+-
++			String var8;
++
++			while ((var8 = var7.readLine()) != null) {
+ 				var9.append(var8);
+ 				var9.append('\r');
+ 			}
++
++			var7.close();
++			return var9.toString();
+ 		} catch (Exception var10) {
+-			if(!var3) {
+-				if(var0 != null) {
+-					var0.logSevereException("Could not post to " + var1, var10);
++			if (!par3) {
++				if (par0ILogAgent != null) {
++					par0ILogAgent.logSevereException("Could not post to " + par1URL, var10);
+ 				} else {
+-					Logger.getAnonymousLogger().log(Level.SEVERE, "Could not post to " + var1, var10);
++					Logger.getAnonymousLogger().log(Level.SEVERE, "Could not post to " + par1URL, var10);
+ 				}
+ 			}
+ 
+@@ -100,19 +110,19 @@
+ 	public static int func_76181_a() throws IOException {
+ 		ServerSocket var0 = null;
+ 		boolean var1 = true;
+-
+ 		int var10;
++
+ 		try {
+ 			var0 = new ServerSocket(0);
+ 			var10 = var0.getLocalPort();
+ 		} finally {
+ 			try {
+-				if(var0 != null) {
++				if (var0 != null) {
+ 					var0.close();
+ 				}
+ 			} catch (IOException var8) {
++				;
+ 			}
+-
+ 		}
+ 
+ 		return var10;

@@ -1,0 +1,89 @@
+--- net/minecraft/src/ItemFlintAndSteel.java
++++ net/minecraft/src/ItemFlintAndSteel.java
+@@ -1,48 +1,53 @@
+ package net.minecraft.src;
+ 
+ public class ItemFlintAndSteel extends Item {
+-	public ItemFlintAndSteel(int var1) {
+-		super(var1);
++	public ItemFlintAndSteel(int par1) {
++		super(par1);
+ 		this.maxStackSize = 1;
+ 		this.setMaxDamage(64);
+ 		this.setCreativeTab(CreativeTabs.tabTools);
+ 	}
+ 
+-	public boolean onItemUse(ItemStack var1, EntityPlayer var2, World var3, int var4, int var5, int var6, int var7, float var8, float var9, float var10) {
+-		if(var7 == 0) {
+-			--var5;
+-		}
+-
+-		if(var7 == 1) {
+-			++var5;
+-		}
+-
+-		if(var7 == 2) {
+-			--var6;
+-		}
+-
+-		if(var7 == 3) {
+-			++var6;
+-		}
+-
+-		if(var7 == 4) {
+-			--var4;
+-		}
+-
+-		if(var7 == 5) {
+-			++var4;
+-		}
+-
+-		if(!var2.canPlayerEdit(var4, var5, var6, var7, var1)) {
++	/**
++	 * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
++	 * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
++	 */
++	public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10) {
++		if (par7 == 0) {
++			--par5;
++		}
++
++		if (par7 == 1) {
++			++par5;
++		}
++
++		if (par7 == 2) {
++			--par6;
++		}
++
++		if (par7 == 3) {
++			++par6;
++		}
++
++		if (par7 == 4) {
++			--par4;
++		}
++
++		if (par7 == 5) {
++			++par4;
++		}
++
++		if (!par2EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack)) {
+ 			return false;
+ 		} else {
+-			int var11 = var3.getBlockId(var4, var5, var6);
+-			if(var11 == 0) {
+-				var3.playSoundEffect((double)var4 + 0.5D, (double)var5 + 0.5D, (double)var6 + 0.5D, "fire.ignite", 1.0F, f.nextFloat() * 0.4F + 0.8F);
+-				var3.setBlock(var4, var5, var6, Block.fire.blockID);
++			int var11 = par3World.getBlockId(par4, par5, par6);
++
++			if (var11 == 0) {
++				par3World.playSoundEffect((double)par4 + 0.5D, (double)par5 + 0.5D, (double)par6 + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F);
++				par3World.setBlock(par4, par5, par6, Block.fire.blockID);
+ 			}
+ 
+-			var1.damageItem(1, var2);
++			par1ItemStack.damageItem(1, par2EntityPlayer);
+ 			return true;
+ 		}
+ 	}

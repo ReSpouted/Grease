@@ -1,0 +1,25 @@
+--- net/minecraft/src/ThreadMinecraftServer.java
++++ net/minecraft/src/ThreadMinecraftServer.java
+@@ -3,14 +3,16 @@
+ import net.minecraft.server.MinecraftServer;
+ 
+ public class ThreadMinecraftServer extends Thread {
+-	final MinecraftServer a;
+-
+-	public ThreadMinecraftServer(MinecraftServer var1, String var2) {
+-		super(var2);
+-		this.a = var1;
++
++	/** Instance of MinecraftServer. */
++	final MinecraftServer theServer;
++
++	public ThreadMinecraftServer(MinecraftServer par1MinecraftServer, String par2Str) {
++		super(par2Str);
++		this.theServer = par1MinecraftServer;
+ 	}
+ 
+ 	public void run() {
+-		this.a.run();
++		this.theServer.run();
+ 	}
+ }

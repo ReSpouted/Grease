@@ -1,0 +1,53 @@
+--- net/minecraft/src/CommandServerBanlist.java
++++ net/minecraft/src/CommandServerBanlist.java
+@@ -8,30 +8,38 @@
+ 		return "banlist";
+ 	}
+ 
++	/**
++	 * Return the required permission level for this command.
++	 */
+ 	public int getRequiredPermissionLevel() {
+ 		return 3;
+ 	}
+ 
+-	public boolean canCommandSenderUseCommand(ICommandSender var1) {
+-		return (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().isListActive() || MinecraftServer.getServer().getConfigurationManager().getBannedPlayers().isListActive()) && super.canCommandSenderUseCommand(var1);
++	/**
++	 * Returns true if the given command sender is allowed to use this command.
++	 */
++	public boolean canCommandSenderUseCommand(ICommandSender par1ICommandSender) {
++		return (MinecraftServer.getServer().getConfigurationManager().getBannedIPs().isListActive() || MinecraftServer.getServer().getConfigurationManager().getBannedPlayers().isListActive()) && super.canCommandSenderUseCommand(par1ICommandSender);
+ 	}
+ 
+-	public String getCommandUsage(ICommandSender var1) {
++	public String getCommandUsage(ICommandSender par1ICommandSender) {
+ 		return "commands.banlist.usage";
+ 	}
+ 
+-	public void processCommand(ICommandSender var1, String[] var2) {
+-		if(var2.length >= 1 && var2[0].equalsIgnoreCase("ips")) {
+-			var1.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("commands.banlist.ips", new Object[]{Integer.valueOf(MinecraftServer.getServer().getConfigurationManager().getBannedIPs().getBannedList().size())}));
+-			var1.sendChatToPlayer(ChatMessageComponent.createFromText(joinNiceString(MinecraftServer.getServer().getConfigurationManager().getBannedIPs().getBannedList().keySet().toArray())));
++	public void processCommand(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
++		if (par2ArrayOfStr.length >= 1 && par2ArrayOfStr[0].equalsIgnoreCase("ips")) {
++			par1ICommandSender.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("commands.banlist.ips", new Object[] {Integer.valueOf(MinecraftServer.getServer().getConfigurationManager().getBannedIPs().getBannedList().size())}));
++			par1ICommandSender.sendChatToPlayer(ChatMessageComponent.createFromText(joinNiceString(MinecraftServer.getServer().getConfigurationManager().getBannedIPs().getBannedList().keySet().toArray())));
+ 		} else {
+-			var1.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("commands.banlist.players", new Object[]{Integer.valueOf(MinecraftServer.getServer().getConfigurationManager().getBannedPlayers().getBannedList().size())}));
+-			var1.sendChatToPlayer(ChatMessageComponent.createFromText(joinNiceString(MinecraftServer.getServer().getConfigurationManager().getBannedPlayers().getBannedList().keySet().toArray())));
++			par1ICommandSender.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("commands.banlist.players", new Object[] {Integer.valueOf(MinecraftServer.getServer().getConfigurationManager().getBannedPlayers().getBannedList().size())}));
++			par1ICommandSender.sendChatToPlayer(ChatMessageComponent.createFromText(joinNiceString(MinecraftServer.getServer().getConfigurationManager().getBannedPlayers().getBannedList().keySet().toArray())));
+ 		}
+-
+ 	}
+ 
+-	public List addTabCompletionOptions(ICommandSender var1, String[] var2) {
+-		return var2.length == 1 ? getListOfStringsMatchingLastWord(var2, new String[]{"players", "ips"}) : null;
++	/**
++	 * Adds the strings available in this command to the given list of tab completion options.
++	 */
++	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
++		return par2ArrayOfStr.length == 1 ? getListOfStringsMatchingLastWord(par2ArrayOfStr, new String[] {"players", "ips"}): null;
+ 	}
+ }

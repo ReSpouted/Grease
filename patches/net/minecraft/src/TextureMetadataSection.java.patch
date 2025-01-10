@@ -1,0 +1,15 @@
+--- net/minecraft/src/TextureMetadataSection.java
++++ net/minecraft/src/TextureMetadataSection.java
+@@ -4,9 +4,9 @@
+ 	private final boolean textureBlur;
+ 	private final boolean textureClamp;
+ 
+-	public TextureMetadataSection(boolean var1, boolean var2) {
+-		this.textureBlur = var1;
+-		this.textureClamp = var2;
++	public TextureMetadataSection(boolean par1, boolean par2) {
++		this.textureBlur = par1;
++		this.textureClamp = par2;
+ 	}
+ 
+ 	public boolean getTextureBlur() {

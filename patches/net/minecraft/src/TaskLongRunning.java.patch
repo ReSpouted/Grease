@@ -1,0 +1,54 @@
+--- net/minecraft/src/TaskLongRunning.java
++++ net/minecraft/src/TaskLongRunning.java
+@@ -1,18 +1,23 @@
+ package net.minecraft.src;
+ 
+ public abstract class TaskLongRunning implements Runnable {
++
++	/** The GUI screen showing progress of this task. */
+ 	protected GuiScreenLongRunningTask taskGUI;
+ 
+-	public void setGUI(GuiScreenLongRunningTask var1) {
+-		this.taskGUI = var1;
+-	}
+-
+-	public void setFailedMessage(String var1) {
+-		this.taskGUI.setFailedMessage(var1);
+-	}
+-
+-	public void setMessage(String var1) {
+-		this.taskGUI.setMessage(var1);
++	public void setGUI(GuiScreenLongRunningTask par1GuiScreenLongRunningTask) {
++		this.taskGUI = par1GuiScreenLongRunningTask;
++	}
++
++	/**
++	 * Displays the given message in place of the progress bar, and adds a "Back" button.
++	 */
++	public void setFailedMessage(String par1Str) {
++		this.taskGUI.setFailedMessage(par1Str);
++	}
++
++	public void setMessage(String par1Str) {
++		this.taskGUI.setMessage(par1Str);
+ 	}
+ 
+ 	public Minecraft getMinecraft() {
+@@ -23,12 +28,9 @@
+ 		return this.taskGUI.wasScreenClosed();
+ 	}
+ 
+-	public void updateScreen() {
+-	}
+-
+-	public void buttonClicked(GuiButton var1) {
+-	}
+-
+-	public void initGUI() {
+-	}
++	public void updateScreen() {}
++
++	public void buttonClicked(GuiButton par1GuiButton) {}
++
++	public void initGUI() {}
+ }

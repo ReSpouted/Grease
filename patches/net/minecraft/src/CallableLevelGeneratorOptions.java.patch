@@ -1,0 +1,13 @@
+--- net/minecraft/src/CallableLevelGeneratorOptions.java
++++ net/minecraft/src/CallableLevelGeneratorOptions.java
+@@ -5,8 +5,8 @@
+ class CallableLevelGeneratorOptions implements Callable {
+ 	final WorldInfo worldInfoInstance;
+ 
+-	CallableLevelGeneratorOptions(WorldInfo var1) {
+-		this.worldInfoInstance = var1;
++	CallableLevelGeneratorOptions(WorldInfo par1WorldInfo) {
++		this.worldInfoInstance = par1WorldInfo;
+ 	}
+ 
+ 	public String callLevelGeneratorOptions() {

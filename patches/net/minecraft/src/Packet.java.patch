@@ -1,0 +1,399 @@
+--- net/minecraft/src/Packet.java
++++ net/minecraft/src/Packet.java
+@@ -9,157 +9,232 @@
+ import java.util.HashSet;
+ import java.util.Map;
+ import java.util.Set;
++
+ import net.minecraft.server.MinecraftServer;
+ 
+ public abstract class Packet {
++
++	/** Maps packet id to packet class */
+ 	public static IntHashMap packetIdToClassMap = new IntHashMap();
+-	private static Map a = new HashMap();
+-	private static Set b = new HashSet();
+-	private static Set c = new HashSet();
++
++	/** Maps packet class to packet id */
++	private static Map packetClassToIdMap = new HashMap();
++
++	/** List of the client's packet IDs. */
++	private static Set clientPacketIdList = new HashSet();
++
++	/** List of the server's packet IDs. */
++	private static Set serverPacketIdList = new HashSet();
+ 	protected ILogAgent field_98193_m;
+-	public final long creationTimeMillis = MinecraftServer.getCurrentTimeMillis();
++
++	/** the system time in milliseconds when this packet was created. */
++	public final long creationTimeMillis = MinecraftServer.getSystemTimeMillis();
+ 	public static long receivedID;
+ 	public static long receivedSize;
++
++	/** Assumed to be sequential by the profiler. */
+ 	public static long sentID;
+ 	public static long sentSize;
++
++	/**
++	 * Only true for Packet51MapChunk, Packet52MultiBlockChange, Packet53BlockChange and Packet59ComplexEntity. Used to
++	 * separate them into a different send queue.
++	 */
+ 	public boolean isChunkDataPacket;
+ 
+-	static void addIdClassMapping(int var0, boolean var1, boolean var2, Class var3) {
+-		if(packetIdToClassMap.containsItem(var0)) {
+-			throw new IllegalArgumentException("Duplicate packet id:" + var0);
+-		} else if(a.containsKey(var3)) {
+-			throw new IllegalArgumentException("Duplicate packet class:" + var3);
++	/**
++	 * Adds a two way mapping between the packet ID and packet class.
++	 */
++	// Spout Start - static to public static
++	public static void addIdClassMapping(int par0, boolean par1, boolean par2, Class par3Class) {
++	// Spout End
++		if (packetIdToClassMap.containsItem(par0)) {
++			throw new IllegalArgumentException("Duplicate packet id:" + par0);
++		} else if (packetClassToIdMap.containsKey(par3Class)) {
++			throw new IllegalArgumentException("Duplicate packet class:" + par3Class);
+ 		} else {
+-			packetIdToClassMap.addKey(var0, var3);
+-			a.put(var3, Integer.valueOf(var0));
+-			if(var1) {
+-				b.add(Integer.valueOf(var0));
+-			}
+-
+-			if(var2) {
+-				c.add(Integer.valueOf(var0));
+-			}
+-
++			packetIdToClassMap.addKey(par0, par3Class);
++			packetClassToIdMap.put(par3Class, Integer.valueOf(par0));
++
++			if (par1) {
++				clientPacketIdList.add(Integer.valueOf(par0));
++			}
++
++			if (par2) {
++				serverPacketIdList.add(Integer.valueOf(par0));
++			}
+ 		}
+ 	}
+ 
+-	public static Packet getNewPacket(ILogAgent var0, int var1) {
++	/**
++	 * Returns a new instance of the specified Packet class.
++	 */
++	public static Packet getNewPacket(ILogAgent par0ILogAgent, int par1) {
+ 		try {
+-			Class var2 = (Class)packetIdToClassMap.lookup(var1);
++			Class var2 = (Class)packetIdToClassMap.lookup(par1);
+ 			return var2 == null ? null : (Packet)var2.newInstance();
+ 		} catch (Exception var3) {
+ 			var3.printStackTrace();
+-			var0.logSevere("Skipping packet with id " + var1);
++			par0ILogAgent.logSevere("Skipping packet with id " + par1);
+ 			return null;
+ 		}
+ 	}
+ 
+-	public static void writeByteArray(DataOutput var0, byte[] var1) throws IOException {
+-		var0.writeShort(var1.length);
+-		var0.write(var1);
++	/**
++	 * Writes a byte array to the DataOutputStream
++	 */
++	public static void writeByteArray(DataOutput par0DataOutput, byte[] par1ArrayOfByte) throws IOException {
++		par0DataOutput.writeShort(par1ArrayOfByte.length);
++		par0DataOutput.write(par1ArrayOfByte);
+ 	}
+ 
+-	public static byte[] readBytesFromStream(DataInput var0) throws IOException {
+-		short var1 = var0.readShort();
+-		if(var1 < 0) {
++	/**
++	 * the first short in the stream indicates the number of bytes to read
++	 */
++	public static byte[] readBytesFromStream(DataInput par0DataInput) throws IOException {
++		short var1 = par0DataInput.readShort();
++
++		if (var1 < 0) {
+ 			throw new IOException("Key was smaller than nothing!  Weird key!");
+ 		} else {
+ 			byte[] var2 = new byte[var1];
+-			var0.readFully(var2);
++			par0DataInput.readFully(var2);
+ 			return var2;
+ 		}
+ 	}
+ 
++	/**
++	 * Returns the ID of this packet.
++	 */
+ 	public final int getPacketId() {
+-		return ((Integer)a.get(this.getClass())).intValue();
++		return ((Integer)packetClassToIdMap.get(this.getClass())).intValue();
+ 	}
+ 
+-	public static Packet readPacket(ILogAgent var0, DataInput var1, boolean var2, Socket var3) throws IOException {
++	/**
++	 * Read a packet, prefixed by its ID, from the data stream.
++	 */
++	public static Packet readPacket(ILogAgent par0ILogAgent, DataInput par1DataInput, boolean par2, Socket par3Socket) throws IOException {
+ 		boolean var4 = false;
+ 		Packet var5 = null;
+-		int var6 = var3.getSoTimeout();
+-
++		int var6 = par3Socket.getSoTimeout();
+ 		int var9;
++
+ 		try {
+-			var9 = var1.readUnsignedByte();
+-			if(var2 && !c.contains(Integer.valueOf(var9)) || !var2 && !b.contains(Integer.valueOf(var9))) {
+-				throw new IOException("Bad packet id " + var9);
+-			}
+-
+-			var5 = getNewPacket(var0, var9);
+-			if(var5 == null) {
+-				throw new IOException("Bad packet id " + var9);
+-			}
+-
+-			var5.field_98193_m = var0;
+-			if(var5 instanceof Packet254ServerPing) {
+-				var3.setSoTimeout(1500);
+-			}
+-
+-			var5.readPacketData(var1);
++			var9 = par1DataInput.readUnsignedByte();
++
++			if (par2 && !serverPacketIdList.contains(Integer.valueOf(var9)) || !par2 && !clientPacketIdList.contains(Integer.valueOf(var9))) {
++				throw new IOException("Bad packet id " + var9);
++			}
++
++			var5 = getNewPacket(par0ILogAgent, var9);
++
++			if (var5 == null) {
++				throw new IOException("Bad packet id " + var9);
++			}
++
++			var5.field_98193_m = par0ILogAgent;
++
++			if (var5 instanceof Packet254ServerPing) {
++				par3Socket.setSoTimeout(1500);
++			}
++
++			var5.readPacketData(par1DataInput);
+ 			++receivedID;
+ 			receivedSize += (long)var5.getPacketSize();
+ 		} catch (EOFException var8) {
+-			var0.logSevere("Reached end of stream for " + var3.getInetAddress());
++			par0ILogAgent.logSevere("Reached end of stream for " + par3Socket.getInetAddress());
+ 			return null;
+ 		}
+ 
+ 		PacketCount.countPacket(var9, (long)var5.getPacketSize());
+ 		++receivedID;
+ 		receivedSize += (long)var5.getPacketSize();
+-		var3.setSoTimeout(var6);
++		par3Socket.setSoTimeout(var6);
+ 		return var5;
+ 	}
+ 
+-	public static void writePacket(Packet var0, DataOutput var1) throws IOException {
+-		var1.write(var0.getPacketId());
+-		var0.writePacketData(var1);
++	/**
++	 * Writes a packet, prefixed by its ID, to the data stream.
++	 */
++	public static void writePacket(Packet par0Packet, DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.write(par0Packet.getPacketId());
++		par0Packet.writePacketData(par1DataOutput);
+ 		++sentID;
+-		sentSize += (long)var0.getPacketSize();
++		sentSize += (long)par0Packet.getPacketSize();
+ 	}
+ 
+-	public static void writeString(String var0, DataOutput var1) throws IOException {
+-		if(var0.length() > Short.MAX_VALUE) {
++	/**
++	 * Writes a String to the DataOutputStream
++	 */
++	public static void writeString(String par0Str, DataOutput par1DataOutput) throws IOException {
++		if (par0Str.length() > 32767) {
+ 			throw new IOException("String too big");
+ 		} else {
+-			var1.writeShort(var0.length());
+-			var1.writeChars(var0);
++			par1DataOutput.writeShort(par0Str.length());
++			par1DataOutput.writeChars(par0Str);
+ 		}
+ 	}
+ 
+-	public static String readString(DataInput var0, int var1) throws IOException {
+-		short var2 = var0.readShort();
+-		if(var2 > var1) {
+-			throw new IOException("Received string length longer than maximum allowed (" + var2 + " > " + var1 + ")");
+-		} else if(var2 < 0) {
++	/**
++	 * Reads a string from a packet
++	 */
++	public static String readString(DataInput par0DataInput, int par1) throws IOException {
++		short var2 = par0DataInput.readShort();
++
++		if (var2 > par1) {
++			throw new IOException("Received string length longer than maximum allowed (" + var2 + " > " + par1 + ")");
++		} else if (var2 < 0) {
+ 			throw new IOException("Received string length is less than zero! Weird string!");
+ 		} else {
+ 			StringBuilder var3 = new StringBuilder();
+ 
+-			for(int var4 = 0; var4 < var2; ++var4) {
+-				var3.append(var0.readChar());
++			for (int var4 = 0; var4 < var2; ++var4) {
++				var3.append(par0DataInput.readChar());
+ 			}
+ 
+ 			return var3.toString();
+ 		}
+ 	}
+ 
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
+ 	public abstract void readPacketData(DataInput var1) throws IOException;
+ 
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
+ 	public abstract void writePacketData(DataOutput var1) throws IOException;
+ 
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
+ 	public abstract void processPacket(NetHandler var1);
+ 
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public abstract int getPacketSize();
+ 
++	/**
++	 * only false for the abstract Packet class, all real packets return true
++	 */
+ 	public boolean isRealPacket() {
+ 		return false;
+ 	}
+ 
+-	public boolean containsSameEntityIDAs(Packet var1) {
++	/**
++	 * eg return packet30entity.entityId == entityId; WARNING : will throw if you compare a packet to a different packet
++	 * class
++	 */
++	public boolean containsSameEntityIDAs(Packet par1Packet) {
+ 		return false;
+ 	}
+ 
++	/**
++	 * If this returns true, the packet may be processed on any thread; otherwise it is queued for the main thread to
++	 * handle.
++	 */
+ 	public boolean canProcessAsync() {
+ 		return false;
+ 	}
+@@ -169,56 +244,69 @@
+ 		return var1;
+ 	}
+ 
+-	public static ItemStack readItemStack(DataInput var0) throws IOException {
++	/**
++	 * Reads a ItemStack from the InputStream
++	 */
++	public static ItemStack readItemStack(DataInput par0DataInput) throws IOException {
+ 		ItemStack var1 = null;
+-		short var2 = var0.readShort();
+-		if(var2 >= 0) {
+-			byte var3 = var0.readByte();
+-			short var4 = var0.readShort();
++		short var2 = par0DataInput.readShort();
++
++		if (var2 >= 0) {
++			byte var3 = par0DataInput.readByte();
++			short var4 = par0DataInput.readShort();
+ 			var1 = new ItemStack(var2, var3, var4);
+-			var1.stackTagCompound = readNBTTagCompound(var0);
++			var1.stackTagCompound = readNBTTagCompound(par0DataInput);
+ 		}
+ 
+ 		return var1;
+ 	}
+ 
+-	public static void writeItemStack(ItemStack var0, DataOutput var1) throws IOException {
+-		if(var0 == null) {
+-			var1.writeShort(-1);
++	/**
++	 * Writes the ItemStack's ID (short), then size (byte), then damage. (short)
++	 */
++	public static void writeItemStack(ItemStack par0ItemStack, DataOutput par1DataOutput) throws IOException {
++		if (par0ItemStack == null) {
++			par1DataOutput.writeShort(-1);
+ 		} else {
+-			var1.writeShort(var0.itemID);
+-			var1.writeByte(var0.stackSize);
+-			var1.writeShort(var0.getItemDamage());
++			par1DataOutput.writeShort(par0ItemStack.itemID);
++			par1DataOutput.writeByte(par0ItemStack.stackSize);
++			par1DataOutput.writeShort(par0ItemStack.getItemDamage());
+ 			NBTTagCompound var2 = null;
+-			if(var0.getItem().isDamageable() || var0.getItem().getShareTag()) {
+-				var2 = var0.stackTagCompound;
++
++			if (par0ItemStack.getItem().isDamageable() || par0ItemStack.getItem().getShareTag()) {
++				var2 = par0ItemStack.stackTagCompound;
+ 			}
+ 
+-			writeNBTTagCompound(var2, var1);
++			writeNBTTagCompound(var2, par1DataOutput);
+ 		}
+-
+ 	}
+ 
+-	public static NBTTagCompound readNBTTagCompound(DataInput var0) throws IOException {
+-		short var1 = var0.readShort();
+-		if(var1 < 0) {
++	/**
++	 * Reads a compressed NBTTagCompound from the InputStream
++	 */
++	public static NBTTagCompound readNBTTagCompound(DataInput par0DataInput) throws IOException {
++		short var1 = par0DataInput.readShort();
++
++		if (var1 < 0) {
+ 			return null;
+ 		} else {
+ 			byte[] var2 = new byte[var1];
+-			var0.readFully(var2);
++			par0DataInput.readFully(var2);
+ 			return CompressedStreamTools.decompress(var2);
+ 		}
+ 	}
+ 
+-	protected static void writeNBTTagCompound(NBTTagCompound var0, DataOutput var1) throws IOException {
+-		if(var0 == null) {
+-			var1.writeShort(-1);
++	/**
++	 * Writes a compressed NBTTagCompound to the OutputStream
++	 */
++	protected static void writeNBTTagCompound(NBTTagCompound par0NBTTagCompound, DataOutput par1DataOutput) throws IOException {
++		if (par0NBTTagCompound == null) {
++			par1DataOutput.writeShort(-1);
+ 		} else {
+-			byte[] var2 = CompressedStreamTools.compress(var0);
+-			var1.writeShort((short)var2.length);
+-			var1.write(var2);
++			byte[] var2 = CompressedStreamTools.compress(par0NBTTagCompound);
++			par1DataOutput.writeShort((short)var2.length);
++			par1DataOutput.write(var2);
+ 		}
+-
+ 	}
+ 
+ 	static {

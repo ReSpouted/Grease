@@ -1,0 +1,39 @@
+--- net/minecraft/src/ValueObjectList.java
++++ net/minecraft/src/ValueObjectList.java
+@@ -9,24 +9,27 @@
+ import java.util.List;
+ 
+ public class ValueObjectList extends ValueObject {
+-	public List a;
++	public List field_96430_d;
+ 
+-	public static ValueObjectList func_98161_a(String var0) {
++	public static ValueObjectList func_98161_a(String par0Str) {
+ 		ValueObjectList var1 = new ValueObjectList();
+-		var1.a = new ArrayList();
++		var1.field_96430_d = new ArrayList();
+ 
+ 		try {
+-			JsonRootNode var2 = (new JdomParser()).parse(var0);
+-			if(var2.isArrayNode(new Object[]{"servers"})) {
+-				Iterator var3 = var2.getArrayNode(new Object[]{"servers"}).iterator();
+-
+-				while(var3.hasNext()) {
++			JsonRootNode var2 = (new JdomParser()).parse(par0Str);
++
++			if (var2.isArrayNode(new Object[] {"servers"})) {
++				Iterator var3 = var2.getArrayNode(new Object[] {"servers"}).iterator();
++
++				while (var3.hasNext()) {
+ 					JsonNode var4 = (JsonNode)var3.next();
+-					var1.a.add(McoServer.func_98163_a(var4));
++					var1.field_96430_d.add(McoServer.func_98163_a(var4));
+ 				}
+ 			}
+ 		} catch (InvalidSyntaxException var5) {
++			;
+ 		} catch (IllegalArgumentException var6) {
++			;
+ 		}
+ 
+ 		return var1;

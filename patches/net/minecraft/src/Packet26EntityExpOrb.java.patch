@@ -1,0 +1,92 @@
+--- net/minecraft/src/Packet26EntityExpOrb.java
++++ net/minecraft/src/Packet26EntityExpOrb.java
+@@ -5,43 +5,58 @@
+ import java.io.IOException;
+ 
+ public class Packet26EntityExpOrb extends Packet {
++
++	/** Entity ID for the XP Orb */
+ 	public int entityId;
+ 	public int posX;
+ 	public int posY;
+ 	public int posZ;
++
++	/** The Orbs Experience points value. */
+ 	public int xpValue;
+ 
+-	public Packet26EntityExpOrb() {
+-	}
+-
+-	public Packet26EntityExpOrb(EntityXPOrb var1) {
+-		this.entityId = var1.entityId;
+-		this.posX = MathHelper.floor_double(var1.posX * 32.0D);
+-		this.posY = MathHelper.floor_double(var1.posY * 32.0D);
+-		this.posZ = MathHelper.floor_double(var1.posZ * 32.0D);
+-		this.xpValue = var1.getXpValue();
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.entityId = var1.readInt();
+-		this.posX = var1.readInt();
+-		this.posY = var1.readInt();
+-		this.posZ = var1.readInt();
+-		this.xpValue = var1.readShort();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeInt(this.entityId);
+-		var1.writeInt(this.posX);
+-		var1.writeInt(this.posY);
+-		var1.writeInt(this.posZ);
+-		var1.writeShort(this.xpValue);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleEntityExpOrb(this);
+-	}
+-
++	public Packet26EntityExpOrb() {}
++
++	public Packet26EntityExpOrb(EntityXPOrb par1EntityXPOrb) {
++		this.entityId = par1EntityXPOrb.entityId;
++		this.posX = MathHelper.floor_double(par1EntityXPOrb.posX * 32.0D);
++		this.posY = MathHelper.floor_double(par1EntityXPOrb.posY * 32.0D);
++		this.posZ = MathHelper.floor_double(par1EntityXPOrb.posZ * 32.0D);
++		this.xpValue = par1EntityXPOrb.getXpValue();
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.entityId = par1DataInput.readInt();
++		this.posX = par1DataInput.readInt();
++		this.posY = par1DataInput.readInt();
++		this.posZ = par1DataInput.readInt();
++		this.xpValue = par1DataInput.readShort();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeInt(this.entityId);
++		par1DataOutput.writeInt(this.posX);
++		par1DataOutput.writeInt(this.posY);
++		par1DataOutput.writeInt(this.posZ);
++		par1DataOutput.writeShort(this.xpValue);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleEntityExpOrb(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 18;
+ 	}

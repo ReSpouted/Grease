@@ -1,0 +1,30 @@
+--- net/minecraft/src/RegistrySimple.java
++++ net/minecraft/src/RegistrySimple.java
+@@ -5,17 +5,22 @@
+ import java.util.Map;
+ 
+ public class RegistrySimple implements IRegistry {
+-	protected final Map a = this.func_111054_a();
++
++	/** Objects registered on this registry. */
++	protected final Map registryObjects = this.func_111054_a();
+ 
+ 	protected HashMap func_111054_a() {
+ 		return Maps.newHashMap();
+ 	}
+ 
+-	public Object getObject(Object var1) {
+-		return this.a.get(var1);
++	public Object getObject(Object par1Obj) {
++		return this.registryObjects.get(par1Obj);
+ 	}
+ 
+-	public void putObject(Object var1, Object var2) {
+-		this.a.put(var1, var2);
++	/**
++	 * Register an object on this registry.
++	 */
++	public void putObject(Object par1Obj, Object par2Obj) {
++		this.registryObjects.put(par1Obj, par2Obj);
+ 	}
+ }

@@ -1,0 +1,17 @@
+--- net/minecraft/src/CallableType3.java
++++ net/minecraft/src/CallableType3.java
+@@ -3,10 +3,12 @@
+ import java.util.concurrent.Callable;
+ 
+ class CallableType3 implements Callable {
++
++	/** Reference to the IntegratedServer object. */
+ 	final IntegratedServer theIntegratedServer;
+ 
+-	CallableType3(IntegratedServer var1) {
+-		this.theIntegratedServer = var1;
++	CallableType3(IntegratedServer par1IntegratedServer) {
++		this.theIntegratedServer = par1IntegratedServer;
+ 	}
+ 
+ 	public String getType() {

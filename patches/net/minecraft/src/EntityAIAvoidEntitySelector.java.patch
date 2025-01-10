@@ -1,0 +1,21 @@
+--- net/minecraft/src/EntityAIAvoidEntitySelector.java
++++ net/minecraft/src/EntityAIAvoidEntitySelector.java
+@@ -3,11 +3,14 @@
+ class EntityAIAvoidEntitySelector implements IEntitySelector {
+ 	final EntityAIAvoidEntity entityAvoiderAI;
+ 
+-	EntityAIAvoidEntitySelector(EntityAIAvoidEntity var1) {
+-		this.entityAvoiderAI = var1;
++	EntityAIAvoidEntitySelector(EntityAIAvoidEntity par1EntityAIAvoidEntity) {
++		this.entityAvoiderAI = par1EntityAIAvoidEntity;
+ 	}
+ 
+-	public boolean isEntityApplicable(Entity var1) {
+-		return var1.isEntityAlive() && EntityAIAvoidEntity.func_98217_a(this.entityAvoiderAI).getEntitySenses().canSee(var1);
++	/**
++	 * Return whether the specified entity is applicable to this filter.
++	 */
++	public boolean isEntityApplicable(Entity par1Entity) {
++		return par1Entity.isEntityAlive() && EntityAIAvoidEntity.func_98217_a(this.entityAvoiderAI).getEntitySenses().canSee(par1Entity);
+ 	}
+ }

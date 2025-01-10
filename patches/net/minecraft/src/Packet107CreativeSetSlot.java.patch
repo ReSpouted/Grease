@@ -1,0 +1,64 @@
+--- net/minecraft/src/Packet107CreativeSetSlot.java
++++ net/minecraft/src/Packet107CreativeSetSlot.java
+@@ -8,28 +8,39 @@
+ 	public int slot;
+ 	public ItemStack itemStack;
+ 
+-	public Packet107CreativeSetSlot() {
+-	}
+-
+-	public Packet107CreativeSetSlot(int var1, ItemStack var2) {
+-		this.slot = var1;
+-		this.itemStack = var2 != null ? var2.copy() : null;
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleCreativeSetSlot(this);
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.slot = var1.readShort();
+-		this.itemStack = readItemStack(var1);
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeShort(this.slot);
+-		writeItemStack(this.itemStack, var1);
+-	}
+-
++	public Packet107CreativeSetSlot() {}
++
++	public Packet107CreativeSetSlot(int par1, ItemStack par2ItemStack) {
++		this.slot = par1;
++		this.itemStack = par2ItemStack != null ? par2ItemStack.copy() : null;
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleCreativeSetSlot(this);
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.slot = par1DataInput.readShort();
++		this.itemStack = readItemStack(par1DataInput);
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeShort(this.slot);
++		writeItemStack(this.itemStack, par1DataOutput);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 8;
+ 	}

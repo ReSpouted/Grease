@@ -1,0 +1,100 @@
+--- net/minecraft/src/Packet252SharedKey.java
++++ net/minecraft/src/Packet252SharedKey.java
+@@ -10,44 +10,68 @@
+ public class Packet252SharedKey extends Packet {
+ 	private byte[] sharedSecret = new byte[0];
+ 	private byte[] verifyToken = new byte[0];
+-	private SecretKey c;
+-
+-	public Packet252SharedKey() {
+-	}
+-
+-	public Packet252SharedKey(SecretKey var1, PublicKey var2, byte[] var3) {
+-		this.c = var1;
+-		this.sharedSecret = CryptManager.encryptData(var2, var1.getEncoded());
+-		this.verifyToken = CryptManager.encryptData(var2, var3);
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.sharedSecret = readBytesFromStream(var1);
+-		this.verifyToken = readBytesFromStream(var1);
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		writeByteArray(var1, this.sharedSecret);
+-		writeByteArray(var1, this.verifyToken);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleSharedKey(this);
+-	}
+-
++
++	/**
++	 * Secret AES key decrypted from sharedSecret via the server's private RSA key
++	 */
++	private SecretKey sharedKey;
++
++	public Packet252SharedKey() {}
++
++	public Packet252SharedKey(SecretKey par1SecretKey, PublicKey par2PublicKey, byte[] par3ArrayOfByte) {
++		this.sharedKey = par1SecretKey;
++		this.sharedSecret = CryptManager.encryptData(par2PublicKey, par1SecretKey.getEncoded());
++		this.verifyToken = CryptManager.encryptData(par2PublicKey, par3ArrayOfByte);
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.sharedSecret = readBytesFromStream(par1DataInput);
++		this.verifyToken = readBytesFromStream(par1DataInput);
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		writeByteArray(par1DataOutput, this.sharedSecret);
++		writeByteArray(par1DataOutput, this.verifyToken);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleSharedKey(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 2 + this.sharedSecret.length + 2 + this.verifyToken.length;
+ 	}
+ 
+-	public SecretKey getSharedKey(PrivateKey var1) {
+-		return var1 == null ? this.c : (this.c = CryptManager.decryptSharedKey(var1, this.sharedSecret));
++	/**
++	 * Return secretKey, decrypting it from the sharedSecret byte array if needed
++	 */
++	public SecretKey getSharedKey(PrivateKey par1PrivateKey) {
++		return par1PrivateKey == null ? this.sharedKey : (this.sharedKey = CryptManager.decryptSharedKey(par1PrivateKey, this.sharedSecret));
+ 	}
+ 
++	/**
++	 * Return the secret AES sharedKey (used by client only)
++	 */
+ 	public SecretKey getSharedKey() {
+ 		return this.getSharedKey((PrivateKey)null);
+ 	}
+ 
+-	public byte[] getVerifyToken(PrivateKey var1) {
+-		return var1 == null ? this.verifyToken : CryptManager.decryptData(var1, this.verifyToken);
++	/**
++	 * Return verifyToken
++	 */
++	public byte[] getVerifyToken(PrivateKey par1PrivateKey) {
++		return par1PrivateKey == null ? this.verifyToken : CryptManager.decryptData(par1PrivateKey, this.verifyToken);
+ 	}
+ }

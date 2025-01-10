@@ -1,0 +1,22 @@
+--- net/minecraft/src/CallableBlockLocation.java
++++ net/minecraft/src/CallableBlockLocation.java
+@@ -4,13 +4,15 @@
+ 
+ final class CallableBlockLocation implements Callable {
+ 	final int blockXCoord;
++
+ 	final int blockYCoord;
++
+ 	final int blockZCoord;
+ 
+-	CallableBlockLocation(int var1, int var2, int var3) {
+-		this.blockXCoord = var1;
+-		this.blockYCoord = var2;
+-		this.blockZCoord = var3;
++	CallableBlockLocation(int par1, int par2, int par3) {
++		this.blockXCoord = par1;
++		this.blockYCoord = par2;
++		this.blockZCoord = par3;
+ 	}
+ 
+ 	public String callBlockLocationInfo() {

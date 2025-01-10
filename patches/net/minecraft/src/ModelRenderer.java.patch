@@ -1,0 +1,367 @@
+--- net/minecraft/src/ModelRenderer.java
++++ net/minecraft/src/ModelRenderer.java
+@@ -5,9 +5,17 @@
+ import org.lwjgl.opengl.GL11;
+ 
+ public class ModelRenderer {
++
++	/** The size of the texture file's width in pixels. */
+ 	public float textureWidth;
++
++	/** The size of the texture file's height in pixels. */
+ 	public float textureHeight;
++
++	/** The X offset into the texture used for displaying this model */
+ 	private int textureOffsetX;
++
++	/** The Y offset into the texture used for displaying this model */
+ 	private int textureOffsetY;
+ 	public float rotationPointX;
+ 	public float rotationPointY;
+@@ -16,122 +24,137 @@
+ 	public float rotateAngleY;
+ 	public float rotateAngleZ;
+ 	private boolean compiled;
++
++	/** The GL display list rendered by the Tessellator for this model */
+ 	private int displayList;
+ 	public boolean mirror;
+ 	public boolean showModel;
++
++	/** Hides the model. */
+ 	public boolean isHidden;
+-	public List l;
+-	public List m;
+-	public final String n;
++	public List cubeList;
++	public List childModels;
++	public final String boxName;
+ 	private ModelBase baseModel;
+ 	public float offsetX;
+ 	public float offsetY;
+ 	public float offsetZ;
+ 
+-	public ModelRenderer(ModelBase var1, String var2) {
++	public ModelRenderer(ModelBase par1ModelBase, String par2Str) {
+ 		this.textureWidth = 64.0F;
+ 		this.textureHeight = 32.0F;
+ 		this.showModel = true;
+-		this.l = new ArrayList();
+-		this.baseModel = var1;
+-		var1.r.add(this);
+-		this.n = var2;
+-		this.setTextureSize(var1.textureWidth, var1.textureHeight);
+-	}
+-
+-	public ModelRenderer(ModelBase var1) {
+-		this(var1, (String)null);
+-	}
+-
+-	public ModelRenderer(ModelBase var1, int var2, int var3) {
+-		this(var1);
+-		this.setTextureOffset(var2, var3);
+-	}
+-
+-	public void addChild(ModelRenderer var1) {
+-		if(this.m == null) {
+-			this.m = new ArrayList();
++		this.cubeList = new ArrayList();
++		this.baseModel = par1ModelBase;
++		par1ModelBase.boxList.add(this);
++		this.boxName = par2Str;
++		this.setTextureSize(par1ModelBase.textureWidth, par1ModelBase.textureHeight);
++	}
++
++	public ModelRenderer(ModelBase par1ModelBase) {
++		this(par1ModelBase, (String)null);
++	}
++
++	public ModelRenderer(ModelBase par1ModelBase, int par2, int par3) {
++		this(par1ModelBase);
++		this.setTextureOffset(par2, par3);
++	}
++
++	/**
++	 * Sets the current box's rotation points and rotation angles to another box.
++	 */
++	public void addChild(ModelRenderer par1ModelRenderer) {
++		if (this.childModels == null) {
++			this.childModels = new ArrayList();
+ 		}
+ 
+-		this.m.add(var1);
++		this.childModels.add(par1ModelRenderer);
+ 	}
+ 
+-	public ModelRenderer setTextureOffset(int var1, int var2) {
+-		this.textureOffsetX = var1;
+-		this.textureOffsetY = var2;
++	public ModelRenderer setTextureOffset(int par1, int par2) {
++		this.textureOffsetX = par1;
++		this.textureOffsetY = par2;
+ 		return this;
+ 	}
+ 
+-	public ModelRenderer addBox(String var1, float var2, float var3, float var4, int var5, int var6, int var7) {
+-		var1 = this.n + "." + var1;
+-		TextureOffset var8 = this.baseModel.getTextureOffset(var1);
++	public ModelRenderer addBox(String par1Str, float par2, float par3, float par4, int par5, int par6, int par7) {
++		par1Str = this.boxName + "." + par1Str;
++		TextureOffset var8 = this.baseModel.getTextureOffset(par1Str);
+ 		this.setTextureOffset(var8.textureOffsetX, var8.textureOffsetY);
+-		this.l.add((new ModelBox(this, this.textureOffsetX, this.textureOffsetY, var2, var3, var4, var5, var6, var7, 0.0F)).func_78244_a(var1));
+-		return this;
+-	}
+-
+-	public ModelRenderer addBox(float var1, float var2, float var3, int var4, int var5, int var6) {
+-		this.l.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, var1, var2, var3, var4, var5, var6, 0.0F));
+-		return this;
+-	}
+-
+-	public void addBox(float var1, float var2, float var3, int var4, int var5, int var6, float var7) {
+-		this.l.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, var1, var2, var3, var4, var5, var6, var7));
+-	}
+-
+-	public void setRotationPoint(float var1, float var2, float var3) {
+-		this.rotationPointX = var1;
+-		this.rotationPointY = var2;
+-		this.rotationPointZ = var3;
+-	}
+-
+-	public void render(float var1) {
+-		if(!this.isHidden) {
+-			if(this.showModel) {
+-				if(!this.compiled) {
+-					this.compileDisplayList(var1);
++		this.cubeList.add((new ModelBox(this, this.textureOffsetX, this.textureOffsetY, par2, par3, par4, par5, par6, par7, 0.0F)).func_78244_a(par1Str));
++		return this;
++	}
++
++	public ModelRenderer addBox(float par1, float par2, float par3, int par4, int par5, int par6) {
++		this.cubeList.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, par1, par2, par3, par4, par5, par6, 0.0F));
++		return this;
++	}
++
++	/**
++	 * Creates a textured box. Args: originX, originY, originZ, width, height, depth, scaleFactor.
++	 */
++	public void addBox(float par1, float par2, float par3, int par4, int par5, int par6, float par7) {
++		this.cubeList.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, par1, par2, par3, par4, par5, par6, par7));
++	}
++
++	public void setRotationPoint(float par1, float par2, float par3) {
++		this.rotationPointX = par1;
++		this.rotationPointY = par2;
++		this.rotationPointZ = par3;
++	}
++
++	public void render(float par1) {
++		if (!this.isHidden) {
++			if (this.showModel) {
++				if (!this.compiled) {
++					this.compileDisplayList(par1);
+ 				}
+ 
+ 				GL11.glTranslatef(this.offsetX, this.offsetY, this.offsetZ);
+ 				int var2;
+-				if(this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F) {
+-					if(this.rotationPointX == 0.0F && this.rotationPointY == 0.0F && this.rotationPointZ == 0.0F) {
++
++				if (this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F) {
++					if (this.rotationPointX == 0.0F && this.rotationPointY == 0.0F && this.rotationPointZ == 0.0F) {
+ 						GL11.glCallList(this.displayList);
+-						if(this.m != null) {
+-							for(var2 = 0; var2 < this.m.size(); ++var2) {
+-								((ModelRenderer)this.m.get(var2)).render(var1);
++
++						if (this.childModels != null) {
++							for (var2 = 0; var2 < this.childModels.size(); ++var2) {
++								((ModelRenderer)this.childModels.get(var2)).render(par1);
+ 							}
+ 						}
+ 					} else {
+-						GL11.glTranslatef(this.rotationPointX * var1, this.rotationPointY * var1, this.rotationPointZ * var1);
++						GL11.glTranslatef(this.rotationPointX * par1, this.rotationPointY * par1, this.rotationPointZ * par1);
+ 						GL11.glCallList(this.displayList);
+-						if(this.m != null) {
+-							for(var2 = 0; var2 < this.m.size(); ++var2) {
+-								((ModelRenderer)this.m.get(var2)).render(var1);
++
++						if (this.childModels != null) {
++							for (var2 = 0; var2 < this.childModels.size(); ++var2) {
++								((ModelRenderer)this.childModels.get(var2)).render(par1);
+ 							}
+ 						}
+ 
+-						GL11.glTranslatef(-this.rotationPointX * var1, -this.rotationPointY * var1, -this.rotationPointZ * var1);
++						GL11.glTranslatef(-this.rotationPointX * par1, -this.rotationPointY * par1, -this.rotationPointZ * par1);
+ 					}
+ 				} else {
+ 					GL11.glPushMatrix();
+-					GL11.glTranslatef(this.rotationPointX * var1, this.rotationPointY * var1, this.rotationPointZ * var1);
+-					if(this.rotateAngleZ != 0.0F) {
+-						GL11.glRotatef(this.rotateAngleZ * (180.0F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
+-					}
+-
+-					if(this.rotateAngleY != 0.0F) {
+-						GL11.glRotatef(this.rotateAngleY * (180.0F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+-					}
+-
+-					if(this.rotateAngleX != 0.0F) {
+-						GL11.glRotatef(this.rotateAngleX * (180.0F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
++					GL11.glTranslatef(this.rotationPointX * par1, this.rotationPointY * par1, this.rotationPointZ * par1);
++
++					if (this.rotateAngleZ != 0.0F) {
++						GL11.glRotatef(this.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
++					}
++
++					if (this.rotateAngleY != 0.0F) {
++						GL11.glRotatef(this.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
++					}
++
++					if (this.rotateAngleX != 0.0F) {
++						GL11.glRotatef(this.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+ 					}
+ 
+ 					GL11.glCallList(this.displayList);
+-					if(this.m != null) {
+-						for(var2 = 0; var2 < this.m.size(); ++var2) {
+-							((ModelRenderer)this.m.get(var2)).render(var1);
++
++					if (this.childModels != null) {
++						for (var2 = 0; var2 < this.childModels.size(); ++var2) {
++							((ModelRenderer)this.childModels.get(var2)).render(par1);
+ 						}
+ 					}
+ 
+@@ -143,25 +166,26 @@
+ 		}
+ 	}
+ 
+-	public void renderWithRotation(float var1) {
+-		if(!this.isHidden) {
+-			if(this.showModel) {
+-				if(!this.compiled) {
+-					this.compileDisplayList(var1);
++	public void renderWithRotation(float par1) {
++		if (!this.isHidden) {
++			if (this.showModel) {
++				if (!this.compiled) {
++					this.compileDisplayList(par1);
+ 				}
+ 
+ 				GL11.glPushMatrix();
+-				GL11.glTranslatef(this.rotationPointX * var1, this.rotationPointY * var1, this.rotationPointZ * var1);
+-				if(this.rotateAngleY != 0.0F) {
+-					GL11.glRotatef(this.rotateAngleY * (180.0F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+-				}
+-
+-				if(this.rotateAngleX != 0.0F) {
+-					GL11.glRotatef(this.rotateAngleX * (180.0F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+-				}
+-
+-				if(this.rotateAngleZ != 0.0F) {
+-					GL11.glRotatef(this.rotateAngleZ * (180.0F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
++				GL11.glTranslatef(this.rotationPointX * par1, this.rotationPointY * par1, this.rotationPointZ * par1);
++
++				if (this.rotateAngleY != 0.0F) {
++					GL11.glRotatef(this.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
++				}
++
++				if (this.rotateAngleX != 0.0F) {
++					GL11.glRotatef(this.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
++				}
++
++				if (this.rotateAngleZ != 0.0F) {
++					GL11.glRotatef(this.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
+ 				}
+ 
+ 				GL11.glCallList(this.displayList);
+@@ -170,52 +194,61 @@
+ 		}
+ 	}
+ 
+-	public void postRender(float var1) {
+-		if(!this.isHidden) {
+-			if(this.showModel) {
+-				if(!this.compiled) {
+-					this.compileDisplayList(var1);
++	/**
++	 * Allows the changing of Angles after a box has been rendered
++	 */
++	public void postRender(float par1) {
++		if (!this.isHidden) {
++			if (this.showModel) {
++				if (!this.compiled) {
++					this.compileDisplayList(par1);
+ 				}
+ 
+-				if(this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F) {
+-					if(this.rotationPointX != 0.0F || this.rotationPointY != 0.0F || this.rotationPointZ != 0.0F) {
+-						GL11.glTranslatef(this.rotationPointX * var1, this.rotationPointY * var1, this.rotationPointZ * var1);
++				if (this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F) {
++					if (this.rotationPointX != 0.0F || this.rotationPointY != 0.0F || this.rotationPointZ != 0.0F) {
++						GL11.glTranslatef(this.rotationPointX * par1, this.rotationPointY * par1, this.rotationPointZ * par1);
+ 					}
+ 				} else {
+-					GL11.glTranslatef(this.rotationPointX * var1, this.rotationPointY * var1, this.rotationPointZ * var1);
+-					if(this.rotateAngleZ != 0.0F) {
+-						GL11.glRotatef(this.rotateAngleZ * (180.0F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
+-					}
+-
+-					if(this.rotateAngleY != 0.0F) {
+-						GL11.glRotatef(this.rotateAngleY * (180.0F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+-					}
+-
+-					if(this.rotateAngleX != 0.0F) {
+-						GL11.glRotatef(this.rotateAngleX * (180.0F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
++					GL11.glTranslatef(this.rotationPointX * par1, this.rotationPointY * par1, this.rotationPointZ * par1);
++
++					if (this.rotateAngleZ != 0.0F) {
++						GL11.glRotatef(this.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
++					}
++
++					if (this.rotateAngleY != 0.0F) {
++						GL11.glRotatef(this.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
++					}
++
++					if (this.rotateAngleX != 0.0F) {
++						GL11.glRotatef(this.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+ 					}
+ 				}
+-
+ 			}
+ 		}
+ 	}
+ 
+-	private void compileDisplayList(float var1) {
++	/**
++	 * Compiles a GL display list for this model
++	 */
++	private void compileDisplayList(float par1) {
+ 		this.displayList = GLAllocation.generateDisplayLists(1);
+ 		GL11.glNewList(this.displayList, GL11.GL_COMPILE);
+ 		Tessellator var2 = Tessellator.instance;
+ 
+-		for(int var3 = 0; var3 < this.l.size(); ++var3) {
+-			((ModelBox)this.l.get(var3)).render(var2, var1);
++		for (int var3 = 0; var3 < this.cubeList.size(); ++var3) {
++			((ModelBox)this.cubeList.get(var3)).render(var2, par1);
+ 		}
+ 
+ 		GL11.glEndList();
+ 		this.compiled = true;
+ 	}
+ 
+-	public ModelRenderer setTextureSize(int var1, int var2) {
+-		this.textureWidth = (float)var1;
+-		this.textureHeight = (float)var2;
++	/**
++	 * Returns the model renderer with the new texture parameters.
++	 */
++	public ModelRenderer setTextureSize(int par1, int par2) {
++		this.textureWidth = (float)par1;
++		this.textureHeight = (float)par2;
+ 		return this;
+ 	}
+ }

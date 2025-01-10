@@ -1,0 +1,27 @@
+--- net/minecraft/src/EntityGiantZombie.java
++++ net/minecraft/src/EntityGiantZombie.java
+@@ -1,8 +1,8 @@
+ package net.minecraft.src;
+ 
+ public class EntityGiantZombie extends EntityMob {
+-	public EntityGiantZombie(World var1) {
+-		super(var1);
++	public EntityGiantZombie(World par1World) {
++		super(par1World);
+ 		this.yOffset *= 6.0F;
+ 		this.setSize(this.width * 6.0F, this.height * 6.0F);
+ 	}
+@@ -14,7 +14,11 @@
+ 		this.getEntityAttribute(SharedMonsterAttributes.attackDamage).setAttribute(50.0D);
+ 	}
+ 
+-	public float getBlockPathWeight(int var1, int var2, int var3) {
+-		return this.worldObj.getLightBrightness(var1, var2, var3) - 0.5F;
++	/**
++	 * Takes a coordinate in and returns a weight to determine how likely this creature will try to path to the block.
++	 * Args: x, y, z
++	 */
++	public float getBlockPathWeight(int par1, int par2, int par3) {
++		return this.worldObj.getLightBrightness(par1, par2, par3) - 0.5F;
+ 	}
+ }

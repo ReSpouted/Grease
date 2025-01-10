@@ -1,0 +1,20 @@
+--- net/minecraft/src/ItemPiston.java
++++ net/minecraft/src/ItemPiston.java
+@@ -1,11 +1,14 @@
+ package net.minecraft.src;
+ 
+ public class ItemPiston extends ItemBlock {
+-	public ItemPiston(int var1) {
+-		super(var1);
++	public ItemPiston(int par1) {
++		super(par1);
+ 	}
+ 
+-	public int getMetadata(int var1) {
++	/**
++	 * Returns the metadata of the block which this Item (ItemBlock) can place
++	 */
++	public int getMetadata(int par1) {
+ 		return 7;
+ 	}
+ }

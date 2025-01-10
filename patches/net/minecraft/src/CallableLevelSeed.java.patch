@@ -1,0 +1,13 @@
+--- net/minecraft/src/CallableLevelSeed.java
++++ net/minecraft/src/CallableLevelSeed.java
+@@ -5,8 +5,8 @@
+ class CallableLevelSeed implements Callable {
+ 	final WorldInfo worldInfoInstance;
+ 
+-	CallableLevelSeed(WorldInfo var1) {
+-		this.worldInfoInstance = var1;
++	CallableLevelSeed(WorldInfo par1WorldInfo) {
++		this.worldInfoInstance = par1WorldInfo;
+ 	}
+ 
+ 	public String callLevelSeed() {

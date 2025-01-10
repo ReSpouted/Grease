@@ -1,0 +1,53 @@
+--- net/minecraft/src/Packet12PlayerLook.java
++++ net/minecraft/src/Packet12PlayerLook.java
+@@ -9,25 +9,34 @@
+ 		this.rotating = true;
+ 	}
+ 
+-	public Packet12PlayerLook(float var1, float var2, boolean var3) {
+-		this.yaw = var1;
+-		this.pitch = var2;
+-		this.onGround = var3;
++	public Packet12PlayerLook(float par1, float par2, boolean par3) {
++		this.yaw = par1;
++		this.pitch = par2;
++		this.onGround = par3;
+ 		this.rotating = true;
+ 	}
+ 
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.yaw = var1.readFloat();
+-		this.pitch = var1.readFloat();
+-		super.readPacketData(var1);
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeFloat(this.yaw);
+-		var1.writeFloat(this.pitch);
+-		super.writePacketData(var1);
+-	}
+-
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.yaw = par1DataInput.readFloat();
++		this.pitch = par1DataInput.readFloat();
++		super.readPacketData(par1DataInput);
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeFloat(this.yaw);
++		par1DataOutput.writeFloat(this.pitch);
++		super.writePacketData(par1DataOutput);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 9;
+ 	}

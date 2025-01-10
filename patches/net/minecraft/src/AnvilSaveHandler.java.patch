@@ -1,0 +1,51 @@
+--- net/minecraft/src/AnvilSaveHandler.java
++++ net/minecraft/src/AnvilSaveHandler.java
+@@ -3,18 +3,22 @@
+ import java.io.File;
+ 
+ public class AnvilSaveHandler extends SaveHandler {
+-	public AnvilSaveHandler(File var1, String var2, boolean var3) {
+-		super(var1, var2, var3);
++	public AnvilSaveHandler(File par1File, String par2Str, boolean par3) {
++		super(par1File, par2Str, par3);
+ 	}
+ 
+-	public IChunkLoader getChunkLoader(WorldProvider var1) {
++	/**
++	 * Returns the chunk loader with the provided world provider
++	 */
++	public IChunkLoader getChunkLoader(WorldProvider par1WorldProvider) {
+ 		File var2 = this.getWorldDirectory();
+ 		File var3;
+-		if(var1 instanceof WorldProviderHell) {
++
++		if (par1WorldProvider instanceof WorldProviderHell) {
+ 			var3 = new File(var2, "DIM-1");
+ 			var3.mkdirs();
+ 			return new AnvilChunkLoader(var3);
+-		} else if(var1 instanceof WorldProviderEnd) {
++		} else if (par1WorldProvider instanceof WorldProviderEnd) {
+ 			var3 = new File(var2, "DIM1");
+ 			var3.mkdirs();
+ 			return new AnvilChunkLoader(var3);
+@@ -23,11 +27,17 @@
+ 		}
+ 	}
+ 
+-	public void saveWorldInfoWithPlayer(WorldInfo var1, NBTTagCompound var2) {
+-		var1.setSaveVersion(19133);
+-		super.saveWorldInfoWithPlayer(var1, var2);
++	/**
++	 * Saves the given World Info with the given NBTTagCompound as the Player.
++	 */
++	public void saveWorldInfoWithPlayer(WorldInfo par1WorldInfo, NBTTagCompound par2NBTTagCompound) {
++		par1WorldInfo.setSaveVersion(19133);
++		super.saveWorldInfoWithPlayer(par1WorldInfo, par2NBTTagCompound);
+ 	}
+ 
++	/**
++	 * Called to flush all changes to disk, waiting for them to complete.
++	 */
+ 	public void flush() {
+ 		try {
+ 			ThreadedFileIOBase.threadedIOInstance.waitForFinish();

@@ -1,0 +1,38 @@
+--- net/minecraft/src/LayeredTexture.java
++++ net/minecraft/src/LayeredTexture.java
+@@ -10,24 +10,26 @@
+ import javax.imageio.ImageIO;
+ 
+ public class LayeredTexture extends AbstractTexture {
+-	public final List b;
++	public final List layeredTextureNames;
+ 
+-	public LayeredTexture(String... var1) {
+-		this.b = Lists.newArrayList((Object[])var1);
++	public LayeredTexture(String ... par1ArrayOfStr) {
++		this.layeredTextureNames = Lists.newArrayList(par1ArrayOfStr);
+ 	}
+ 
+-	public void loadTexture(ResourceManager var1) throws IOException {
++	public void loadTexture(ResourceManager par1ResourceManager) throws IOException {
+ 		BufferedImage var2 = null;
+ 
+ 		try {
+-			Iterator var3 = this.b.iterator();
++			Iterator var3 = this.layeredTextureNames.iterator();
+ 
+-			while(var3.hasNext()) {
++			while (var3.hasNext()) {
+ 				String var4 = (String)var3.next();
+-				if(var4 != null) {
+-					InputStream var5 = var1.getResource(new ResourceLocation(var4)).getInputStream();
++
++				if (var4 != null) {
++					InputStream var5 = par1ResourceManager.getResource(new ResourceLocation(var4)).getInputStream();
+ 					BufferedImage var6 = ImageIO.read(var5);
+-					if(var2 == null) {
++
++					if (var2 == null) {
+ 						var2 = new BufferedImage(var6.getWidth(), var6.getHeight(), 2);
+ 					}
+ 

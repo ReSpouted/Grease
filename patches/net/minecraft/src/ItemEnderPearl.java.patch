@@ -1,0 +1,40 @@
+--- net/minecraft/src/ItemEnderPearl.java
++++ net/minecraft/src/ItemEnderPearl.java
+@@ -1,23 +1,27 @@
+ package net.minecraft.src;
+ 
+ public class ItemEnderPearl extends Item {
+-	public ItemEnderPearl(int var1) {
+-		super(var1);
++	public ItemEnderPearl(int par1) {
++		super(par1);
+ 		this.maxStackSize = 16;
+ 		this.setCreativeTab(CreativeTabs.tabMisc);
+ 	}
+ 
+-	public ItemStack onItemRightClick(ItemStack var1, World var2, EntityPlayer var3) {
+-		if(var3.capabilities.isCreativeMode) {
+-			return var1;
++	/**
++	 * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
++	 */
++	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
++		if (par3EntityPlayer.capabilities.isCreativeMode) {
++			return par1ItemStack;
+ 		} else {
+-			--var1.stackSize;
+-			var2.playSoundAtEntity(var3, "random.bow", 0.5F, 0.4F / (f.nextFloat() * 0.4F + 0.8F));
+-			if(!var2.isRemote) {
+-				var2.spawnEntityInWorld(new EntityEnderPearl(var2, var3));
++			--par1ItemStack.stackSize;
++			par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
++
++			if (!par2World.isRemote) {
++				par2World.spawnEntityInWorld(new EntityEnderPearl(par2World, par3EntityPlayer));
+ 			}
+ 
+-			return var1;
++			return par1ItemStack;
+ 		}
+ 	}
+ }

@@ -1,0 +1,31 @@
+--- net/minecraft/src/GuiButtonLanguage.java
++++ net/minecraft/src/GuiButtonLanguage.java
+@@ -3,17 +3,21 @@
+ import org.lwjgl.opengl.GL11;
+ 
+ public class GuiButtonLanguage extends GuiButton {
+-	public GuiButtonLanguage(int var1, int var2, int var3) {
+-		super(var1, var2, var3, 20, 20, "");
++	public GuiButtonLanguage(int par1, int par2, int par3) {
++		super(par1, par2, par3, 20, 20, "");
+ 	}
+ 
+-	public void drawButton(Minecraft var1, int var2, int var3) {
+-		if(this.drawButton) {
+-			var1.getTextureManager().bindTexture(GuiButton.buttonTextures);
++	/**
++	 * Draws this button to the screen.
++	 */
++	public void drawButton(Minecraft par1Minecraft, int par2, int par3) {
++		if (this.drawButton) {
++			par1Minecraft.getTextureManager().bindTexture(GuiButton.buttonTextures);
+ 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+-			boolean var4 = var2 >= this.xPosition && var3 >= this.yPosition && var2 < this.xPosition + this.width && var3 < this.yPosition + this.height;
++			boolean var4 = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
+ 			int var5 = 106;
+-			if(var4) {
++
++			if (var4) {
+ 				var5 += this.height;
+ 			}
+ 

@@ -1,0 +1,27 @@
+--- net/minecraft/src/BlockGravel.java
++++ net/minecraft/src/BlockGravel.java
+@@ -3,15 +3,18 @@
+ import java.util.Random;
+ 
+ public class BlockGravel extends BlockSand {
+-	public BlockGravel(int var1) {
+-		super(var1);
++	public BlockGravel(int par1) {
++		super(par1);
+ 	}
+ 
+-	public int idDropped(int var1, Random var2, int var3) {
+-		if(var3 > 3) {
+-			var3 = 3;
++	/**
++	 * Returns the ID of the items to drop on destruction.
++	 */
++	public int idDropped(int par1, Random par2Random, int par3) {
++		if (par3 > 3) {
++			par3 = 3;
+ 		}
+ 
+-		return var2.nextInt(10 - var3 * 3) == 0 ? Item.flint.itemID : this.blockID;
++		return par2Random.nextInt(10 - par3 * 3) == 0 ? Item.flint.itemID : this.blockID;
+ 	}
+ }

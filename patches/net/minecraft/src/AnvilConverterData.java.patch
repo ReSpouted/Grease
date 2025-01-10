@@ -1,0 +1,14 @@
+--- net/minecraft/src/AnvilConverterData.java
++++ net/minecraft/src/AnvilConverterData.java
+@@ -14,8 +14,8 @@
+ 	public final int x;
+ 	public final int z;
+ 
+-	public AnvilConverterData(int var1, int var2) {
+-		this.x = var1;
+-		this.z = var2;
++	public AnvilConverterData(int par1, int par2) {
++		this.x = par1;
++		this.z = par2;
+ 	}
+ }

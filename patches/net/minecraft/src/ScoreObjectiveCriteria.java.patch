@@ -1,0 +1,11 @@
+--- net/minecraft/src/ScoreObjectiveCriteria.java
++++ net/minecraft/src/ScoreObjectiveCriteria.java
+@@ -5,7 +5,7 @@
+ import java.util.Map;
+ 
+ public interface ScoreObjectiveCriteria {
+-	Map a = new HashMap();
++	Map field_96643_a = new HashMap();
+ 	ScoreObjectiveCriteria field_96641_b = new ScoreDummyCriteria("dummy");
+ 	ScoreObjectiveCriteria deathCount = new ScoreDummyCriteria("deathCount");
+ 	ScoreObjectiveCriteria playerKillCount = new ScoreDummyCriteria("playerKillCount");

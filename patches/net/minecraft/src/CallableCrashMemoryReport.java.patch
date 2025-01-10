@@ -1,0 +1,18 @@
+--- net/minecraft/src/CallableCrashMemoryReport.java
++++ net/minecraft/src/CallableCrashMemoryReport.java
+@@ -5,10 +5,13 @@
+ class CallableCrashMemoryReport implements Callable {
+ 	final CrashReport theCrashReport;
+ 
+-	CallableCrashMemoryReport(CrashReport var1) {
+-		this.theCrashReport = var1;
++	CallableCrashMemoryReport(CrashReport par1CrashReport) {
++		this.theCrashReport = par1CrashReport;
+ 	}
+ 
++	/**
++	 * Returns a string with allocated and used memory.
++	 */
+ 	public String getMemoryReport() {
+ 		int var1 = AxisAlignedBB.getAABBPool().getlistAABBsize();
+ 		int var2 = 56 * var1;

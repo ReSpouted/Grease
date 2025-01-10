@@ -1,0 +1,88 @@
+--- net/minecraft/src/Score.java
++++ net/minecraft/src/Score.java
+@@ -4,36 +4,36 @@
+ import java.util.List;
+ 
+ public class Score {
+-	public static final Comparator a = new ScoreComparator();
++	public static final Comparator field_96658_a = new ScoreComparator();
+ 	private final Scoreboard theScoreboard;
+ 	private final ScoreObjective theScoreObjective;
+-	private final String d;
++	private final String field_96654_d;
+ 	private int field_96655_e;
+ 
+-	public Score(Scoreboard var1, ScoreObjective var2, String var3) {
+-		this.theScoreboard = var1;
+-		this.theScoreObjective = var2;
+-		this.d = var3;
++	public Score(Scoreboard par1Scoreboard, ScoreObjective par2ScoreObjective, String par3Str) {
++		this.theScoreboard = par1Scoreboard;
++		this.theScoreObjective = par2ScoreObjective;
++		this.field_96654_d = par3Str;
+ 	}
+ 
+-	public void func_96649_a(int var1) {
+-		if(this.theScoreObjective.getCriteria().isReadOnly()) {
++	public void func_96649_a(int par1) {
++		if (this.theScoreObjective.getCriteria().isReadOnly()) {
+ 			throw new IllegalStateException("Cannot modify read-only score");
+ 		} else {
+-			this.func_96647_c(this.getScorePoints() + var1);
++			this.func_96647_c(this.getScorePoints() + par1);
+ 		}
+ 	}
+ 
+-	public void func_96646_b(int var1) {
+-		if(this.theScoreObjective.getCriteria().isReadOnly()) {
++	public void func_96646_b(int par1) {
++		if (this.theScoreObjective.getCriteria().isReadOnly()) {
+ 			throw new IllegalStateException("Cannot modify read-only score");
+ 		} else {
+-			this.func_96647_c(this.getScorePoints() - var1);
++			this.func_96647_c(this.getScorePoints() - par1);
+ 		}
+ 	}
+ 
+ 	public void func_96648_a() {
+-		if(this.theScoreObjective.getCriteria().isReadOnly()) {
++		if (this.theScoreObjective.getCriteria().isReadOnly()) {
+ 			throw new IllegalStateException("Cannot modify read-only score");
+ 		} else {
+ 			this.func_96649_a(1);
+@@ -44,13 +44,13 @@
+ 		return this.field_96655_e;
+ 	}
+ 
+-	public void func_96647_c(int var1) {
++	public void func_96647_c(int par1) {
+ 		int var2 = this.field_96655_e;
+-		this.field_96655_e = var1;
+-		if(var2 != var1) {
++		this.field_96655_e = par1;
++
++		if (var2 != par1) {
+ 			this.func_96650_f().func_96536_a(this);
+ 		}
+-
+ 	}
+ 
+ 	public ScoreObjective func_96645_d() {
+@@ -58,14 +58,14 @@
+ 	}
+ 
+ 	public String getPlayerName() {
+-		return this.d;
++		return this.field_96654_d;
+ 	}
+ 
+ 	public Scoreboard func_96650_f() {
+ 		return this.theScoreboard;
+ 	}
+ 
+-	public void func_96651_a(List var1) {
+-		this.func_96647_c(this.theScoreObjective.getCriteria().func_96635_a(var1));
++	public void func_96651_a(List par1List) {
++		this.func_96647_c(this.theScoreObjective.getCriteria().func_96635_a(par1List));
+ 	}
+ }

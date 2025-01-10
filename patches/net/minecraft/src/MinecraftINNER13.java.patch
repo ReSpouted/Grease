@@ -1,0 +1,13 @@
+--- net/minecraft/src/MinecraftINNER13.java
++++ net/minecraft/src/MinecraftINNER13.java
+@@ -5,8 +5,8 @@
+ class MinecraftINNER13 implements Callable {
+ 	final Minecraft field_142056_a;
+ 
+-	MinecraftINNER13(Minecraft var1) {
+-		this.field_142056_a = var1;
++	MinecraftINNER13(Minecraft par1Minecraft) {
++		this.field_142056_a = par1Minecraft;
+ 	}
+ 
+ 	public String func_142055_a() {

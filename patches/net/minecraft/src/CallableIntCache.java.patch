@@ -1,0 +1,13 @@
+--- net/minecraft/src/CallableIntCache.java
++++ net/minecraft/src/CallableIntCache.java
+@@ -5,8 +5,8 @@
+ class CallableIntCache implements Callable {
+ 	final CrashReport theCrashReport;
+ 
+-	CallableIntCache(CrashReport var1) {
+-		this.theCrashReport = var1;
++	CallableIntCache(CrashReport par1CrashReport) {
++		this.theCrashReport = par1CrashReport;
+ 	}
+ 
+ 	public String func_85083_a() {

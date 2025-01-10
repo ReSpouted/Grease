@@ -1,0 +1,65 @@
+--- net/minecraft/src/RangedAttribute.java
++++ net/minecraft/src/RangedAttribute.java
+@@ -3,39 +3,40 @@
+ public class RangedAttribute extends BaseAttribute {
+ 	private final double minimumValue;
+ 	private final double maximumValue;
+-	private String c;
+-
+-	public RangedAttribute(String var1, double var2, double var4, double var6) {
+-		super(var1, var2);
+-		this.minimumValue = var4;
+-		this.maximumValue = var6;
+-		if(var4 > var6) {
++	private String field_111119_c;
++
++	public RangedAttribute(String par1Str, double par2, double par4, double par6) {
++		super(par1Str, par2);
++		this.minimumValue = par4;
++		this.maximumValue = par6;
++
++		if (par4 > par6) {
+ 			throw new IllegalArgumentException("Minimum value cannot be bigger than maximum value!");
+-		} else if(var2 < var4) {
++		} else if (par2 < par4) {
+ 			throw new IllegalArgumentException("Default value cannot be lower than minimum value!");
+-		} else if(var2 > var6) {
++		} else if (par2 > par6) {
+ 			throw new IllegalArgumentException("Default value cannot be bigger than maximum value!");
+ 		}
+ 	}
+ 
+-	public RangedAttribute func_111117_a(String var1) {
+-		this.c = var1;
++	public RangedAttribute func_111117_a(String par1Str) {
++		this.field_111119_c = par1Str;
+ 		return this;
+ 	}
+ 
+ 	public String func_111116_f() {
+-		return this.c;
++		return this.field_111119_c;
+ 	}
+ 
+-	public double clampValue(double var1) {
+-		if(var1 < this.minimumValue) {
+-			var1 = this.minimumValue;
+-		}
+-
+-		if(var1 > this.maximumValue) {
+-			var1 = this.maximumValue;
+-		}
+-
+-		return var1;
++	public double clampValue(double par1) {
++		if (par1 < this.minimumValue) {
++			par1 = this.minimumValue;
++		}
++
++		if (par1 > this.maximumValue) {
++			par1 = this.maximumValue;
++		}
++
++		return par1;
+ 	}
+ }

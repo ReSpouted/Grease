@@ -1,0 +1,131 @@
+--- net/minecraft/src/RecipesArmorDyes.java
++++ net/minecraft/src/RecipesArmorDyes.java
+@@ -2,23 +2,31 @@
+ 
+ import java.util.ArrayList;
+ 
++import com.prupe.mcpatcher.cc.ColorizeEntity;
++
+ public class RecipesArmorDyes implements IRecipe {
+-	public boolean matches(InventoryCrafting var1, World var2) {
++
++	/**
++	 * Used to check if a recipe matches current crafting inventory
++	 */
++	public boolean matches(InventoryCrafting par1InventoryCrafting, World par2World) {
+ 		ItemStack var3 = null;
+ 		ArrayList var4 = new ArrayList();
+ 
+-		for(int var5 = 0; var5 < var1.getSizeInventory(); ++var5) {
+-			ItemStack var6 = var1.getStackInSlot(var5);
+-			if(var6 != null) {
+-				if(var6.getItem() instanceof ItemArmor) {
++		for (int var5 = 0; var5 < par1InventoryCrafting.getSizeInventory(); ++var5) {
++			ItemStack var6 = par1InventoryCrafting.getStackInSlot(var5);
++
++			if (var6 != null) {
++				if (var6.getItem() instanceof ItemArmor) {
+ 					ItemArmor var7 = (ItemArmor)var6.getItem();
+-					if(var7.getArmorMaterial() != EnumArmorMaterial.CLOTH || var3 != null) {
++
++					if (var7.getArmorMaterial() != EnumArmorMaterial.CLOTH || var3 != null) {
+ 						return false;
+ 					}
+ 
+ 					var3 = var6;
+ 				} else {
+-					if(var6.itemID != Item.dyePowder.itemID) {
++					if (var6.itemID != Item.dyePowder.itemID) {
+ 						return false;
+ 					}
+ 
+@@ -30,30 +38,36 @@
+ 		return var3 != null && !var4.isEmpty();
+ 	}
+ 
+-	public ItemStack getCraftingResult(InventoryCrafting var1) {
++	/**
++	 * Returns an Item that is the result of this recipe
++	 */
++	public ItemStack getCraftingResult(InventoryCrafting par1InventoryCrafting) {
+ 		ItemStack var2 = null;
+ 		int[] var3 = new int[3];
+ 		int var4 = 0;
+ 		int var5 = 0;
+ 		ItemArmor var6 = null;
+-
+ 		int var7;
+ 		int var9;
+ 		float var10;
+ 		float var11;
+ 		int var17;
+-		for(var7 = 0; var7 < var1.getSizeInventory(); ++var7) {
+-			ItemStack var8 = var1.getStackInSlot(var7);
+-			if(var8 != null) {
+-				if(var8.getItem() instanceof ItemArmor) {
++
++		for (var7 = 0; var7 < par1InventoryCrafting.getSizeInventory(); ++var7) {
++			ItemStack var8 = par1InventoryCrafting.getStackInSlot(var7);
++
++			if (var8 != null) {
++				if (var8.getItem() instanceof ItemArmor) {
+ 					var6 = (ItemArmor)var8.getItem();
+-					if(var6.getArmorMaterial() != EnumArmorMaterial.CLOTH || var2 != null) {
++
++					if (var6.getArmorMaterial() != EnumArmorMaterial.CLOTH || var2 != null) {
+ 						return null;
+ 					}
+ 
+ 					var2 = var8.copy();
+ 					var2.stackSize = 1;
+-					if(var6.hasColor(var8)) {
++
++					if (var6.hasColor(var8)) {
+ 						var9 = var6.getColor(var2);
+ 						var10 = (float)(var9 >> 16 & 255) / 255.0F;
+ 						var11 = (float)(var9 >> 8 & 255) / 255.0F;
+@@ -65,24 +79,26 @@
+ 						++var5;
+ 					}
+ 				} else {
+-					if(var8.itemID != Item.dyePowder.itemID) {
++					if (var8.itemID != Item.dyePowder.itemID) {
+ 						return null;
+ 					}
+ 
+-					float[] var14 = EntitySheep.fleeceColorTable[BlockColored.getBlockFromDye(var8.getItemDamage())];
+-					int var15 = (int)(var14[0] * 255.0F);
+-					int var16 = (int)(var14[1] * 255.0F);
++					// MCPatcher Start
++					float[] var14 = ColorizeEntity.armorColors[BlockColored.getBlockFromDye(var8.getItemDamage())];
++					// MCPatcher End
++					int var16 = (int)(var14[0] * 255.0F);
++					int var15 = (int)(var14[1] * 255.0F);
+ 					var17 = (int)(var14[2] * 255.0F);
+-					var4 += Math.max(var15, Math.max(var16, var17));
+-					var3[0] += var15;
+-					var3[1] += var16;
++					var4 += Math.max(var16, Math.max(var15, var17));
++					var3[0] += var16;
++					var3[1] += var15;
+ 					var3[2] += var17;
+ 					++var5;
+ 				}
+ 			}
+ 		}
+ 
+-		if(var6 == null) {
++		if (var6 == null) {
+ 			return null;
+ 		} else {
+ 			var7 = var3[0] / var5;
+@@ -100,6 +116,9 @@
+ 		}
+ 	}
+ 
++	/**
++	 * Returns the size of the recipe area
++	 */
+ 	public int getRecipeSize() {
+ 		return 10;
+ 	}

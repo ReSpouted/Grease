@@ -1,0 +1,13 @@
+--- net/minecraft/src/CallableLevelSpawnLocation.java
++++ net/minecraft/src/CallableLevelSpawnLocation.java
+@@ -5,8 +5,8 @@
+ class CallableLevelSpawnLocation implements Callable {
+ 	final WorldInfo worldInfoInstance;
+ 
+-	CallableLevelSpawnLocation(WorldInfo var1) {
+-		this.worldInfoInstance = var1;
++	CallableLevelSpawnLocation(WorldInfo par1WorldInfo) {
++		this.worldInfoInstance = par1WorldInfo;
+ 	}
+ 
+ 	public String callLevelSpawnLocation() {

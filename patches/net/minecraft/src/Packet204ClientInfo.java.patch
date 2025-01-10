@@ -1,0 +1,121 @@
+--- net/minecraft/src/Packet204ClientInfo.java
++++ net/minecraft/src/Packet204ClientInfo.java
+@@ -5,53 +5,64 @@
+ import java.io.IOException;
+ 
+ public class Packet204ClientInfo extends Packet {
+-	private String a;
++	private String language;
+ 	private int renderDistance;
+ 	private int chatVisisble;
+ 	private boolean chatColours;
+ 	private int gameDifficulty;
+ 	private boolean showCape;
+ 
+-	public Packet204ClientInfo() {
+-	}
+-
+-	public Packet204ClientInfo(String var1, int var2, int var3, boolean var4, int var5, boolean var6) {
+-		this.a = var1;
+-		this.renderDistance = var2;
+-		this.chatVisisble = var3;
+-		this.chatColours = var4;
+-		this.gameDifficulty = var5;
+-		this.showCape = var6;
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.a = readString(var1, 7);
+-		this.renderDistance = var1.readByte();
+-		byte var2 = var1.readByte();
++	public Packet204ClientInfo() {}
++
++	public Packet204ClientInfo(String par1Str, int par2, int par3, boolean par4, int par5, boolean par6) {
++		this.language = par1Str;
++		this.renderDistance = par2;
++		this.chatVisisble = par3;
++		this.chatColours = par4;
++		this.gameDifficulty = par5;
++		this.showCape = par6;
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.language = readString(par1DataInput, 7);
++		this.renderDistance = par1DataInput.readByte();
++		byte var2 = par1DataInput.readByte();
+ 		this.chatVisisble = var2 & 7;
+ 		this.chatColours = (var2 & 8) == 8;
+-		this.gameDifficulty = var1.readByte();
+-		this.showCape = var1.readBoolean();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		writeString(this.a, var1);
+-		var1.writeByte(this.renderDistance);
+-		var1.writeByte(this.chatVisisble | (this.chatColours ? 1 : 0) << 3);
+-		var1.writeByte(this.gameDifficulty);
+-		var1.writeBoolean(this.showCape);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleClientInfo(this);
+-	}
+-
++		this.gameDifficulty = par1DataInput.readByte();
++		this.showCape = par1DataInput.readBoolean();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		writeString(this.language, par1DataOutput);
++		par1DataOutput.writeByte(this.renderDistance);
++		par1DataOutput.writeByte(this.chatVisisble | (this.chatColours ? 1 : 0) << 3);
++		par1DataOutput.writeByte(this.gameDifficulty);
++		par1DataOutput.writeBoolean(this.showCape);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleClientInfo(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 7;
+ 	}
+ 
+ 	public String getLanguage() {
+-		return this.a;
++		return this.language;
+ 	}
+ 
+ 	public int getRenderDistance() {
+@@ -74,11 +85,18 @@
+ 		return this.showCape;
+ 	}
+ 
++	/**
++	 * only false for the abstract Packet class, all real packets return true
++	 */
+ 	public boolean isRealPacket() {
+ 		return true;
+ 	}
+ 
+-	public boolean containsSameEntityIDAs(Packet var1) {
++	/**
++	 * eg return packet30entity.entityId == entityId; WARNING : will throw if you compare a packet to a different packet
++	 * class
++	 */
++	public boolean containsSameEntityIDAs(Packet par1Packet) {
+ 		return true;
+ 	}
+ }

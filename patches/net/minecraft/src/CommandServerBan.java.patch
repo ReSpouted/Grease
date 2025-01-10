@@ -1,0 +1,68 @@
+--- net/minecraft/src/CommandServerBan.java
++++ net/minecraft/src/CommandServerBan.java
+@@ -8,39 +8,50 @@
+ 		return "ban";
+ 	}
+ 
++	/**
++	 * Return the required permission level for this command.
++	 */
+ 	public int getRequiredPermissionLevel() {
+ 		return 3;
+ 	}
+ 
+-	public String getCommandUsage(ICommandSender var1) {
++	public String getCommandUsage(ICommandSender par1ICommandSender) {
+ 		return "commands.ban.usage";
+ 	}
+ 
+-	public boolean canCommandSenderUseCommand(ICommandSender var1) {
+-		return MinecraftServer.getServer().getConfigurationManager().getBannedPlayers().isListActive() && super.canCommandSenderUseCommand(var1);
++	/**
++	 * Returns true if the given command sender is allowed to use this command.
++	 */
++	public boolean canCommandSenderUseCommand(ICommandSender par1ICommandSender) {
++		return MinecraftServer.getServer().getConfigurationManager().getBannedPlayers().isListActive() && super.canCommandSenderUseCommand(par1ICommandSender);
+ 	}
+ 
+-	public void processCommand(ICommandSender var1, String[] var2) {
+-		if(var2.length >= 1 && var2[0].length() > 0) {
+-			EntityPlayerMP var3 = MinecraftServer.getServer().getConfigurationManager().getPlayerEntity(var2[0]);
+-			BanEntry var4 = new BanEntry(var2[0]);
+-			var4.setBannedBy(var1.getCommandSenderName());
+-			if(var2.length >= 2) {
+-				var4.setBanReason(func_82360_a(var1, var2, 1));
++	public void processCommand(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
++		if (par2ArrayOfStr.length >= 1 && par2ArrayOfStr[0].length() > 0) {
++			EntityPlayerMP var3 = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(par2ArrayOfStr[0]);
++			BanEntry var4 = new BanEntry(par2ArrayOfStr[0]);
++			var4.setBannedBy(par1ICommandSender.getCommandSenderName());
++
++			if (par2ArrayOfStr.length >= 2) {
++				var4.setBanReason(func_82360_a(par1ICommandSender, par2ArrayOfStr, 1));
+ 			}
+ 
+ 			MinecraftServer.getServer().getConfigurationManager().getBannedPlayers().put(var4);
+-			if(var3 != null) {
+-				var3.playerNetServerHandler.kickPlayer("You are banned from this server.");
++
++			if (var3 != null) {
++				var3.playerNetServerHandler.kickPlayerFromServer("You are banned from this server.");
+ 			}
+ 
+-			notifyAdmins(var1, "commands.ban.success", new Object[]{var2[0]});
++			notifyAdmins(par1ICommandSender, "commands.ban.success", new Object[] {par2ArrayOfStr[0]});
+ 		} else {
+ 			throw new WrongUsageException("commands.ban.usage", new Object[0]);
+ 		}
+ 	}
+ 
+-	public List addTabCompletionOptions(ICommandSender var1, String[] var2) {
+-		return var2.length >= 1 ? getListOfStringsMatchingLastWord(var2, MinecraftServer.getServer().getAllUsernames()) : null;
++	/**
++	 * Adds the strings available in this command to the given list of tab completion options.
++	 */
++	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
++		return par2ArrayOfStr.length >= 1 ? getListOfStringsMatchingLastWord(par2ArrayOfStr, MinecraftServer.getServer().getAllUsernames()) : null;
+ 	}
+ }

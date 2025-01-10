@@ -1,0 +1,12 @@
+--- net/minecraft/src/MetadataSectionSerializer.java
++++ net/minecraft/src/MetadataSectionSerializer.java
+@@ -3,5 +3,9 @@
+ import com.google.gson.JsonDeserializer;
+ 
+ public interface MetadataSectionSerializer extends JsonDeserializer {
++
++	/**
++	 * The name of this section type as it appears in JSON.
++	 */
+ 	String getSectionName();
+ }

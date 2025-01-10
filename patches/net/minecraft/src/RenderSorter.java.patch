@@ -1,0 +1,40 @@
+--- net/minecraft/src/RenderSorter.java
++++ net/minecraft/src/RenderSorter.java
+@@ -3,25 +3,27 @@
+ import java.util.Comparator;
+ 
+ public class RenderSorter implements Comparator {
++
++	/** The entity (usually the player) that the camera is inside. */
+ 	private EntityLivingBase baseEntity;
+ 
+-	public RenderSorter(EntityLivingBase var1) {
+-		this.baseEntity = var1;
++	public RenderSorter(EntityLivingBase par1EntityLivingBase) {
++		this.baseEntity = par1EntityLivingBase;
+ 	}
+ 
+-	public int doCompare(WorldRenderer var1, WorldRenderer var2) {
+-		if(var1.isInFrustum && !var2.isInFrustum) {
++	public int doCompare(WorldRenderer par1WorldRenderer, WorldRenderer par2WorldRenderer) {
++		if (par1WorldRenderer.isInFrustum && !par2WorldRenderer.isInFrustum) {
+ 			return 1;
+-		} else if(var2.isInFrustum && !var1.isInFrustum) {
++		} else if (par2WorldRenderer.isInFrustum && !par1WorldRenderer.isInFrustum) {
+ 			return -1;
+ 		} else {
+-			double var3 = (double)var1.distanceToEntitySquared(this.baseEntity);
+-			double var5 = (double)var2.distanceToEntitySquared(this.baseEntity);
+-			return var3 < var5 ? 1 : (var3 > var5 ? -1 : (var1.chunkIndex < var2.chunkIndex ? 1 : -1));
++			double var3 = (double)par1WorldRenderer.distanceToEntitySquared(this.baseEntity);
++			double var5 = (double)par2WorldRenderer.distanceToEntitySquared(this.baseEntity);
++			return var3 < var5 ? 1 : (var3 > var5 ? -1 : (par1WorldRenderer.chunkIndex < par2WorldRenderer.chunkIndex ? 1 : -1));
+ 		}
+ 	}
+ 
+-	public int compare(Object var1, Object var2) {
+-		return this.doCompare((WorldRenderer)var1, (WorldRenderer)var2);
++	public int compare(Object par1Obj, Object par2Obj) {
++		return this.doCompare((WorldRenderer)par1Obj, (WorldRenderer)par2Obj);
+ 	}
+ }

@@ -1,0 +1,88 @@
+--- net/minecraft/src/RConOutputStream.java
++++ net/minecraft/src/RConOutputStream.java
+@@ -5,36 +5,58 @@
+ import java.io.IOException;
+ 
+ public class RConOutputStream {
+-	private ByteArrayOutputStream a;
+-	private DataOutputStream b;
+-
+-	public RConOutputStream(int var1) {
+-		this.a = new ByteArrayOutputStream(var1);
+-		this.b = new DataOutputStream(this.a);
+-	}
+-
+-	public void writeByteArray(byte[] var1) throws IOException {
+-		this.b.write(var1, 0, var1.length);
+-	}
+-
+-	public void writeString(String var1) throws IOException {
+-		this.b.writeBytes(var1);
+-		this.b.write(0);
+-	}
+-
+-	public void writeInt(int var1) throws IOException {
+-		this.b.write(var1);
+-	}
+-
+-	public void writeShort(short var1) throws IOException {
+-		this.b.writeShort(Short.reverseBytes(var1));
+-	}
+-
++
++	/** Output stream */
++	private ByteArrayOutputStream byteArrayOutput;
++
++	/** ByteArrayOutputStream wrapper */
++	private DataOutputStream output;
++
++	public RConOutputStream(int par1) {
++		this.byteArrayOutput = new ByteArrayOutputStream(par1);
++		this.output = new DataOutputStream(this.byteArrayOutput);
++	}
++
++	/**
++	 * Writes the given byte array to the output stream
++	 */
++	public void writeByteArray(byte[] par1ArrayOfByte) throws IOException {
++		this.output.write(par1ArrayOfByte, 0, par1ArrayOfByte.length);
++	}
++
++	/**
++	 * Writes the given String to the output stream
++	 */
++	public void writeString(String par1Str) throws IOException {
++		this.output.writeBytes(par1Str);
++		this.output.write(0);
++	}
++
++	/**
++	 * Writes the given int to the output stream
++	 */
++	public void writeInt(int par1) throws IOException {
++		this.output.write(par1);
++	}
++
++	/**
++	 * Writes the given short to the output stream
++	 */
++	public void writeShort(short par1) throws IOException {
++		this.output.writeShort(Short.reverseBytes(par1));
++	}
++
++	/**
++	 * Returns the contents of the output stream as a byte array
++	 */
+ 	public byte[] toByteArray() {
+-		return this.a.toByteArray();
++		return this.byteArrayOutput.toByteArray();
+ 	}
+ 
++	/**
++	 * Resets the byte array output.
++	 */
+ 	public void reset() {
+-		this.a.reset();
++		this.byteArrayOutput.reset();
+ 	}
+ }

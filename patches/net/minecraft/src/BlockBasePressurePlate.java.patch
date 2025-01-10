@@ -1,0 +1,327 @@
+--- net/minecraft/src/BlockBasePressurePlate.java
++++ net/minecraft/src/BlockBasePressurePlate.java
+@@ -3,158 +3,228 @@
+ import java.util.Random;
+ 
+ public abstract class BlockBasePressurePlate extends Block {
+-	private String a;
++	private String pressurePlateIconName;
+ 
+-	protected BlockBasePressurePlate(int var1, String var2, Material var3) {
+-		super(var1, var3);
+-		this.a = var2;
++	protected BlockBasePressurePlate(int par1, String par2Str, Material par3Material) {
++		super(par1, par3Material);
++		this.pressurePlateIconName = par2Str;
+ 		this.setCreativeTab(CreativeTabs.tabRedstone);
+ 		this.setTickRandomly(true);
+ 		this.func_94353_c_(this.getMetaFromWeight(15));
+ 	}
+ 
+-	public void setBlockBoundsBasedOnState(IBlockAccess var1, int var2, int var3, int var4) {
+-		this.func_94353_c_(var1.getBlockMetadata(var2, var3, var4));
++	/**
++	 * Updates the blocks bounds based on its current state. Args: world, x, y, z
++	 */
++	public void setBlockBoundsBasedOnState(IBlockAccess par1IBlockAccess, int par2, int par3, int par4) {
++		this.func_94353_c_(par1IBlockAccess.getBlockMetadata(par2, par3, par4));
+ 	}
+ 
+-	protected void func_94353_c_(int var1) {
+-		boolean var2 = this.getPowerSupply(var1) > 0;
+-		float var3 = 1.0F / 16.0F;
+-		if(var2) {
++	protected void func_94353_c_(int par1) {
++		boolean var2 = this.getPowerSupply(par1) > 0;
++		float var3 = 0.0625F;
++
++		if (var2) {
+ 			this.setBlockBounds(var3, 0.0F, var3, 1.0F - var3, 0.03125F, 1.0F - var3);
+ 		} else {
+-			this.setBlockBounds(var3, 0.0F, var3, 1.0F - var3, 1.0F / 16.0F, 1.0F - var3);
++			this.setBlockBounds(var3, 0.0F, var3, 1.0F - var3, 0.0625F, 1.0F - var3);
+ 		}
+-
+ 	}
+ 
+-	public int tickRate(World var1) {
++	/**
++	 * How many world ticks before ticking
++	 */
++	public int tickRate(World par1World) {
+ 		return 20;
+ 	}
+ 
+-	public AxisAlignedBB getCollisionBoundingBoxFromPool(World var1, int var2, int var3, int var4) {
++	/**
++	 * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
++	 * cleared to be reused)
++	 */
++	public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
+ 		return null;
+ 	}
+ 
++	/**
++	 * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
++	 * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
++	 */
+ 	public boolean isOpaqueCube() {
+ 		return false;
+ 	}
+ 
++	/**
++	 * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
++	 */
+ 	public boolean renderAsNormalBlock() {
+ 		return false;
+ 	}
+ 
+-	public boolean getBlocksMovement(IBlockAccess var1, int var2, int var3, int var4) {
++	public boolean getBlocksMovement(IBlockAccess par1IBlockAccess, int par2, int par3, int par4) {
+ 		return true;
+ 	}
+ 
+-	public boolean canPlaceBlockAt(World var1, int var2, int var3, int var4) {
+-		return var1.doesBlockHaveSolidTopSurface(var2, var3 - 1, var4) || BlockFence.isIdAFence(var1.getBlockId(var2, var3 - 1, var4));
++	/**
++	 * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
++	 */
++	public boolean canPlaceBlockAt(World par1World, int par2, int par3, int par4) {
++		return par1World.doesBlockHaveSolidTopSurface(par2, par3 - 1, par4) || BlockFence.isIdAFence(par1World.getBlockId(par2, par3 - 1, par4));
+ 	}
+ 
+-	public void onNeighborBlockChange(World var1, int var2, int var3, int var4, int var5) {
++	/**
++	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
++	 * their own) Args: x, y, z, neighbor blockID
++	 */
++	public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5) {
+ 		boolean var6 = false;
+-		if(!var1.doesBlockHaveSolidTopSurface(var2, var3 - 1, var4) && !BlockFence.isIdAFence(var1.getBlockId(var2, var3 - 1, var4))) {
++
++		if (!par1World.doesBlockHaveSolidTopSurface(par2, par3 - 1, par4) && !BlockFence.isIdAFence(par1World.getBlockId(par2, par3 - 1, par4))) {
+ 			var6 = true;
+ 		}
+ 
+-		if(var6) {
+-			this.dropBlockAsItem(var1, var2, var3, var4, var1.getBlockMetadata(var2, var3, var4), 0);
+-			var1.setBlockToAir(var2, var3, var4);
+-		}
+-
+-	}
+-
+-	public void updateTick(World var1, int var2, int var3, int var4, Random var5) {
+-		if(!var1.isRemote) {
+-			int var6 = this.getPowerSupply(var1.getBlockMetadata(var2, var3, var4));
+-			if(var6 > 0) {
+-				this.setStateIfMobInteractsWithPlate(var1, var2, var3, var4, var6);
+-			}
+-
+-		}
+-	}
+-
+-	public void onEntityCollidedWithBlock(World var1, int var2, int var3, int var4, Entity var5) {
+-		if(!var1.isRemote) {
+-			int var6 = this.getPowerSupply(var1.getBlockMetadata(var2, var3, var4));
+-			if(var6 == 0) {
+-				this.setStateIfMobInteractsWithPlate(var1, var2, var3, var4, var6);
+-			}
+-
+-		}
+-	}
+-
+-	protected void setStateIfMobInteractsWithPlate(World var1, int var2, int var3, int var4, int var5) {
+-		int var6 = this.getPlateState(var1, var2, var3, var4);
+-		boolean var7 = var5 > 0;
++		if (var6) {
++			this.dropBlockAsItem(par1World, par2, par3, par4, par1World.getBlockMetadata(par2, par3, par4), 0);
++			par1World.setBlockToAir(par2, par3, par4);
++		}
++	}
++
++	/**
++	 * Ticks the block if it's been scheduled
++	 */
++	public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
++		if (!par1World.isRemote) {
++			int var6 = this.getPowerSupply(par1World.getBlockMetadata(par2, par3, par4));
++
++			if (var6 > 0) {
++				this.setStateIfMobInteractsWithPlate(par1World, par2, par3, par4, var6);
++			}
++		}
++	}
++
++	/**
++	 * Triggered whenever an entity collides with this block (enters into the block). Args: world, x, y, z, entity
++	 */
++	public void onEntityCollidedWithBlock(World par1World, int par2, int par3, int par4, Entity par5Entity) {
++		if (!par1World.isRemote) {
++			int var6 = this.getPowerSupply(par1World.getBlockMetadata(par2, par3, par4));
++
++			if (var6 == 0) {
++				this.setStateIfMobInteractsWithPlate(par1World, par2, par3, par4, var6);
++			}
++		}
++	}
++
++	/**
++	 * Checks if there are mobs on the plate. If a mob is on the plate and it is off, it turns it on, and vice versa.
++	 */
++	protected void setStateIfMobInteractsWithPlate(World par1World, int par2, int par3, int par4, int par5) {
++		int var6 = this.getPlateState(par1World, par2, par3, par4);
++		boolean var7 = par5 > 0;
+ 		boolean var8 = var6 > 0;
+-		if(var5 != var6) {
+-			var1.setBlockMetadata(var2, var3, var4, this.getMetaFromWeight(var6), 2);
+-			this.func_94354_b_(var1, var2, var3, var4);
+-			var1.markBlockRangeForRenderUpdate(var2, var3, var4, var2, var3, var4);
+-		}
+-
+-		if(!var8 && var7) {
+-			var1.playSoundEffect((double)var2 + 0.5D, (double)var3 + 0.1D, (double)var4 + 0.5D, "random.click", 0.3F, 0.5F);
+-		} else if(var8 && !var7) {
+-			var1.playSoundEffect((double)var2 + 0.5D, (double)var3 + 0.1D, (double)var4 + 0.5D, "random.click", 0.3F, 0.6F);
+-		}
+-
+-		if(var8) {
+-			var1.scheduleBlockUpdate(var2, var3, var4, this.blockID, this.tickRate(var1));
+-		}
+-
+-	}
+-
+-	protected AxisAlignedBB getSensitiveAABB(int var1, int var2, int var3) {
+-		float var4 = 2.0F / 16.0F;
+-		return AxisAlignedBB.getAABBPool().getAABB((double)((float)var1 + var4), (double)var2, (double)((float)var3 + var4), (double)((float)(var1 + 1) - var4), (double)var2 + 0.25D, (double)((float)(var3 + 1) - var4));
+-	}
+-
+-	public void breakBlock(World var1, int var2, int var3, int var4, int var5, int var6) {
+-		if(this.getPowerSupply(var6) > 0) {
+-			this.func_94354_b_(var1, var2, var3, var4);
+-		}
+-
+-		super.breakBlock(var1, var2, var3, var4, var5, var6);
+-	}
+-
+-	protected void func_94354_b_(World var1, int var2, int var3, int var4) {
+-		var1.notifyBlocksOfNeighborChange(var2, var3, var4, this.blockID);
+-		var1.notifyBlocksOfNeighborChange(var2, var3 - 1, var4, this.blockID);
+-	}
+-
+-	public int isProvidingWeakPower(IBlockAccess var1, int var2, int var3, int var4, int var5) {
+-		return this.getPowerSupply(var1.getBlockMetadata(var2, var3, var4));
+-	}
+-
+-	public int isProvidingStrongPower(IBlockAccess var1, int var2, int var3, int var4, int var5) {
+-		return var5 == 1 ? this.getPowerSupply(var1.getBlockMetadata(var2, var3, var4)) : 0;
+-	}
+-
++
++		if (par5 != var6) {
++			par1World.setBlockMetadataWithNotify(par2, par3, par4, this.getMetaFromWeight(var6), 2);
++			this.func_94354_b_(par1World, par2, par3, par4);
++			par1World.markBlockRangeForRenderUpdate(par2, par3, par4, par2, par3, par4);
++		}
++
++		if (!var8 && var7) {
++			par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.5F);
++		} else if (var8 && !var7) {
++			par1World.playSoundEffect((double)par2 + 0.5D, (double)par3 + 0.1D, (double)par4 + 0.5D, "random.click", 0.3F, 0.6F);
++		}
++
++		if (var8) {
++			par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World));
++		}
++	}
++
++	protected AxisAlignedBB getSensitiveAABB(int par1, int par2, int par3) {
++		float var4 = 0.125F;
++		return AxisAlignedBB.getAABBPool().getAABB((double)((float)par1 + var4), (double)par2, (double)((float)par3 + var4), (double)((float)(par1 + 1) - var4), (double)par2 + 0.25D, (double)((float)(par3 + 1) - var4));
++	}
++
++	/**
++	 * Called on server worlds only when the block has been replaced by a different block ID, or the same block with a
++	 * different metadata value, but before the new metadata value is set. Args: World, x, y, z, old block ID, old metadata
++	 */
++	public void breakBlock(World par1World, int par2, int par3, int par4, int par5, int par6) {
++		if (this.getPowerSupply(par6) > 0) {
++			this.func_94354_b_(par1World, par2, par3, par4);
++		}
++
++		super.breakBlock(par1World, par2, par3, par4, par5, par6);
++	}
++
++	protected void func_94354_b_(World par1World, int par2, int par3, int par4) {
++		par1World.notifyBlocksOfNeighborChange(par2, par3, par4, this.blockID);
++		par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
++	}
++
++	/**
++	 * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
++	 * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X, Y,
++	 * Z, side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
++	 */
++	public int isProvidingWeakPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
++		return this.getPowerSupply(par1IBlockAccess.getBlockMetadata(par2, par3, par4));
++	}
++
++	/**
++	 * Returns true if the block is emitting direct/strong redstone power on the specified side. Args: World, X, Y, Z,
++	 * side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
++	 */
++	public int isProvidingStrongPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
++		return par5 == 1 ? this.getPowerSupply(par1IBlockAccess.getBlockMetadata(par2, par3, par4)) : 0;
++	}
++
++	/**
++	 * Can this block provide power. Only wire currently seems to have this change based on its state.
++	 */
+ 	public boolean canProvidePower() {
+ 		return true;
+ 	}
+ 
++	/**
++	 * Sets the block's bounds for rendering it as an item
++	 */
+ 	public void setBlockBoundsForItemRender() {
+ 		float var1 = 0.5F;
+-		float var2 = 2.0F / 16.0F;
++		float var2 = 0.125F;
+ 		float var3 = 0.5F;
+ 		this.setBlockBounds(0.5F - var1, 0.5F - var2, 0.5F - var3, 0.5F + var1, 0.5F + var2, 0.5F + var3);
+ 	}
+ 
++	/**
++	 * Returns the mobility information of the block, 0 = free, 1 = can't push but can move over, 2 = total immobility and
++	 * stop pistons
++	 */
+ 	public int getMobilityFlag() {
+ 		return 1;
+ 	}
+ 
++	/**
++	 * Returns the current state of the pressure plate. Returns a value between 0 and 15 based on the number of items on
++	 * it.
++	 */
+ 	protected abstract int getPlateState(World var1, int var2, int var3, int var4);
+ 
++	/**
++	 * Argument is metadata. Returns power level (0-15)
++	 */
+ 	protected abstract int getPowerSupply(int var1);
+ 
++	/**
++	 * Argument is weight (0-15). Return the metadata to be set because of it.
++	 */
+ 	protected abstract int getMetaFromWeight(int var1);
+ 
+-	public void registerIcons(IconRegister var1) {
+-		this.blockIcon = var1.registerIcon(this.a);
++	/**
++	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This is
++	 * the only chance you get to register icons.
++	 */
++	public void registerIcons(IconRegister par1IconRegister) {
++		this.blockIcon = par1IconRegister.registerIcon(this.pressurePlateIconName);
+ 	}
+ }

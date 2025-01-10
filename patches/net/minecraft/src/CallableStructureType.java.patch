@@ -1,0 +1,13 @@
+--- net/minecraft/src/CallableStructureType.java
++++ net/minecraft/src/CallableStructureType.java
+@@ -5,8 +5,8 @@
+ class CallableStructureType implements Callable {
+ 	final MapGenStructure theMapStructureGenerator;
+ 
+-	CallableStructureType(MapGenStructure var1) {
+-		this.theMapStructureGenerator = var1;
++	CallableStructureType(MapGenStructure par1MapGenStructure) {
++		this.theMapStructureGenerator = par1MapGenStructure;
+ 	}
+ 
+ 	public String callStructureType() {

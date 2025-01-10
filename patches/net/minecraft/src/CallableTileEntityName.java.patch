@@ -1,0 +1,13 @@
+--- net/minecraft/src/CallableTileEntityName.java
++++ net/minecraft/src/CallableTileEntityName.java
+@@ -5,8 +5,8 @@
+ class CallableTileEntityName implements Callable {
+ 	final TileEntity theTileEntity;
+ 
+-	CallableTileEntityName(TileEntity var1) {
+-		this.theTileEntity = var1;
++	CallableTileEntityName(TileEntity par1TileEntity) {
++		this.theTileEntity = par1TileEntity;
+ 	}
+ 
+ 	public String callTileEntityName() {

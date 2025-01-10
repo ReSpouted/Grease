@@ -1,0 +1,370 @@
+--- net/minecraft/src/StatsSyncher.java
++++ net/minecraft/src/StatsSyncher.java
+@@ -10,113 +10,133 @@
+ 
+ public class StatsSyncher {
+ 	private volatile boolean isBusy;
+-	private volatile Map b;
+-	private volatile Map c;
++	private volatile Map field_77430_b;
++	private volatile Map field_77431_c;
++
++	/**
++	 * The StatFileWriter object, presumably used to write to the statistics files
++	 */
+ 	private StatFileWriter statFileWriter;
+-	private File e;
+-	private File f;
+-	private File g;
+-	private File h;
+-	private File i;
+-	private File j;
++
++	/** A file named 'stats_' [lower case username] '_unsent.dat' */
++	private File unsentDataFile;
++
++	/** A file named 'stats_' [lower case username] '.dat' */
++	private File dataFile;
++
++	/** A file named 'stats_' [lower case username] '_unsent.tmp' */
++	private File unsentTempFile;
++
++	/** A file named 'stats_' [lower case username] '.tmp' */
++	private File tempFile;
++
++	/** A file named 'stats_' [lower case username] '_unsent.old' */
++	private File unsentOldFile;
++
++	/** A file named 'stats_' [lower case username] '.old' */
++	private File oldFile;
++
++	/** The Session object */
+ 	private Session theSession;
+ 	private int field_77433_l;
+ 	private int field_77434_m;
+ 
+-	public StatsSyncher(Session var1, StatFileWriter var2, File var3) {
+-		String var4 = var1.getUsername();
++	public StatsSyncher(Session par1Session, StatFileWriter par2StatFileWriter, File par3File) {
++		String var4 = par1Session.getUsername();
+ 		String var5 = var4.toLowerCase();
+-		this.e = new File(var3, "stats_" + var5 + "_unsent.dat");
+-		this.f = new File(var3, "stats_" + var5 + ".dat");
+-		this.i = new File(var3, "stats_" + var5 + "_unsent.old");
+-		this.j = new File(var3, "stats_" + var5 + ".old");
+-		this.g = new File(var3, "stats_" + var5 + "_unsent.tmp");
+-		this.h = new File(var3, "stats_" + var5 + ".tmp");
+-		if(!var5.equals(var4)) {
+-			this.func_77412_a(var3, "stats_" + var4 + "_unsent.dat", this.e);
+-			this.func_77412_a(var3, "stats_" + var4 + ".dat", this.f);
+-			this.func_77412_a(var3, "stats_" + var4 + "_unsent.old", this.i);
+-			this.func_77412_a(var3, "stats_" + var4 + ".old", this.j);
+-			this.func_77412_a(var3, "stats_" + var4 + "_unsent.tmp", this.g);
+-			this.func_77412_a(var3, "stats_" + var4 + ".tmp", this.h);
++		this.unsentDataFile = new File(par3File, "stats_" + var5 + "_unsent.dat");
++		this.dataFile = new File(par3File, "stats_" + var5 + ".dat");
++		this.unsentOldFile = new File(par3File, "stats_" + var5 + "_unsent.old");
++		this.oldFile = new File(par3File, "stats_" + var5 + ".old");
++		this.unsentTempFile = new File(par3File, "stats_" + var5 + "_unsent.tmp");
++		this.tempFile = new File(par3File, "stats_" + var5 + ".tmp");
++
++		if (!var5.equals(var4)) {
++			this.func_77412_a(par3File, "stats_" + var4 + "_unsent.dat", this.unsentDataFile);
++			this.func_77412_a(par3File, "stats_" + var4 + ".dat", this.dataFile);
++			this.func_77412_a(par3File, "stats_" + var4 + "_unsent.old", this.unsentOldFile);
++			this.func_77412_a(par3File, "stats_" + var4 + ".old", this.oldFile);
++			this.func_77412_a(par3File, "stats_" + var4 + "_unsent.tmp", this.unsentTempFile);
++			this.func_77412_a(par3File, "stats_" + var4 + ".tmp", this.tempFile);
+ 		}
+ 
+-		this.statFileWriter = var2;
+-		this.theSession = var1;
+-		if(this.e.exists()) {
+-			var2.writeStats(this.func_77417_a(this.e, this.g, this.i));
++		this.statFileWriter = par2StatFileWriter;
++		this.theSession = par1Session;
++
++		if (this.unsentDataFile.exists()) {
++			par2StatFileWriter.writeStats(this.func_77417_a(this.unsentDataFile, this.unsentTempFile, this.unsentOldFile));
+ 		}
+ 
+ 		this.beginReceiveStats();
+ 	}
+ 
+-	private void func_77412_a(File var1, String var2, File var3) {
+-		File var4 = new File(var1, var2);
+-		if(var4.exists() && !var4.isDirectory() && !var3.exists()) {
+-			var4.renameTo(var3);
++	private void func_77412_a(File par1File, String par2Str, File par3File) {
++		File var4 = new File(par1File, par2Str);
++
++		if (var4.exists() && !var4.isDirectory() && !par3File.exists()) {
++			var4.renameTo(par3File);
+ 		}
+-
+-	}
+-
+-	private Map func_77417_a(File var1, File var2, File var3) {
+-		return var1.exists() ? this.func_77413_a(var1) : (var3.exists() ? this.func_77413_a(var3) : (var2.exists() ? this.func_77413_a(var2) : null));
+-	}
+-
+-	private Map func_77413_a(File var1) {
++	}
++
++	private Map func_77417_a(File par1File, File par2File, File par3File) {
++		return par1File.exists() ? this.func_77413_a(par1File) : (par3File.exists() ? this.func_77413_a(par3File) : (par2File.exists() ? this.func_77413_a(par2File) : null));
++	}
++
++	private Map func_77413_a(File par1File) {
+ 		BufferedReader var2 = null;
+ 
+ 		try {
+-			var2 = new BufferedReader(new FileReader(var1));
++			var2 = new BufferedReader(new FileReader(par1File));
+ 			String var3 = "";
+ 			StringBuilder var4 = new StringBuilder();
+ 
+-			while(true) {
+-				var3 = var2.readLine();
+-				if(var3 == null) {
+-					Map var5 = StatFileWriter.func_77453_b(var4.toString());
+-					return var5;
+-				}
+-
++			while ((var3 = var2.readLine()) != null) {
+ 				var4.append(var3);
+ 			}
++
++			Map var5 = StatFileWriter.func_77453_b(var4.toString());
++			return var5;
+ 		} catch (Exception var15) {
+ 			var15.printStackTrace();
+ 		} finally {
+-			if(var2 != null) {
++			if (var2 != null) {
+ 				try {
+ 					var2.close();
+ 				} catch (Exception var14) {
+ 					var14.printStackTrace();
+ 				}
+ 			}
+-
+ 		}
+ 
+ 		return null;
+ 	}
+ 
+-	private void func_77421_a(Map var1, File var2, File var3, File var4) throws IOException {
+-		PrintWriter var5 = new PrintWriter(new FileWriter(var3, false));
++	private void func_77421_a(Map par1Map, File par2File, File par3File, File par4File) throws IOException {
++		PrintWriter var5 = new PrintWriter(new FileWriter(par3File, false));
+ 
+ 		try {
+-			var5.print(StatFileWriter.func_77441_a(this.theSession.getUsername(), "local", var1));
++			var5.print(StatFileWriter.func_77441_a(this.theSession.getUsername(), "local", par1Map));
+ 		} finally {
+ 			var5.close();
+ 		}
+ 
+-		if(var4.exists()) {
+-			var4.delete();
+-		}
+-
+-		if(var2.exists()) {
+-			var2.renameTo(var4);
+-		}
+-
+-		var3.renameTo(var2);
++		if (par4File.exists()) {
++			par4File.delete();
++		}
++
++		if (par2File.exists()) {
++			par2File.renameTo(par4File);
++		}
++
++		par3File.renameTo(par2File);
+ 	}
+ 
++	/**
++	 * Attempts to begin receiving stats from the server. Will throw an IllegalStateException if the syncher is already
++	 * busy.
++	 */
+ 	public void beginReceiveStats() {
+-		if(this.isBusy) {
++		if (this.isBusy) {
+ 			throw new IllegalStateException("Can\'t get stats from server while StatsSyncher is busy!");
+ 		} else {
+ 			this.field_77433_l = 100;
+@@ -125,22 +145,26 @@
+ 		}
+ 	}
+ 
+-	public void beginSendStats(Map var1) {
+-		if(this.isBusy) {
++	/**
++	 * Attempts to begin sending stats to the server. Will throw an IllegalStateException if the syncher is already busy.
++	 */
++	public void beginSendStats(Map par1Map) {
++		if (this.isBusy) {
+ 			throw new IllegalStateException("Can\'t save stats while StatsSyncher is busy!");
+ 		} else {
+ 			this.field_77433_l = 100;
+ 			this.isBusy = true;
+-			(new ThreadStatSyncherSend(this, var1)).start();
++			(new ThreadStatSyncherSend(this, par1Map)).start();
+ 		}
+ 	}
+ 
+-	public void syncStatsFileWithMap(Map var1) {
++	public void syncStatsFileWithMap(Map par1Map) {
+ 		int var2 = 30;
+ 
+-		while(this.isBusy) {
++		while (this.isBusy) {
+ 			--var2;
+-			if(var2 <= 0) {
++
++			if (var2 <= 0) {
+ 				break;
+ 			}
+ 
+@@ -154,81 +178,79 @@
+ 		this.isBusy = true;
+ 
+ 		try {
+-			this.func_77421_a(var1, this.e, this.g, this.i);
++			this.func_77421_a(par1Map, this.unsentDataFile, this.unsentTempFile, this.unsentOldFile);
+ 		} catch (Exception var8) {
+ 			var8.printStackTrace();
+ 		} finally {
+ 			this.isBusy = false;
+ 		}
+-
+ 	}
+ 
+ 	public boolean func_77425_c() {
+-		return this.field_77433_l <= 0 && !this.isBusy && this.c == null;
++		return this.field_77433_l <= 0 && !this.isBusy && this.field_77431_c == null;
+ 	}
+ 
+ 	public void func_77422_e() {
+-		if(this.field_77433_l > 0) {
++		if (this.field_77433_l > 0) {
+ 			--this.field_77433_l;
+ 		}
+ 
+-		if(this.field_77434_m > 0) {
++		if (this.field_77434_m > 0) {
+ 			--this.field_77434_m;
+ 		}
+ 
+-		if(this.c != null) {
+-			this.statFileWriter.func_77448_c(this.c);
+-			this.c = null;
+-		}
+-
+-		if(this.b != null) {
+-			this.statFileWriter.func_77452_b(this.b);
+-			this.b = null;
+-		}
+-
+-	}
+-
+-	static Map func_77419_a(StatsSyncher var0) {
+-		return var0.b;
+-	}
+-
+-	static File func_77408_b(StatsSyncher var0) {
+-		return var0.f;
+-	}
+-
+-	static File func_77407_c(StatsSyncher var0) {
+-		return var0.h;
+-	}
+-
+-	static File func_77411_d(StatsSyncher var0) {
+-		return var0.j;
+-	}
+-
+-	static void func_77414_a(StatsSyncher var0, Map var1, File var2, File var3, File var4) throws IOException {
+-		var0.func_77421_a(var1, var2, var3, var4);
+-	}
+-
+-	static Map func_77416_a(StatsSyncher var0, Map var1) {
+-		return var0.b = var1;
+-	}
+-
+-	static Map func_77410_a(StatsSyncher var0, File var1, File var2, File var3) {
+-		return var0.func_77417_a(var1, var2, var3);
+-	}
+-
+-	static boolean setBusy(StatsSyncher var0, boolean var1) {
+-		return var0.isBusy = var1;
+-	}
+-
+-	static File getUnsentDataFile(StatsSyncher var0) {
+-		return var0.e;
+-	}
+-
+-	static File getUnsentTempFile(StatsSyncher var0) {
+-		return var0.g;
+-	}
+-
+-	static File getUnsentOldFile(StatsSyncher var0) {
+-		return var0.i;
++		if (this.field_77431_c != null) {
++			this.statFileWriter.func_77448_c(this.field_77431_c);
++			this.field_77431_c = null;
++		}
++
++		if (this.field_77430_b != null) {
++			this.statFileWriter.func_77452_b(this.field_77430_b);
++			this.field_77430_b = null;
++		}
++	}
++
++	static Map func_77419_a(StatsSyncher par0StatsSyncher) {
++		return par0StatsSyncher.field_77430_b;
++	}
++
++	static File func_77408_b(StatsSyncher par0StatsSyncher) {
++		return par0StatsSyncher.dataFile;
++	}
++
++	static File func_77407_c(StatsSyncher par0StatsSyncher) {
++		return par0StatsSyncher.tempFile;
++	}
++
++	static File func_77411_d(StatsSyncher par0StatsSyncher) {
++		return par0StatsSyncher.oldFile;
++	}
++
++	static void func_77414_a(StatsSyncher par0StatsSyncher, Map par1Map, File par2File, File par3File, File par4File) throws IOException {
++		par0StatsSyncher.func_77421_a(par1Map, par2File, par3File, par4File);
++	}
++
++	static Map func_77416_a(StatsSyncher par0StatsSyncher, Map par1Map) {
++		return par0StatsSyncher.field_77430_b = par1Map;
++	}
++
++	static Map func_77410_a(StatsSyncher par0StatsSyncher, File par1File, File par2File, File par3File) {
++		return par0StatsSyncher.func_77417_a(par1File, par2File, par3File);
++	}
++
++	static boolean setBusy(StatsSyncher par0StatsSyncher, boolean par1) {
++		return par0StatsSyncher.isBusy = par1;
++	}
++
++	static File getUnsentDataFile(StatsSyncher par0StatsSyncher) {
++		return par0StatsSyncher.unsentDataFile;
++	}
++
++	static File getUnsentTempFile(StatsSyncher par0StatsSyncher) {
++		return par0StatsSyncher.unsentTempFile;
++	}
++
++	static File getUnsentOldFile(StatsSyncher par0StatsSyncher) {
++		return par0StatsSyncher.unsentOldFile;
+ 	}
+ }

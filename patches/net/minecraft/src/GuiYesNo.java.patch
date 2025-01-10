@@ -1,0 +1,104 @@
+--- net/minecraft/src/GuiYesNo.java
++++ net/minecraft/src/GuiYesNo.java
+@@ -1,44 +1,67 @@
+ package net.minecraft.src;
+ 
+ public class GuiYesNo extends GuiScreen {
++
++	/**
++	 * A reference to the screen object that created this. Used for navigating between screens.
++	 */
+ 	protected GuiScreen parentScreen;
+-	protected String b;
+-	private String p;
+-	protected String c;
+-	protected String d;
++
++	/** First line of text. */
++	protected String message1;
++
++	/** Second line of text. */
++	private String message2;
++
++	/** The text shown for the first button in GuiYesNo */
++	protected String buttonText1;
++
++	/** The text shown for the second button in GuiYesNo */
++	protected String buttonText2;
++
++	/** World number to be deleted. */
+ 	protected int worldNumber;
+ 
+-	public GuiYesNo(GuiScreen var1, String var2, String var3, int var4) {
+-		this.parentScreen = var1;
+-		this.b = var2;
+-		this.p = var3;
+-		this.worldNumber = var4;
+-		this.c = I18n.getString("gui.yes");
+-		this.d = I18n.getString("gui.no");
+-	}
+-
+-	public GuiYesNo(GuiScreen var1, String var2, String var3, String var4, String var5, int var6) {
+-		this.parentScreen = var1;
+-		this.b = var2;
+-		this.p = var3;
+-		this.c = var4;
+-		this.d = var5;
+-		this.worldNumber = var6;
+-	}
+-
++	public GuiYesNo(GuiScreen par1GuiScreen, String par2Str, String par3Str, int par4) {
++		this.parentScreen = par1GuiScreen;
++		this.message1 = par2Str;
++		this.message2 = par3Str;
++		this.worldNumber = par4;
++		this.buttonText1 = I18n.getString("gui.yes");
++		this.buttonText2 = I18n.getString("gui.no");
++	}
++
++	public GuiYesNo(GuiScreen par1GuiScreen, String par2Str, String par3Str, String par4Str, String par5Str, int par6) {
++		this.parentScreen = par1GuiScreen;
++		this.message1 = par2Str;
++		this.message2 = par3Str;
++		this.buttonText1 = par4Str;
++		this.buttonText2 = par5Str;
++		this.worldNumber = par6;
++	}
++
++	/**
++	 * Adds the buttons (and other controls) to the screen in question.
++	 */
+ 	public void initGui() {
+-		this.i.add(new GuiSmallButton(0, this.width / 2 - 155, this.height / 6 + 96, this.c));
+-		this.i.add(new GuiSmallButton(1, this.width / 2 - 155 + 160, this.height / 6 + 96, this.d));
+-	}
+-
+-	protected void actionPerformed(GuiButton var1) {
+-		this.parentScreen.confirmClicked(var1.id == 0, this.worldNumber);
+-	}
+-
+-	public void drawScreen(int var1, int var2, float var3) {
++		this.buttonList.add(new GuiSmallButton(0, this.width / 2 - 155, this.height / 6 + 96, this.buttonText1));
++		this.buttonList.add(new GuiSmallButton(1, this.width / 2 - 155 + 160, this.height / 6 + 96, this.buttonText2));
++	}
++
++	/**
++	 * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
++	 */
++	protected void actionPerformed(GuiButton par1GuiButton) {
++		this.parentScreen.confirmClicked(par1GuiButton.id == 0, this.worldNumber);
++	}
++
++	/**
++	 * Draws the screen and all the components in it.
++	 */
++	public void drawScreen(int par1, int par2, float par3) {
+ 		this.drawDefaultBackground();
+-		this.drawCenteredString(this.fontRenderer, this.b, this.width / 2, 70, 16777215);
+-		this.drawCenteredString(this.fontRenderer, this.p, this.width / 2, 90, 16777215);
+-		super.drawScreen(var1, var2, var3);
++		this.drawCenteredString(this.fontRenderer, this.message1, this.width / 2, 70, 16777215);
++		this.drawCenteredString(this.fontRenderer, this.message2, this.width / 2, 90, 16777215);
++		super.drawScreen(par1, par2, par3);
+ 	}
+ }

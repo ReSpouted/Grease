@@ -1,0 +1,12 @@
+--- net/minecraft/src/AttributeInstance.java
++++ net/minecraft/src/AttributeInstance.java
+@@ -12,6 +12,9 @@
+ 
+ 	Collection func_111122_c();
+ 
++	/**
++	 * Returns attribute modifier, if any, by the given UUID
++	 */
+ 	AttributeModifier getModifier(UUID var1);
+ 
+ 	void applyModifier(AttributeModifier var1);

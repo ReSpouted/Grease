@@ -1,0 +1,21 @@
+--- net/minecraft/src/RegionFileChunkBuffer.java
++++ net/minecraft/src/RegionFileChunkBuffer.java
+@@ -6,13 +6,14 @@
+ class RegionFileChunkBuffer extends ByteArrayOutputStream {
+ 	private int chunkX;
+ 	private int chunkZ;
++
+ 	final RegionFile regionFile;
+ 
+-	public RegionFileChunkBuffer(RegionFile var1, int var2, int var3) {
++	public RegionFileChunkBuffer(RegionFile par1RegionFile, int par2, int par3) {
+ 		super(8096);
+-		this.regionFile = var1;
+-		this.chunkX = var2;
+-		this.chunkZ = var3;
++		this.regionFile = par1RegionFile;
++		this.chunkX = par2;
++		this.chunkZ = par3;
+ 	}
+ 
+ 	public void close() throws IOException {

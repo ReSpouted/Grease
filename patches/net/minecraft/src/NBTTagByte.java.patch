@@ -1,0 +1,76 @@
+--- net/minecraft/src/NBTTagByte.java
++++ net/minecraft/src/NBTTagByte.java
+@@ -5,25 +5,36 @@
+ import java.io.IOException;
+ 
+ public class NBTTagByte extends NBTBase {
++
++	/** The byte value for the tag. */
+ 	public byte data;
+ 
+-	public NBTTagByte(String var1) {
+-		super(var1);
+-	}
+-
+-	public NBTTagByte(String var1, byte var2) {
+-		super(var1);
+-		this.data = var2;
+-	}
+-
+-	void write(DataOutput var1) throws IOException {
+-		var1.writeByte(this.data);
+-	}
+-
+-	void load(DataInput var1, int var2) throws IOException {
+-		this.data = var1.readByte();
+-	}
+-
++	public NBTTagByte(String par1Str) {
++		super(par1Str);
++	}
++
++	public NBTTagByte(String par1Str, byte par2) {
++		super(par1Str);
++		this.data = par2;
++	}
++
++	/**
++	 * Write the actual data contents of the tag, implemented in NBT extension classes
++	 */
++	void write(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeByte(this.data);
++	}
++
++	/**
++	 * Read the actual data contents of the tag, implemented in NBT extension classes
++	 */
++	void load(DataInput par1DataInput, int par2) throws IOException {
++		this.data = par1DataInput.readByte();
++	}
++
++	/**
++	 * Gets the type byte for the tag.
++	 */
+ 	public byte getId() {
+ 		return (byte)1;
+ 	}
+@@ -32,13 +43,16 @@
+ 		return "" + this.data;
+ 	}
+ 
++	/**
++	 * Creates a clone of the tag.
++	 */
+ 	public NBTBase copy() {
+ 		return new NBTTagByte(this.getName(), this.data);
+ 	}
+ 
+-	public boolean equals(Object var1) {
+-		if(super.equals(var1)) {
+-			NBTTagByte var2 = (NBTTagByte)var1;
++	public boolean equals(Object par1Obj) {
++		if (super.equals(par1Obj)) {
++			NBTTagByte var2 = (NBTTagByte)par1Obj;
+ 			return this.data == var2.data;
+ 		} else {
+ 			return false;

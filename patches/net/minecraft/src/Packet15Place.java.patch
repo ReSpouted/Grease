@@ -1,0 +1,138 @@
+--- net/minecraft/src/Packet15Place.java
++++ net/minecraft/src/Packet15Place.java
+@@ -8,52 +8,71 @@
+ 	private int xPosition;
+ 	private int yPosition;
+ 	private int zPosition;
++
++	/** The offset to use for block/item placement. */
+ 	private int direction;
+ 	private ItemStack itemStack;
++
++	/** The offset from xPosition where the actual click took place */
+ 	private float xOffset;
++
++	/** The offset from yPosition where the actual click took place */
+ 	private float yOffset;
++
++	/** The offset from zPosition where the actual click took place */
+ 	private float zOffset;
+ 
+-	public Packet15Place() {
+-	}
+-
+-	public Packet15Place(int var1, int var2, int var3, int var4, ItemStack var5, float var6, float var7, float var8) {
+-		this.xPosition = var1;
+-		this.yPosition = var2;
+-		this.zPosition = var3;
+-		this.direction = var4;
+-		this.itemStack = var5 != null ? var5.copy() : null;
+-		this.xOffset = var6;
+-		this.yOffset = var7;
+-		this.zOffset = var8;
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.xPosition = var1.readInt();
+-		this.yPosition = var1.readUnsignedByte();
+-		this.zPosition = var1.readInt();
+-		this.direction = var1.readUnsignedByte();
+-		this.itemStack = readItemStack(var1);
+-		this.xOffset = (float)var1.readUnsignedByte() / 16.0F;
+-		this.yOffset = (float)var1.readUnsignedByte() / 16.0F;
+-		this.zOffset = (float)var1.readUnsignedByte() / 16.0F;
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeInt(this.xPosition);
+-		var1.write(this.yPosition);
+-		var1.writeInt(this.zPosition);
+-		var1.write(this.direction);
+-		writeItemStack(this.itemStack, var1);
+-		var1.write((int)(this.xOffset * 16.0F));
+-		var1.write((int)(this.yOffset * 16.0F));
+-		var1.write((int)(this.zOffset * 16.0F));
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handlePlace(this);
+-	}
+-
++	public Packet15Place() {}
++
++	public Packet15Place(int par1, int par2, int par3, int par4, ItemStack par5ItemStack, float par6, float par7, float par8) {
++		this.xPosition = par1;
++		this.yPosition = par2;
++		this.zPosition = par3;
++		this.direction = par4;
++		this.itemStack = par5ItemStack != null ? par5ItemStack.copy() : null;
++		this.xOffset = par6;
++		this.yOffset = par7;
++		this.zOffset = par8;
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.xPosition = par1DataInput.readInt();
++		this.yPosition = par1DataInput.readUnsignedByte();
++		this.zPosition = par1DataInput.readInt();
++		this.direction = par1DataInput.readUnsignedByte();
++		this.itemStack = readItemStack(par1DataInput);
++		this.xOffset = (float)par1DataInput.readUnsignedByte() / 16.0F;
++		this.yOffset = (float)par1DataInput.readUnsignedByte() / 16.0F;
++		this.zOffset = (float)par1DataInput.readUnsignedByte() / 16.0F;
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeInt(this.xPosition);
++		par1DataOutput.write(this.yPosition);
++		par1DataOutput.writeInt(this.zPosition);
++		par1DataOutput.write(this.direction);
++		writeItemStack(this.itemStack, par1DataOutput);
++		par1DataOutput.write((int)(this.xOffset * 16.0F));
++		par1DataOutput.write((int)(this.yOffset * 16.0F));
++		par1DataOutput.write((int)(this.zOffset * 16.0F));
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handlePlace(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 19;
+ 	}
+@@ -78,14 +97,23 @@
+ 		return this.itemStack;
+ 	}
+ 
++	/**
++	 * Returns the offset from xPosition where the actual click took place
++	 */
+ 	public float getXOffset() {
+ 		return this.xOffset;
+ 	}
+ 
++	/**
++	 * Returns the offset from yPosition where the actual click took place
++	 */
+ 	public float getYOffset() {
+ 		return this.yOffset;
+ 	}
+ 
++	/**
++	 * Returns the offset from zPosition where the actual click took place
++	 */
+ 	public float getZOffset() {
+ 		return this.zOffset;
+ 	}

@@ -1,0 +1,23 @@
+--- net/minecraft/src/PortalPosition.java
++++ net/minecraft/src/PortalPosition.java
+@@ -1,12 +1,16 @@
+ package net.minecraft.src;
+ 
+ public class PortalPosition extends ChunkCoordinates {
++
++	/** The worldtime at which this PortalPosition was last verified */
+ 	public long lastUpdateTime;
++
++	/** The teleporter to which this PortalPosition applies */
+ 	final Teleporter teleporterInstance;
+ 
+-	public PortalPosition(Teleporter var1, int var2, int var3, int var4, long var5) {
+-		super(var2, var3, var4);
+-		this.teleporterInstance = var1;
+-		this.lastUpdateTime = var5;
++	public PortalPosition(Teleporter par1Teleporter, int par2, int par3, int par4, long par5) {
++		super(par2, par3, par4);
++		this.teleporterInstance = par1Teleporter;
++		this.lastUpdateTime = par5;
+ 	}
+ }

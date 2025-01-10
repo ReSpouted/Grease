@@ -1,0 +1,11 @@
+--- net/minecraft/src/IEntitySelector.java
++++ net/minecraft/src/IEntitySelector.java
+@@ -4,5 +4,8 @@
+ 	IEntitySelector selectAnything = new EntitySelectorAlive();
+ 	IEntitySelector selectInventories = new EntitySelectorInventory();
+ 
++	/**
++	 * Return whether the specified entity is applicable to this filter.
++	 */
+ 	boolean isEntityApplicable(Entity var1);
+ }

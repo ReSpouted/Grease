@@ -1,0 +1,18 @@
+--- net/minecraft/src/TextureManagerINNER1.java
++++ net/minecraft/src/TextureManagerINNER1.java
+@@ -4,11 +4,12 @@
+ 
+ class TextureManagerINNER1 implements Callable {
+ 	final TextureObject theTextureObject;
++
+ 	final TextureManager theTextureManager;
+ 
+-	TextureManagerINNER1(TextureManager var1, TextureObject var2) {
+-		this.theTextureManager = var1;
+-		this.theTextureObject = var2;
++	TextureManagerINNER1(TextureManager par1TextureManager, TextureObject par2TextureObject) {
++		this.theTextureManager = par1TextureManager;
++		this.theTextureObject = par2TextureObject;
+ 	}
+ 
+ 	public String func_135060_a() {

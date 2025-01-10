@@ -1,0 +1,22 @@
+--- net/minecraft/src/CommandException.java
++++ net/minecraft/src/CommandException.java
+@@ -1,14 +1,14 @@
+ package net.minecraft.src;
+ 
+ public class CommandException extends RuntimeException {
+-	private Object[] a;
++	private Object[] errorObjects;
+ 
+-	public CommandException(String var1, Object... var2) {
+-		super(var1);
+-		this.a = var2;
++	public CommandException(String par1Str, Object ... par2ArrayOfObj) {
++		super(par1Str);
++		this.errorObjects = par2ArrayOfObj;
+ 	}
+ 
+ 	public Object[] getErrorOjbects() {
+-		return this.a;
++		return this.errorObjects;
+ 	}
+ }

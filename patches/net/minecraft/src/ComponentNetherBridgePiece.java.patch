@@ -1,0 +1,262 @@
+--- net/minecraft/src/ComponentNetherBridgePiece.java
++++ net/minecraft/src/ComponentNetherBridgePiece.java
+@@ -5,29 +5,27 @@
+ import java.util.Random;
+ 
+ abstract class ComponentNetherBridgePiece extends StructureComponent {
+-	protected static final WeightedRandomChestContent[] field_111019_a = new WeightedRandomChestContent[]{new WeightedRandomChestContent(Item.diamond.itemID, 0, 1, 3, 5), new WeightedRandomChestContent(Item.ingotIron.itemID, 0, 1, 5, 5), new WeightedRandomChestContent(Item.ingotGold.itemID, 0, 1, 3, 15), new WeightedRandomChestContent(Item.swordGold.itemID, 0, 1, 1, 5), new WeightedRandomChestContent(Item.plateGold.itemID, 0, 1, 1, 5), new WeightedRandomChestContent(Item.flintAndSteel.itemID, 0, 1, 1, 5), new WeightedRandomChestContent(Item.netherStalkSeeds.itemID, 0, 3, 7, 5), new WeightedRandomChestContent(Item.saddle.itemID, 0, 1, 1, 10), new WeightedRandomChestContent(Item.horseArmorGold.itemID, 0, 1, 1, 8), new WeightedRandomChestContent(Item.horseArmorIron.itemID, 0, 1, 1, 5), new WeightedRandomChestContent(Item.horseArmorDiamond.itemID, 0, 1, 1, 3)};
+-
+-	public ComponentNetherBridgePiece() {
+-	}
+-
+-	protected ComponentNetherBridgePiece(int var1) {
+-		super(var1);
+-	}
+-
+-	protected void func_143011_b(NBTTagCompound var1) {
+-	}
+-
+-	protected void func_143012_a(NBTTagCompound var1) {
+-	}
+-
+-	private int getTotalWeight(List var1) {
++	protected static final WeightedRandomChestContent[] field_111019_a = new WeightedRandomChestContent[] {new WeightedRandomChestContent(Item.diamond.itemID, 0, 1, 3, 5), new WeightedRandomChestContent(Item.ingotIron.itemID, 0, 1, 5, 5), new WeightedRandomChestContent(Item.ingotGold.itemID, 0, 1, 3, 15), new WeightedRandomChestContent(Item.swordGold.itemID, 0, 1, 1, 5), new WeightedRandomChestContent(Item.plateGold.itemID, 0, 1, 1, 5), new WeightedRandomChestContent(Item.flintAndSteel.itemID, 0, 1, 1, 5), new WeightedRandomChestContent(Item.netherStalkSeeds.itemID, 0, 3, 7, 5), new WeightedRandomChestContent(Item.saddle.itemID, 0, 1, 1, 10), new WeightedRandomChestContent(Item.horseArmorGold.itemID, 0, 1, 1, 8), new WeightedRandomChestContent(Item.horseArmorIron.itemID, 0, 1, 1, 5), new WeightedRandomChestContent(Item.horseArmorDiamond.itemID, 0, 1, 1, 3)};
++
++	public ComponentNetherBridgePiece() {}
++
++	protected ComponentNetherBridgePiece(int par1) {
++		super(par1);
++	}
++
++	protected void func_143011_b(NBTTagCompound par1NBTTagCompound) {}
++
++	protected void func_143012_a(NBTTagCompound par1NBTTagCompound) {}
++
++	private int getTotalWeight(List par1List) {
+ 		boolean var2 = false;
+ 		int var3 = 0;
+-
+ 		StructureNetherBridgePieceWeight var5;
+-		for(Iterator var4 = var1.iterator(); var4.hasNext(); var3 += var5.field_78826_b) {
++
++		for (Iterator var4 = par1List.iterator(); var4.hasNext(); var3 += var5.field_78826_b) {
+ 			var5 = (StructureNetherBridgePieceWeight)var4.next();
+-			if(var5.field_78824_d > 0 && var5.field_78827_c < var5.field_78824_d) {
++
++			if (var5.field_78824_d > 0 && var5.field_78827_c < var5.field_78824_d) {
+ 				var2 = true;
+ 			}
+ 		}
+@@ -35,30 +33,33 @@
+ 		return var2 ? var3 : -1;
+ 	}
+ 
+-	private ComponentNetherBridgePiece getNextComponent(ComponentNetherBridgeStartPiece var1, List var2, List var3, Random var4, int var5, int var6, int var7, int var8, int var9) {
+-		int var10 = this.getTotalWeight(var2);
+-		boolean var11 = var10 > 0 && var9 <= 30;
++	private ComponentNetherBridgePiece getNextComponent(ComponentNetherBridgeStartPiece par1ComponentNetherBridgeStartPiece, List par2List, List par3List, Random par4Random, int par5, int par6, int par7, int par8, int par9) {
++		int var10 = this.getTotalWeight(par2List);
++		boolean var11 = var10 > 0 && par9 <= 30;
+ 		int var12 = 0;
+ 
+-		while(var12 < 5 && var11) {
++		while (var12 < 5 && var11) {
+ 			++var12;
+-			int var13 = var4.nextInt(var10);
+-			Iterator var14 = var2.iterator();
++			int var13 = par4Random.nextInt(var10);
++			Iterator var14 = par2List.iterator();
+ 
+-			while(var14.hasNext()) {
++			while (var14.hasNext()) {
+ 				StructureNetherBridgePieceWeight var15 = (StructureNetherBridgePieceWeight)var14.next();
+ 				var13 -= var15.field_78826_b;
+-				if(var13 < 0) {
+-					if(!var15.func_78822_a(var9) || var15 == var1.theNetherBridgePieceWeight && !var15.field_78825_e) {
++
++				if (var13 < 0) {
++					if (!var15.func_78822_a(par9) || var15 == par1ComponentNetherBridgeStartPiece.theNetherBridgePieceWeight && !var15.field_78825_e) {
+ 						break;
+ 					}
+ 
+-					ComponentNetherBridgePiece var16 = StructureNetherBridgePieces.createNextComponent(var15, var3, var4, var5, var6, var7, var8, var9);
+-					if(var16 != null) {
++					ComponentNetherBridgePiece var16 = StructureNetherBridgePieces.createNextComponent(var15, par3List, par4Random, par5, par6, par7, par8, par9);
++
++					if (var16 != null) {
+ 						++var15.field_78827_c;
+-						var1.theNetherBridgePieceWeight = var15;
+-						if(!var15.func_78823_a()) {
+-							var2.remove(var15);
++						par1ComponentNetherBridgeStartPiece.theNetherBridgePieceWeight = var15;
++
++						if (!var15.func_78823_a()) {
++							par2List.remove(var15);
+ 						}
+ 
+ 						return var16;
+@@ -67,74 +68,103 @@
+ 			}
+ 		}
+ 
+-		return ComponentNetherBridgeEnd.func_74971_a(var3, var4, var5, var6, var7, var8, var9);
++		return ComponentNetherBridgeEnd.func_74971_a(par3List, par4Random, par5, par6, par7, par8, par9);
+ 	}
+ 
+-	private StructureComponent getNextComponent(ComponentNetherBridgeStartPiece var1, List var2, Random var3, int var4, int var5, int var6, int var7, int var8, boolean var9) {
+-		if(Math.abs(var4 - var1.getBoundingBox().minX) <= 112 && Math.abs(var6 - var1.getBoundingBox().minZ) <= 112) {
+-			List var10 = var1.c;
+-			if(var9) {
+-				var10 = var1.d;
++	/**
++	 * Finds a random component to tack on to the bridge. Or builds the end.
++	 */
++	private StructureComponent getNextComponent(ComponentNetherBridgeStartPiece par1ComponentNetherBridgeStartPiece, List par2List, Random par3Random, int par4, int par5, int par6, int par7, int par8, boolean par9) {
++		if (Math.abs(par4 - par1ComponentNetherBridgeStartPiece.getBoundingBox().minX) <= 112 && Math.abs(par6 - par1ComponentNetherBridgeStartPiece.getBoundingBox().minZ) <= 112) {
++			List var10 = par1ComponentNetherBridgeStartPiece.primaryWeights;
++
++			if (par9) {
++				var10 = par1ComponentNetherBridgeStartPiece.secondaryWeights;
+ 			}
+ 
+-			ComponentNetherBridgePiece var11 = this.getNextComponent(var1, var10, var2, var3, var4, var5, var6, var7, var8 + 1);
+-			if(var11 != null) {
+-				var2.add(var11);
+-				var1.e.add(var11);
++			ComponentNetherBridgePiece var11 = this.getNextComponent(par1ComponentNetherBridgeStartPiece, var10, par2List, par3Random, par4, par5, par6, par7, par8 + 1);
++
++			if (var11 != null) {
++				par2List.add(var11);
++				par1ComponentNetherBridgeStartPiece.field_74967_d.add(var11);
+ 			}
+ 
+ 			return var11;
+ 		} else {
+-			return ComponentNetherBridgeEnd.func_74971_a(var2, var3, var4, var5, var6, var7, var8);
+-		}
+-	}
+-
+-	protected StructureComponent getNextComponentNormal(ComponentNetherBridgeStartPiece var1, List var2, Random var3, int var4, int var5, boolean var6) {
+-		switch(this.coordBaseMode) {
+-		case 0:
+-			return this.getNextComponent(var1, var2, var3, this.boundingBox.minX + var4, this.boundingBox.minY + var5, this.boundingBox.maxZ + 1, this.coordBaseMode, this.getComponentType(), var6);
+-		case 1:
+-			return this.getNextComponent(var1, var2, var3, this.boundingBox.minX - 1, this.boundingBox.minY + var5, this.boundingBox.minZ + var4, this.coordBaseMode, this.getComponentType(), var6);
+-		case 2:
+-			return this.getNextComponent(var1, var2, var3, this.boundingBox.minX + var4, this.boundingBox.minY + var5, this.boundingBox.minZ - 1, this.coordBaseMode, this.getComponentType(), var6);
+-		case 3:
+-			return this.getNextComponent(var1, var2, var3, this.boundingBox.maxX + 1, this.boundingBox.minY + var5, this.boundingBox.minZ + var4, this.coordBaseMode, this.getComponentType(), var6);
+-		default:
+-			return null;
+-		}
+-	}
+-
+-	protected StructureComponent getNextComponentX(ComponentNetherBridgeStartPiece var1, List var2, Random var3, int var4, int var5, boolean var6) {
+-		switch(this.coordBaseMode) {
+-		case 0:
+-			return this.getNextComponent(var1, var2, var3, this.boundingBox.minX - 1, this.boundingBox.minY + var4, this.boundingBox.minZ + var5, 1, this.getComponentType(), var6);
+-		case 1:
+-			return this.getNextComponent(var1, var2, var3, this.boundingBox.minX + var5, this.boundingBox.minY + var4, this.boundingBox.minZ - 1, 2, this.getComponentType(), var6);
+-		case 2:
+-			return this.getNextComponent(var1, var2, var3, this.boundingBox.minX - 1, this.boundingBox.minY + var4, this.boundingBox.minZ + var5, 1, this.getComponentType(), var6);
+-		case 3:
+-			return this.getNextComponent(var1, var2, var3, this.boundingBox.minX + var5, this.boundingBox.minY + var4, this.boundingBox.minZ - 1, 2, this.getComponentType(), var6);
+-		default:
+-			return null;
+-		}
+-	}
+-
+-	protected StructureComponent getNextComponentZ(ComponentNetherBridgeStartPiece var1, List var2, Random var3, int var4, int var5, boolean var6) {
+-		switch(this.coordBaseMode) {
+-		case 0:
+-			return this.getNextComponent(var1, var2, var3, this.boundingBox.maxX + 1, this.boundingBox.minY + var4, this.boundingBox.minZ + var5, 3, this.getComponentType(), var6);
+-		case 1:
+-			return this.getNextComponent(var1, var2, var3, this.boundingBox.minX + var5, this.boundingBox.minY + var4, this.boundingBox.maxZ + 1, 0, this.getComponentType(), var6);
+-		case 2:
+-			return this.getNextComponent(var1, var2, var3, this.boundingBox.maxX + 1, this.boundingBox.minY + var4, this.boundingBox.minZ + var5, 3, this.getComponentType(), var6);
+-		case 3:
+-			return this.getNextComponent(var1, var2, var3, this.boundingBox.minX + var5, this.boundingBox.minY + var4, this.boundingBox.maxZ + 1, 0, this.getComponentType(), var6);
+-		default:
+-			return null;
+-		}
+-	}
+-
+-	protected static boolean isAboveGround(StructureBoundingBox var0) {
+-		return var0 != null && var0.minY > 10;
++			return ComponentNetherBridgeEnd.func_74971_a(par2List, par3Random, par4, par5, par6, par7, par8);
++		}
++	}
++
++	/**
++	 * Gets the next component in any cardinal direction
++	 */
++	protected StructureComponent getNextComponentNormal(ComponentNetherBridgeStartPiece par1ComponentNetherBridgeStartPiece, List par2List, Random par3Random, int par4, int par5, boolean par6) {
++		switch (this.coordBaseMode) {
++			case 0:
++				return this.getNextComponent(par1ComponentNetherBridgeStartPiece, par2List, par3Random, this.boundingBox.minX + par4, this.boundingBox.minY + par5, this.boundingBox.maxZ + 1, this.coordBaseMode, this.getComponentType(), par6);
++
++			case 1:
++				return this.getNextComponent(par1ComponentNetherBridgeStartPiece, par2List, par3Random, this.boundingBox.minX - 1, this.boundingBox.minY + par5, this.boundingBox.minZ + par4, this.coordBaseMode, this.getComponentType(), par6);
++
++			case 2:
++				return this.getNextComponent(par1ComponentNetherBridgeStartPiece, par2List, par3Random, this.boundingBox.minX + par4, this.boundingBox.minY + par5, this.boundingBox.minZ - 1, this.coordBaseMode, this.getComponentType(), par6);
++
++			case 3:
++				return this.getNextComponent(par1ComponentNetherBridgeStartPiece, par2List, par3Random, this.boundingBox.maxX + 1, this.boundingBox.minY + par5, this.boundingBox.minZ + par4, this.coordBaseMode, this.getComponentType(), par6);
++
++			default:
++				return null;
++		}
++	}
++
++	/**
++	 * Gets the next component in the +/- X direction
++	 */
++	protected StructureComponent getNextComponentX(ComponentNetherBridgeStartPiece par1ComponentNetherBridgeStartPiece, List par2List, Random par3Random, int par4, int par5, boolean par6) {
++		switch (this.coordBaseMode) {
++			case 0:
++				return this.getNextComponent(par1ComponentNetherBridgeStartPiece, par2List, par3Random, this.boundingBox.minX - 1, this.boundingBox.minY + par4, this.boundingBox.minZ + par5, 1, this.getComponentType(), par6);
++
++			case 1:
++				return this.getNextComponent(par1ComponentNetherBridgeStartPiece, par2List, par3Random, this.boundingBox.minX + par5, this.boundingBox.minY + par4, this.boundingBox.minZ - 1, 2, this.getComponentType(), par6);
++
++			case 2:
++				return this.getNextComponent(par1ComponentNetherBridgeStartPiece, par2List, par3Random, this.boundingBox.minX - 1, this.boundingBox.minY + par4, this.boundingBox.minZ + par5, 1, this.getComponentType(), par6);
++
++			case 3:
++				return this.getNextComponent(par1ComponentNetherBridgeStartPiece, par2List, par3Random, this.boundingBox.minX + par5, this.boundingBox.minY + par4, this.boundingBox.minZ - 1, 2, this.getComponentType(), par6);
++
++			default:
++				return null;
++		}
++	}
++
++	/**
++	 * Gets the next component in the +/- Z direction
++	 */
++	protected StructureComponent getNextComponentZ(ComponentNetherBridgeStartPiece par1ComponentNetherBridgeStartPiece, List par2List, Random par3Random, int par4, int par5, boolean par6) {
++		switch (this.coordBaseMode) {
++			case 0:
++				return this.getNextComponent(par1ComponentNetherBridgeStartPiece, par2List, par3Random, this.boundingBox.maxX + 1, this.boundingBox.minY + par4, this.boundingBox.minZ + par5, 3, this.getComponentType(), par6);
++
++			case 1:
++				return this.getNextComponent(par1ComponentNetherBridgeStartPiece, par2List, par3Random, this.boundingBox.minX + par5, this.boundingBox.minY + par4, this.boundingBox.maxZ + 1, 0, this.getComponentType(), par6);
++
++			case 2:
++				return this.getNextComponent(par1ComponentNetherBridgeStartPiece, par2List, par3Random, this.boundingBox.maxX + 1, this.boundingBox.minY + par4, this.boundingBox.minZ + par5, 3, this.getComponentType(), par6);
++
++			case 3:
++				return this.getNextComponent(par1ComponentNetherBridgeStartPiece, par2List, par3Random, this.boundingBox.minX + par5, this.boundingBox.minY + par4, this.boundingBox.maxZ + 1, 0, this.getComponentType(), par6);
++
++			default:
++				return null;
++		}
++	}
++
++	/**
++	 * Checks if the bounding box's minY is > 10
++	 */
++	protected static boolean isAboveGround(StructureBoundingBox par0StructureBoundingBox) {
++		return par0StructureBoundingBox != null && par0StructureBoundingBox.minY > 10;
+ 	}
+ }

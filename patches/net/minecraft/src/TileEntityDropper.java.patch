@@ -1,0 +1,15 @@
+--- net/minecraft/src/TileEntityDropper.java
++++ net/minecraft/src/TileEntityDropper.java
+@@ -1,7 +1,11 @@
+ package net.minecraft.src;
+ 
+ public class TileEntityDropper extends TileEntityDispenser {
++
++	/**
++	 * Returns the name of the inventory.
++	 */
+ 	public String getInvName() {
+-		return this.isInvNameLocalized() ? this.a : "container.dropper";
++		return this.isInvNameLocalized() ? this.customName : "container.dropper";
+ 	}
+ }

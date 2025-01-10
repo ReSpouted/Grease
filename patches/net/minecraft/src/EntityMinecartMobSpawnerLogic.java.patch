@@ -1,0 +1,23 @@
+--- net/minecraft/src/EntityMinecartMobSpawnerLogic.java
++++ net/minecraft/src/EntityMinecartMobSpawnerLogic.java
+@@ -1,14 +1,16 @@
+ package net.minecraft.src;
+ 
+ class EntityMinecartMobSpawnerLogic extends MobSpawnerBaseLogic {
++
++	/** The spawner minecart using this mob spawner logic. */
+ 	final EntityMinecartMobSpawner spawnerMinecart;
+ 
+-	EntityMinecartMobSpawnerLogic(EntityMinecartMobSpawner var1) {
+-		this.spawnerMinecart = var1;
++	EntityMinecartMobSpawnerLogic(EntityMinecartMobSpawner par1EntityMinecartMobSpawner) {
++		this.spawnerMinecart = par1EntityMinecartMobSpawner;
+ 	}
+ 
+-	public void func_98267_a(int var1) {
+-		this.spawnerMinecart.worldObj.setEntityState(this.spawnerMinecart, (byte)var1);
++	public void func_98267_a(int par1) {
++		this.spawnerMinecart.worldObj.setEntityState(this.spawnerMinecart, (byte)par1);
+ 	}
+ 
+ 	public World getSpawnerWorld() {

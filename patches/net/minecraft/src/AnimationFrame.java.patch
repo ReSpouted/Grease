@@ -1,0 +1,21 @@
+--- net/minecraft/src/AnimationFrame.java
++++ net/minecraft/src/AnimationFrame.java
+@@ -4,13 +4,13 @@
+ 	private final int frameIndex;
+ 	private final int frameTime;
+ 
+-	public AnimationFrame(int var1) {
+-		this(var1, -1);
++	public AnimationFrame(int par1) {
++		this(par1, -1);
+ 	}
+ 
+-	public AnimationFrame(int var1, int var2) {
+-		this.frameIndex = var1;
+-		this.frameTime = var2;
++	public AnimationFrame(int par1, int par2) {
++		this.frameIndex = par1;
++		this.frameTime = par2;
+ 	}
+ 
+ 	public boolean hasNoTime() {

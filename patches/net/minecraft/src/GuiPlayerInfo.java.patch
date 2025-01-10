@@ -1,0 +1,26 @@
+--- net/minecraft/src/GuiPlayerInfo.java
++++ net/minecraft/src/GuiPlayerInfo.java
+@@ -1,12 +1,18 @@
+ package net.minecraft.src;
+ 
+ public class GuiPlayerInfo {
+-	public final String a;
+-	private final String c;
++
++	/** The string value of the object */
++	public final String name;
++
++	/** Player name in lowercase. */
++	private final String nameinLowerCase;
++
++	/** Player response time to server in milliseconds */
+ 	public int responseTime;
+ 
+-	public GuiPlayerInfo(String var1) {
+-		this.a = var1;
+-		this.c = var1.toLowerCase();
++	public GuiPlayerInfo(String par1Str) {
++		this.name = par1Str;
++		this.nameinLowerCase = par1Str.toLowerCase();
+ 	}
+ }

@@ -1,0 +1,28 @@
+--- net/minecraft/src/ThreadOnlineScreen.java
++++ net/minecraft/src/ThreadOnlineScreen.java
+@@ -3,14 +3,15 @@
+ class ThreadOnlineScreen extends Thread {
+ 	final GuiScreenOnlineServers field_98173_a;
+ 
+-	ThreadOnlineScreen(GuiScreenOnlineServers var1) {
+-		this.field_98173_a = var1;
++	ThreadOnlineScreen(GuiScreenOnlineServers par1GuiScreenOnlineServers) {
++		this.field_98173_a = par1GuiScreenOnlineServers;
+ 	}
+ 
+ 	public void run() {
+ 		try {
+ 			McoServer var1 = GuiScreenOnlineServers.func_140011_a(this.field_98173_a, GuiScreenOnlineServers.func_140041_a(this.field_98173_a));
+-			if(var1 != null) {
++
++			if (var1 != null) {
+ 				McoClient var2 = new McoClient(GuiScreenOnlineServers.func_98075_b(this.field_98173_a).getSession());
+ 				GuiScreenOnlineServers.func_140040_h().func_140058_a(var1);
+ 				GuiScreenOnlineServers.func_140013_c(this.field_98173_a).remove(var1);
+@@ -22,6 +23,5 @@
+ 		} catch (ExceptionMcoService var3) {
+ 			GuiScreenOnlineServers.func_98076_f(this.field_98173_a).getLogAgent().logSevere(var3.toString());
+ 		}
+-
+ 	}
+ }

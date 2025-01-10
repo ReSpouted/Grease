@@ -1,0 +1,44 @@
+--- net/minecraft/src/GuiScreenBackupRestoreTask.java
++++ net/minecraft/src/GuiScreenBackupRestoreTask.java
+@@ -1,12 +1,16 @@
+ package net.minecraft.src;
+ 
+ class GuiScreenBackupRestoreTask extends TaskLongRunning {
++
++	/** The backup being restored */
+ 	private final Backup theBackup;
++
++	/** The screen running this task */
+ 	final GuiScreenBackup theBackupScreen;
+ 
+-	private GuiScreenBackupRestoreTask(GuiScreenBackup var1, Backup var2) {
+-		this.theBackupScreen = var1;
+-		this.theBackup = var2;
++	private GuiScreenBackupRestoreTask(GuiScreenBackup par1GuiScreenBackup, Backup par2Backup) {
++		this.theBackupScreen = par1GuiScreenBackup;
++		this.theBackup = par2Backup;
+ 	}
+ 
+ 	public void run() {
+@@ -14,7 +18,7 @@
+ 
+ 		try {
+ 			McoClient var1 = new McoClient(this.getMinecraft().getSession());
+-			var1.func_111235_c(GuiScreenBackup.func_110367_b(this.theBackupScreen), this.theBackup.a);
++			var1.func_111235_c(GuiScreenBackup.func_110367_b(this.theBackupScreen), this.theBackup.field_110727_a);
+ 
+ 			try {
+ 				Thread.sleep(1000L);
+@@ -29,10 +33,9 @@
+ 		} catch (Exception var5) {
+ 			this.setFailedMessage(var5.getLocalizedMessage());
+ 		}
+-
+ 	}
+ 
+-	GuiScreenBackupRestoreTask(GuiScreenBackup var1, Backup var2, GuiScreenBackupDownloadThread var3) {
+-		this(var1, var2);
++	GuiScreenBackupRestoreTask(GuiScreenBackup par1GuiScreenBackup, Backup par2Backup, GuiScreenBackupDownloadThread par3GuiScreenBackupDownloadThread) {
++		this(par1GuiScreenBackup, par2Backup);
+ 	}
+ }

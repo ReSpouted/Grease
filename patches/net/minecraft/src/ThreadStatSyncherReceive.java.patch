@@ -1,0 +1,29 @@
+--- net/minecraft/src/ThreadStatSyncherReceive.java
++++ net/minecraft/src/ThreadStatSyncherReceive.java
+@@ -3,15 +3,15 @@
+ class ThreadStatSyncherReceive extends Thread {
+ 	final StatsSyncher syncher;
+ 
+-	ThreadStatSyncherReceive(StatsSyncher var1) {
+-		this.syncher = var1;
++	ThreadStatSyncherReceive(StatsSyncher par1StatsSyncher) {
++		this.syncher = par1StatsSyncher;
+ 	}
+ 
+ 	public void run() {
+ 		try {
+-			if(StatsSyncher.func_77419_a(this.syncher) != null) {
++			if (StatsSyncher.func_77419_a(this.syncher) != null) {
+ 				StatsSyncher.func_77414_a(this.syncher, StatsSyncher.func_77419_a(this.syncher), StatsSyncher.func_77408_b(this.syncher), StatsSyncher.func_77407_c(this.syncher), StatsSyncher.func_77411_d(this.syncher));
+-			} else if(StatsSyncher.func_77408_b(this.syncher).exists()) {
++			} else if (StatsSyncher.func_77408_b(this.syncher).exists()) {
+ 				StatsSyncher.func_77416_a(this.syncher, StatsSyncher.func_77410_a(this.syncher, StatsSyncher.func_77408_b(this.syncher), StatsSyncher.func_77407_c(this.syncher), StatsSyncher.func_77411_d(this.syncher)));
+ 			}
+ 		} catch (Exception var5) {
+@@ -19,6 +19,5 @@
+ 		} finally {
+ 			StatsSyncher.setBusy(this.syncher, false);
+ 		}
+-
+ 	}
+ }

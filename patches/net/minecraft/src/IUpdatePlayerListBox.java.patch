@@ -1,0 +1,12 @@
+--- net/minecraft/src/IUpdatePlayerListBox.java
++++ net/minecraft/src/IUpdatePlayerListBox.java
+@@ -1,5 +1,9 @@
+ package net.minecraft.src;
+ 
+ public interface IUpdatePlayerListBox {
++
++	/**
++	 * Updates the JList with a new model.
++	 */
+ 	void update();
+ }

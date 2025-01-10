@@ -1,0 +1,31 @@
+--- net/minecraft/src/ItemBook.java
++++ net/minecraft/src/ItemBook.java
+@@ -1,14 +1,20 @@
+ package net.minecraft.src;
+ 
+ public class ItemBook extends Item {
+-	public ItemBook(int var1) {
+-		super(var1);
+-	}
+-
+-	public boolean isItemTool(ItemStack var1) {
+-		return var1.stackSize == 1;
+-	}
+-
++	public ItemBook(int par1) {
++		super(par1);
++	}
++
++	/**
++	 * Checks isDamagable and if it cannot be stacked
++	 */
++	public boolean isItemTool(ItemStack par1ItemStack) {
++		return par1ItemStack.stackSize == 1;
++	}
++
++	/**
++	 * Return the enchantability factor of the item, most of the time is based on material.
++	 */
+ 	public int getItemEnchantability() {
+ 		return 1;
+ 	}

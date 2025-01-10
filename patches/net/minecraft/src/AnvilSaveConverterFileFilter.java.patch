@@ -1,0 +1,18 @@
+--- net/minecraft/src/AnvilSaveConverterFileFilter.java
++++ net/minecraft/src/AnvilSaveConverterFileFilter.java
+@@ -6,11 +6,11 @@
+ class AnvilSaveConverterFileFilter implements FilenameFilter {
+ 	final AnvilSaveConverter parent;
+ 
+-	AnvilSaveConverterFileFilter(AnvilSaveConverter var1) {
+-		this.parent = var1;
++	AnvilSaveConverterFileFilter(AnvilSaveConverter par1AnvilSaveConverter) {
++		this.parent = par1AnvilSaveConverter;
+ 	}
+ 
+-	public boolean accept(File var1, String var2) {
+-		return var2.endsWith(".mcr");
++	public boolean accept(File par1File, String par2Str) {
++		return par2Str.endsWith(".mcr");
+ 	}
+ }

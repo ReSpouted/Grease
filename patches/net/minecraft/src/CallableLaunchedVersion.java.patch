@@ -1,0 +1,17 @@
+--- net/minecraft/src/CallableLaunchedVersion.java
++++ net/minecraft/src/CallableLaunchedVersion.java
+@@ -3,10 +3,12 @@
+ import java.util.concurrent.Callable;
+ 
+ class CallableLaunchedVersion implements Callable {
++
++	/** Reference to the Minecraft object. */
+ 	final Minecraft mc;
+ 
+-	CallableLaunchedVersion(Minecraft var1) {
+-		this.mc = var1;
++	CallableLaunchedVersion(Minecraft par1Minecraft) {
++		this.mc = par1Minecraft;
+ 	}
+ 
+ 	public String getLWJGLVersion() {

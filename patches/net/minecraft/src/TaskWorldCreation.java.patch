@@ -1,0 +1,52 @@
+--- net/minecraft/src/TaskWorldCreation.java
++++ net/minecraft/src/TaskWorldCreation.java
+@@ -4,18 +4,19 @@
+ import java.io.UnsupportedEncodingException;
+ 
+ class TaskWorldCreation extends TaskLongRunning {
+-	private final String c;
+-	private final String d;
+-	private final String e;
++	private final String field_96589_c;
++	private final String field_96587_d;
++	private final String field_104065_f;
+ 	private final WorldTemplate field_111253_f;
++
+ 	final GuiScreenCreateOnlineWorld field_96590_a;
+ 
+-	public TaskWorldCreation(GuiScreenCreateOnlineWorld var1, String var2, String var3, String var4, WorldTemplate var5) {
+-		this.field_96590_a = var1;
+-		this.c = var2;
+-		this.d = var3;
+-		this.e = var4;
+-		this.field_111253_f = var5;
++	public TaskWorldCreation(GuiScreenCreateOnlineWorld par1GuiScreenCreateOnlineWorld, String par2Str, String par3Str, String par4Str, WorldTemplate par5WorldTemplate) {
++		this.field_96590_a = par1GuiScreenCreateOnlineWorld;
++		this.field_96589_c = par2Str;
++		this.field_96587_d = par3Str;
++		this.field_104065_f = par4Str;
++		this.field_111253_f = par5WorldTemplate;
+ 	}
+ 
+ 	public void run() {
+@@ -24,10 +25,10 @@
+ 		McoClient var2 = new McoClient(GuiScreenCreateOnlineWorld.func_96248_a(this.field_96590_a).getSession());
+ 
+ 		try {
+-			if(this.field_111253_f != null) {
+-				var2.func_96386_a(this.c, this.d, this.e, this.field_111253_f.a);
++			if (this.field_111253_f != null) {
++				var2.func_96386_a(this.field_96589_c, this.field_96587_d, this.field_104065_f, this.field_111253_f.field_110734_a);
+ 			} else {
+-				var2.func_96386_a(this.c, this.d, this.e, "-1");
++				var2.func_96386_a(this.field_96589_c, this.field_96587_d, this.field_104065_f, "-1");
+ 			}
+ 
+ 			GuiScreenCreateOnlineWorld.func_96246_c(this.field_96590_a).displayGuiScreen(GuiScreenCreateOnlineWorld.func_96247_b(this.field_96590_a));
+@@ -43,6 +44,5 @@
+ 		} catch (Exception var7) {
+ 			this.setFailedMessage(var7.getLocalizedMessage());
+ 		}
+-
+ 	}
+ }

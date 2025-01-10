@@ -1,0 +1,48 @@
+--- net/minecraft/src/PacketCount.java
++++ net/minecraft/src/PacketCount.java
+@@ -4,23 +4,31 @@
+ import java.util.Map;
+ 
+ public class PacketCount {
++
++	/** If false, countPacket does nothing */
+ 	public static boolean allowCounting = true;
+-	private static final Map b = new HashMap();
+-	private static final Map c = new HashMap();
+-	private static final Object d = new Object();
+-
+-	public static void countPacket(int var0, long var1) {
+-		if(allowCounting) {
+-			Object var3 = d;
+-			synchronized(var3) {
+-				if(b.containsKey(Integer.valueOf(var0))) {
+-					b.put(Integer.valueOf(var0), Long.valueOf(((Long)b.get(Integer.valueOf(var0))).longValue() + 1L));
+-					c.put(Integer.valueOf(var0), Long.valueOf(((Long)c.get(Integer.valueOf(var0))).longValue() + var1));
++
++	/** A count of the total number of each packet sent grouped by IDs. */
++	private static final Map packetCountForID = new HashMap();
++
++	/** A count of the total size of each packet sent grouped by IDs. */
++	private static final Map sizeCountForID = new HashMap();
++
++	/** Used to make threads queue to add packets */
++	private static final Object lock = new Object();
++
++	public static void countPacket(int par0, long par1) {
++		if (allowCounting) {
++			Object var3 = lock;
++
++			synchronized (lock) {
++				if (packetCountForID.containsKey(Integer.valueOf(par0))) {
++					packetCountForID.put(Integer.valueOf(par0), Long.valueOf(((Long)packetCountForID.get(Integer.valueOf(par0))).longValue() + 1L));
++					sizeCountForID.put(Integer.valueOf(par0), Long.valueOf(((Long)sizeCountForID.get(Integer.valueOf(par0))).longValue() + par1));
+ 				} else {
+-					b.put(Integer.valueOf(var0), Long.valueOf(1L));
+-					c.put(Integer.valueOf(var0), Long.valueOf(var1));
++					packetCountForID.put(Integer.valueOf(par0), Long.valueOf(1L));
++					sizeCountForID.put(Integer.valueOf(par0), Long.valueOf(par1));
+ 				}
+-
+ 			}
+ 		}
+ 	}

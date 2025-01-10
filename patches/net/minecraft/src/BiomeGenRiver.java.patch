@@ -1,0 +1,14 @@
+--- net/minecraft/src/BiomeGenRiver.java
++++ net/minecraft/src/BiomeGenRiver.java
+@@ -1,8 +1,8 @@
+ package net.minecraft.src;
+ 
+ public class BiomeGenRiver extends BiomeGenBase {
+-	public BiomeGenRiver(int var1) {
+-		super(var1);
+-		this.K.clear();
++	public BiomeGenRiver(int par1) {
++		super(par1);
++		this.spawnableCreatureList.clear();
+ 	}
+ }

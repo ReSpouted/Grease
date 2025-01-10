@@ -1,0 +1,39 @@
+--- net/minecraft/src/CallableLevelStorageVersion.java
++++ net/minecraft/src/CallableLevelStorageVersion.java
+@@ -5,25 +5,27 @@
+ class CallableLevelStorageVersion implements Callable {
+ 	final WorldInfo worldInfoInstance;
+ 
+-	CallableLevelStorageVersion(WorldInfo var1) {
+-		this.worldInfoInstance = var1;
++	CallableLevelStorageVersion(WorldInfo par1WorldInfo) {
++		this.worldInfoInstance = par1WorldInfo;
+ 	}
+ 
+ 	public String callLevelStorageFormat() {
+ 		String var1 = "Unknown?";
+ 
+ 		try {
+-			switch(WorldInfo.getSaveVersion(this.worldInfoInstance)) {
+-			case 19132:
+-				var1 = "McRegion";
+-				break;
+-			case 19133:
+-				var1 = "Anvil";
++			switch (WorldInfo.getSaveVersion(this.worldInfoInstance)) {
++				case 19132:
++					var1 = "McRegion";
++					break;
++
++				case 19133:
++					var1 = "Anvil";
+ 			}
+ 		} catch (Throwable var3) {
++			;
+ 		}
+ 
+-		return String.format("0x%05X - %s", new Object[]{Integer.valueOf(WorldInfo.getSaveVersion(this.worldInfoInstance)), var1});
++		return String.format("0x%05X - %s", new Object[] {Integer.valueOf(WorldInfo.getSaveVersion(this.worldInfoInstance)), var1});
+ 	}
+ 
+ 	public Object call() {

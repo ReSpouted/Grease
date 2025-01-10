@@ -1,0 +1,81 @@
+--- net/minecraft/src/Packet201PlayerInfo.java
++++ net/minecraft/src/Packet201PlayerInfo.java
+@@ -5,36 +5,51 @@
+ import java.io.IOException;
+ 
+ public class Packet201PlayerInfo extends Packet {
+-	public String a;
++
++	/** The player's name. */
++	public String playerName;
++
++	/** Byte that tells whether the player is connected. */
+ 	public boolean isConnected;
+ 	public int ping;
+ 
+-	public Packet201PlayerInfo() {
+-	}
+-
+-	public Packet201PlayerInfo(String var1, boolean var2, int var3) {
+-		this.a = var1;
+-		this.isConnected = var2;
+-		this.ping = var3;
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.a = readString(var1, 16);
+-		this.isConnected = var1.readByte() != 0;
+-		this.ping = var1.readShort();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		writeString(this.a, var1);
+-		var1.writeByte(this.isConnected ? 1 : 0);
+-		var1.writeShort(this.ping);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handlePlayerInfo(this);
+-	}
+-
++	public Packet201PlayerInfo() {}
++
++	public Packet201PlayerInfo(String par1Str, boolean par2, int par3) {
++		this.playerName = par1Str;
++		this.isConnected = par2;
++		this.ping = par3;
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.playerName = readString(par1DataInput, 16);
++		this.isConnected = par1DataInput.readByte() != 0;
++		this.ping = par1DataInput.readShort();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		writeString(this.playerName, par1DataOutput);
++		par1DataOutput.writeByte(this.isConnected ? 1 : 0);
++		par1DataOutput.writeShort(this.ping);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handlePlayerInfo(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+-		return this.a.length() + 2 + 1 + 2;
++		return this.playerName.length() + 2 + 1 + 2;
+ 	}
+ }

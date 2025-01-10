@@ -1,0 +1,17 @@
+--- net/minecraft/src/CallableGLInfo.java
++++ net/minecraft/src/CallableGLInfo.java
+@@ -4,10 +4,12 @@
+ import org.lwjgl.opengl.GL11;
+ 
+ class CallableGLInfo implements Callable {
++
++	/** The Minecraft instance. */
+ 	final Minecraft mc;
+ 
+-	CallableGLInfo(Minecraft var1) {
+-		this.mc = var1;
++	CallableGLInfo(Minecraft par1Minecraft) {
++		this.mc = par1Minecraft;
+ 	}
+ 
+ 	public String getTexturePack() {

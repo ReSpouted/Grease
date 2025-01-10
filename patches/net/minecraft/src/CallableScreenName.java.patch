@@ -1,0 +1,13 @@
+--- net/minecraft/src/CallableScreenName.java
++++ net/minecraft/src/CallableScreenName.java
+@@ -5,8 +5,8 @@
+ class CallableScreenName implements Callable {
+ 	final EntityRenderer entityRender;
+ 
+-	CallableScreenName(EntityRenderer var1) {
+-		this.entityRender = var1;
++	CallableScreenName(EntityRenderer par1EntityRenderer) {
++		this.entityRender = par1EntityRenderer;
+ 	}
+ 
+ 	public String callScreenName() {

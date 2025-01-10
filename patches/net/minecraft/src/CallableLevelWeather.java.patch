@@ -1,0 +1,18 @@
+--- net/minecraft/src/CallableLevelWeather.java
++++ net/minecraft/src/CallableLevelWeather.java
+@@ -5,12 +5,12 @@
+ class CallableLevelWeather implements Callable {
+ 	final WorldInfo worldInfoInstance;
+ 
+-	CallableLevelWeather(WorldInfo var1) {
+-		this.worldInfoInstance = var1;
++	CallableLevelWeather(WorldInfo par1WorldInfo) {
++		this.worldInfoInstance = par1WorldInfo;
+ 	}
+ 
+ 	public String callLevelWeatherInfo() {
+-		return String.format("Rain time: %d (now: %b), thunder time: %d (now: %b)", new Object[]{Integer.valueOf(WorldInfo.getRainTime(this.worldInfoInstance)), Boolean.valueOf(WorldInfo.getRaining(this.worldInfoInstance)), Integer.valueOf(WorldInfo.getThunderTime(this.worldInfoInstance)), Boolean.valueOf(WorldInfo.getThundering(this.worldInfoInstance))});
++		return String.format("Rain time: %d (now: %b), thunder time: %d (now: %b)", new Object[] {Integer.valueOf(WorldInfo.getRainTime(this.worldInfoInstance)), Boolean.valueOf(WorldInfo.getRaining(this.worldInfoInstance)), Integer.valueOf(WorldInfo.getThunderTime(this.worldInfoInstance)), Boolean.valueOf(WorldInfo.getThundering(this.worldInfoInstance))});
+ 	}
+ 
+ 	public Object call() {

@@ -1,0 +1,71 @@
+--- net/minecraft/src/Packet22Collect.java
++++ net/minecraft/src/Packet22Collect.java
+@@ -5,31 +5,46 @@
+ import java.io.IOException;
+ 
+ public class Packet22Collect extends Packet {
++
++	/** The entity on the ground that was picked up. */
+ 	public int collectedEntityId;
++
++	/** The entity that picked up the one from the ground. */
+ 	public int collectorEntityId;
+ 
+-	public Packet22Collect() {
+-	}
+-
+-	public Packet22Collect(int var1, int var2) {
+-		this.collectedEntityId = var1;
+-		this.collectorEntityId = var2;
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.collectedEntityId = var1.readInt();
+-		this.collectorEntityId = var1.readInt();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeInt(this.collectedEntityId);
+-		var1.writeInt(this.collectorEntityId);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleCollect(this);
+-	}
+-
++	public Packet22Collect() {}
++
++	public Packet22Collect(int par1, int par2) {
++		this.collectedEntityId = par1;
++		this.collectorEntityId = par2;
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.collectedEntityId = par1DataInput.readInt();
++		this.collectorEntityId = par1DataInput.readInt();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeInt(this.collectedEntityId);
++		par1DataOutput.writeInt(this.collectorEntityId);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleCollect(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 8;
+ 	}

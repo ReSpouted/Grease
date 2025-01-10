@@ -1,0 +1,18 @@
+--- net/minecraft/src/CallableTexturePack.java
++++ net/minecraft/src/CallableTexturePack.java
+@@ -5,12 +5,12 @@
+ class CallableTexturePack implements Callable {
+ 	final Minecraft theMinecraft;
+ 
+-	CallableTexturePack(Minecraft var1) {
+-		this.theMinecraft = var1;
++	CallableTexturePack(Minecraft par1Minecraft) {
++		this.theMinecraft = par1Minecraft;
+ 	}
+ 
+ 	public String callTexturePack() {
+-		return this.theMinecraft.gameSettings.m;
++		return this.theMinecraft.gameSettings.skin;
+ 	}
+ 
+ 	public Object call() {

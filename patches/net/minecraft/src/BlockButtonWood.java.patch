@@ -1,0 +1,20 @@
+--- net/minecraft/src/BlockButtonWood.java
++++ net/minecraft/src/BlockButtonWood.java
+@@ -1,11 +1,14 @@
+ package net.minecraft.src;
+ 
+ public class BlockButtonWood extends BlockButton {
+-	protected BlockButtonWood(int var1) {
+-		super(var1, true);
++	protected BlockButtonWood(int par1) {
++		super(par1, true);
+ 	}
+ 
+-	public Icon getIcon(int var1, int var2) {
++	/**
++	 * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
++	 */
++	public Icon getIcon(int par1, int par2) {
+ 		return Block.planks.getBlockTextureFromSide(1);
+ 	}
+ }

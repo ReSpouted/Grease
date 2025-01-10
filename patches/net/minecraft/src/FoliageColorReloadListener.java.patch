@@ -1,0 +1,17 @@
+--- net/minecraft/src/FoliageColorReloadListener.java
++++ net/minecraft/src/FoliageColorReloadListener.java
+@@ -5,11 +5,11 @@
+ public class FoliageColorReloadListener implements ResourceManagerReloadListener {
+ 	private static final ResourceLocation field_130079_a = new ResourceLocation("textures/colormap/foliage.png");
+ 
+-	public void onResourceManagerReload(ResourceManager var1) {
++	public void onResourceManagerReload(ResourceManager par1ResourceManager) {
+ 		try {
+-			ColorizerFoliage.setFoliageBiomeColorizer(TextureUtil.readImageData(var1, field_130079_a));
++			ColorizerFoliage.setFoliageBiomeColorizer(TextureUtil.readImageData(par1ResourceManager, field_130079_a));
+ 		} catch (IOException var3) {
++			;
+ 		}
+-
+ 	}
+ }

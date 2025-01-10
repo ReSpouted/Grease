@@ -1,0 +1,118 @@
+--- net/minecraft/src/Packet41EntityEffect.java
++++ net/minecraft/src/Packet41EntityEffect.java
+@@ -7,56 +7,79 @@
+ public class Packet41EntityEffect extends Packet {
+ 	public int entityId;
+ 	public byte effectId;
++
++	/** The effect's amplifier. */
+ 	public byte effectAmplifier;
+ 	public short duration;
+ 
+-	public Packet41EntityEffect() {
+-	}
+-
+-	public Packet41EntityEffect(int var1, PotionEffect var2) {
+-		this.entityId = var1;
+-		this.effectId = (byte)(var2.getPotionID() & 255);
+-		this.effectAmplifier = (byte)(var2.getAmplifier() & 255);
+-		if(var2.getDuration() > Short.MAX_VALUE) {
+-			this.duration = Short.MAX_VALUE;
++	public Packet41EntityEffect() {}
++
++	public Packet41EntityEffect(int par1, PotionEffect par2PotionEffect) {
++		this.entityId = par1;
++		this.effectId = (byte)(par2PotionEffect.getPotionID() & 255);
++		this.effectAmplifier = (byte)(par2PotionEffect.getAmplifier() & 255);
++
++		if (par2PotionEffect.getDuration() > 32767) {
++			this.duration = 32767;
+ 		} else {
+-			this.duration = (short)var2.getDuration();
++			this.duration = (short)par2PotionEffect.getDuration();
+ 		}
+-
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.entityId = var1.readInt();
+-		this.effectId = var1.readByte();
+-		this.effectAmplifier = var1.readByte();
+-		this.duration = var1.readShort();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeInt(this.entityId);
+-		var1.writeByte(this.effectId);
+-		var1.writeByte(this.effectAmplifier);
+-		var1.writeShort(this.duration);
+-	}
+-
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.entityId = par1DataInput.readInt();
++		this.effectId = par1DataInput.readByte();
++		this.effectAmplifier = par1DataInput.readByte();
++		this.duration = par1DataInput.readShort();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeInt(this.entityId);
++		par1DataOutput.writeByte(this.effectId);
++		par1DataOutput.writeByte(this.effectAmplifier);
++		par1DataOutput.writeShort(this.duration);
++	}
++
++	/**
++	 * Returns true if duration is at maximum, false otherwise.
++	 */
+ 	public boolean isDurationMax() {
+-		return this.duration == Short.MAX_VALUE;
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleEntityEffect(this);
+-	}
+-
++		return this.duration == 32767;
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleEntityEffect(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 8;
+ 	}
+ 
++	/**
++	 * only false for the abstract Packet class, all real packets return true
++	 */
+ 	public boolean isRealPacket() {
+ 		return true;
+ 	}
+ 
+-	public boolean containsSameEntityIDAs(Packet var1) {
+-		Packet41EntityEffect var2 = (Packet41EntityEffect)var1;
++	/**
++	 * eg return packet30entity.entityId == entityId; WARNING : will throw if you compare a packet to a different packet
++	 * class
++	 */
++	public boolean containsSameEntityIDAs(Packet par1Packet) {
++		Packet41EntityEffect var2 = (Packet41EntityEffect)par1Packet;
+ 		return var2.entityId == this.entityId && var2.effectId == this.effectId;
+ 	}
+ }

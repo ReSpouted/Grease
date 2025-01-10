@@ -1,0 +1,31 @@
+--- net/minecraft/src/EnumArt.java
++++ net/minecraft/src/EnumArt.java
+@@ -28,18 +28,21 @@
+ 	Skeleton("Skeleton", 64, 48, 192, 64),
+ 	DonkeyKong("DonkeyKong", 64, 48, 192, 112);
+ 
++	/** Holds the maximum length of paintings art title. */
+ 	public static final int maxArtTitleLength = "SkullAndRoses".length();
+-	public final String B;
++
++	/** Painting Title. */
++	public final String title;
+ 	public final int sizeX;
+ 	public final int sizeY;
+ 	public final int offsetX;
+ 	public final int offsetY;
+ 
+-	private EnumArt(String var3, int var4, int var5, int var6, int var7) {
+-		this.B = var3;
+-		this.sizeX = var4;
+-		this.sizeY = var5;
+-		this.offsetX = var6;
+-		this.offsetY = var7;
++	private EnumArt(String par3Str, int par4, int par5, int par6, int par7) {
++		this.title = par3Str;
++		this.sizeX = par4;
++		this.sizeY = par5;
++		this.offsetX = par6;
++		this.offsetY = par7;
+ 	}
+ }

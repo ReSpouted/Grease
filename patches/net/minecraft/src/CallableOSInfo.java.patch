@@ -1,0 +1,17 @@
+--- net/minecraft/src/CallableOSInfo.java
++++ net/minecraft/src/CallableOSInfo.java
+@@ -3,10 +3,12 @@
+ import java.util.concurrent.Callable;
+ 
+ class CallableOSInfo implements Callable {
++
++	/** Reference to the CrashReport object. */
+ 	final CrashReport theCrashReport;
+ 
+-	CallableOSInfo(CrashReport var1) {
+-		this.theCrashReport = var1;
++	CallableOSInfo(CrashReport par1CrashReport) {
++		this.theCrashReport = par1CrashReport;
+ 	}
+ 
+ 	public String getOsAsString() {

@@ -1,0 +1,92 @@
+--- net/minecraft/src/Packet25EntityPainting.java
++++ net/minecraft/src/Packet25EntityPainting.java
+@@ -10,42 +10,53 @@
+ 	public int yPosition;
+ 	public int zPosition;
+ 	public int direction;
+-	public String f;
+-
+-	public Packet25EntityPainting() {
+-	}
+-
+-	public Packet25EntityPainting(EntityPainting var1) {
+-		this.entityId = var1.entityId;
+-		this.xPosition = var1.xPosition;
+-		this.yPosition = var1.yPosition;
+-		this.zPosition = var1.zPosition;
+-		this.direction = var1.hangingDirection;
+-		this.f = var1.art.B;
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.entityId = var1.readInt();
+-		this.f = readString(var1, EnumArt.maxArtTitleLength);
+-		this.xPosition = var1.readInt();
+-		this.yPosition = var1.readInt();
+-		this.zPosition = var1.readInt();
+-		this.direction = var1.readInt();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeInt(this.entityId);
+-		writeString(this.f, var1);
+-		var1.writeInt(this.xPosition);
+-		var1.writeInt(this.yPosition);
+-		var1.writeInt(this.zPosition);
+-		var1.writeInt(this.direction);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleEntityPainting(this);
+-	}
+-
++	public String title;
++
++	public Packet25EntityPainting() {}
++
++	public Packet25EntityPainting(EntityPainting par1EntityPainting) {
++		this.entityId = par1EntityPainting.entityId;
++		this.xPosition = par1EntityPainting.xPosition;
++		this.yPosition = par1EntityPainting.yPosition;
++		this.zPosition = par1EntityPainting.zPosition;
++		this.direction = par1EntityPainting.hangingDirection;
++		this.title = par1EntityPainting.art.title;
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.entityId = par1DataInput.readInt();
++		this.title = readString(par1DataInput, EnumArt.maxArtTitleLength);
++		this.xPosition = par1DataInput.readInt();
++		this.yPosition = par1DataInput.readInt();
++		this.zPosition = par1DataInput.readInt();
++		this.direction = par1DataInput.readInt();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeInt(this.entityId);
++		writeString(this.title, par1DataOutput);
++		par1DataOutput.writeInt(this.xPosition);
++		par1DataOutput.writeInt(this.yPosition);
++		par1DataOutput.writeInt(this.zPosition);
++		par1DataOutput.writeInt(this.direction);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleEntityPainting(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 24;
+ 	}

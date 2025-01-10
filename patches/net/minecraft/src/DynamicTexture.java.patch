@@ -1,0 +1,40 @@
+--- net/minecraft/src/DynamicTexture.java
++++ net/minecraft/src/DynamicTexture.java
+@@ -5,24 +5,27 @@
+ 
+ public class DynamicTexture extends AbstractTexture {
+ 	private final int[] dynamicTextureData;
++
++	/** width of this icon in pixels */
+ 	private final int width;
++
++	/** height of this icon in pixels */
+ 	private final int height;
+ 
+-	public DynamicTexture(BufferedImage var1) {
+-		this(var1.getWidth(), var1.getHeight());
+-		var1.getRGB(0, 0, var1.getWidth(), var1.getHeight(), this.dynamicTextureData, 0, var1.getWidth());
++	public DynamicTexture(BufferedImage par1BufferedImage) {
++		this(par1BufferedImage.getWidth(), par1BufferedImage.getHeight());
++		par1BufferedImage.getRGB(0, 0, par1BufferedImage.getWidth(), par1BufferedImage.getHeight(), this.dynamicTextureData, 0, par1BufferedImage.getWidth());
+ 		this.updateDynamicTexture();
+ 	}
+ 
+-	public DynamicTexture(int var1, int var2) {
+-		this.width = var1;
+-		this.height = var2;
+-		this.dynamicTextureData = new int[var1 * var2];
+-		TextureUtil.allocateTexture(this.getGlTextureId(), var1, var2);
++	public DynamicTexture(int par1, int par2) {
++		this.width = par1;
++		this.height = par2;
++		this.dynamicTextureData = new int[par1 * par2];
++		TextureUtil.allocateTexture(this.getGlTextureId(), par1, par2);
+ 	}
+ 
+-	public void loadTexture(ResourceManager var1) throws IOException {
+-	}
++	public void loadTexture(ResourceManager par1ResourceManager) throws IOException {}
+ 
+ 	public void updateDynamicTexture() {
+ 		TextureUtil.uploadTexture(this.getGlTextureId(), this.dynamicTextureData, this.width, this.height);

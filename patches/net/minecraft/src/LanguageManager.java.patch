@@ -1,0 +1,95 @@
+--- net/minecraft/src/LanguageManager.java
++++ net/minecraft/src/LanguageManager.java
+@@ -12,32 +12,34 @@
+ 
+ public class LanguageManager implements ResourceManagerReloadListener {
+ 	private final MetadataSerializer field_135047_b;
+-	private String c;
++	private String currentLanguage;
+ 	protected static final Locale currentLocale = new Locale();
+-	private Map d = Maps.newHashMap();
++	private Map languageMap = Maps.newHashMap();
+ 
+-	public LanguageManager(MetadataSerializer var1, String var2) {
+-		this.field_135047_b = var1;
+-		this.c = var2;
++	public LanguageManager(MetadataSerializer par1MetadataSerializer, String par2Str) {
++		this.field_135047_b = par1MetadataSerializer;
++		this.currentLanguage = par2Str;
+ 		I18n.setLocale(currentLocale);
+ 	}
+ 
+-	public void parseLanguageMetadata(List var1) {
+-		this.d.clear();
+-		Iterator var2 = var1.iterator();
++	public void parseLanguageMetadata(List par1List) {
++		this.languageMap.clear();
++		Iterator var2 = par1List.iterator();
+ 
+-		while(var2.hasNext()) {
++		while (var2.hasNext()) {
+ 			ResourcePack var3 = (ResourcePack)var2.next();
+ 
+ 			try {
+ 				LanguageMetadataSection var4 = (LanguageMetadataSection)var3.getPackMetadata(this.field_135047_b, "language");
+-				if(var4 != null) {
++
++				if (var4 != null) {
+ 					Iterator var5 = var4.getLanguages().iterator();
+ 
+-					while(var5.hasNext()) {
++					while (var5.hasNext()) {
+ 						Language var6 = (Language)var5.next();
+-						if(!this.d.containsKey(var6.getLanguageCode())) {
+-							this.d.put(var6.getLanguageCode(), var6);
++
++						if (!this.languageMap.containsKey(var6.getLanguageCode())) {
++							this.languageMap.put(var6.getLanguageCode(), var6);
+ 						}
+ 					}
+ 				}
+@@ -47,17 +49,17 @@
+ 				Minecraft.getMinecraft().getLogAgent().logWarningException("Unable to parse metadata section of resourcepack: " + var3.getPackName(), var8);
+ 			}
+ 		}
+-
+ 	}
+ 
+-	public void onResourceManagerReload(ResourceManager var1) {
+-		ArrayList var2 = Lists.newArrayList((Object[])(new String[]{"en_US"}));
+-		if(!"en_US".equals(this.c)) {
+-			var2.add(this.c);
++	public void onResourceManagerReload(ResourceManager par1ResourceManager) {
++		ArrayList var2 = Lists.newArrayList(new String[] {"en_US"});
++
++		if (!"en_US".equals(this.currentLanguage)) {
++			var2.add(this.currentLanguage);
+ 		}
+ 
+-		currentLocale.loadLocaleDataFiles(var1, var2);
+-		StringTranslate.func_135063_a(currentLocale.a);
++		currentLocale.loadLocaleDataFiles(par1ResourceManager, var2);
++		StringTranslate.func_135063_a(currentLocale.field_135032_a);
+ 	}
+ 
+ 	public boolean isCurrentLocaleUnicode() {
+@@ -68,15 +70,15 @@
+ 		return this.getCurrentLanguage().isBidirectional();
+ 	}
+ 
+-	public void setCurrentLanguage(Language var1) {
+-		this.c = var1.getLanguageCode();
++	public void setCurrentLanguage(Language par1Language) {
++		this.currentLanguage = par1Language.getLanguageCode();
+ 	}
+ 
+ 	public Language getCurrentLanguage() {
+-		return this.d.containsKey(this.c) ? (Language)this.d.get(this.c) : (Language)this.d.get("en_US");
++		return this.languageMap.containsKey(this.currentLanguage) ? (Language)this.languageMap.get(this.currentLanguage) : (Language)this.languageMap.get("en_US");
+ 	}
+ 
+ 	public SortedSet getLanguages() {
+-		return Sets.newTreeSet((Iterable)this.d.values());
++		return Sets.newTreeSet(this.languageMap.values());
+ 	}
+ }

@@ -1,0 +1,18 @@
+--- net/minecraft/src/CallableLevelGenerator.java
++++ net/minecraft/src/CallableLevelGenerator.java
+@@ -5,12 +5,12 @@
+ class CallableLevelGenerator implements Callable {
+ 	final WorldInfo worldInfoInstance;
+ 
+-	CallableLevelGenerator(WorldInfo var1) {
+-		this.worldInfoInstance = var1;
++	CallableLevelGenerator(WorldInfo par1WorldInfo) {
++		this.worldInfoInstance = par1WorldInfo;
+ 	}
+ 
+ 	public String callLevelGeneratorInfo() {
+-		return String.format("ID %02d - %s, ver %d. Features enabled: %b", new Object[]{Integer.valueOf(WorldInfo.getTerrainTypeOfWorld(this.worldInfoInstance).getWorldTypeID()), WorldInfo.getTerrainTypeOfWorld(this.worldInfoInstance).getWorldTypeName(), Integer.valueOf(WorldInfo.getTerrainTypeOfWorld(this.worldInfoInstance).getGeneratorVersion()), Boolean.valueOf(WorldInfo.getMapFeaturesEnabled(this.worldInfoInstance))});
++		return String.format("ID %02d - %s, ver %d. Features enabled: %b", new Object[] {Integer.valueOf(WorldInfo.getTerrainTypeOfWorld(this.worldInfoInstance).getWorldTypeID()), WorldInfo.getTerrainTypeOfWorld(this.worldInfoInstance).getWorldTypeName(), Integer.valueOf(WorldInfo.getTerrainTypeOfWorld(this.worldInfoInstance).getGeneratorVersion()), Boolean.valueOf(WorldInfo.getMapFeaturesEnabled(this.worldInfoInstance))});
+ 	}
+ 
+ 	public Object call() {

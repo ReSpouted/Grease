@@ -1,0 +1,77 @@
+--- net/minecraft/src/StitchHolder.java
++++ net/minecraft/src/StitchHolder.java
+@@ -7,10 +7,10 @@
+ 	private boolean rotated;
+ 	private float scaleFactor = 1.0F;
+ 
+-	public StitchHolder(TextureAtlasSprite var1) {
+-		this.theTexture = var1;
+-		this.width = var1.getIconWidth();
+-		this.height = var1.getIconHeight();
++	public StitchHolder(TextureAtlasSprite par1TextureAtlasSprite) {
++		this.theTexture = par1TextureAtlasSprite;
++		this.width = par1TextureAtlasSprite.getIconWidth();
++		this.height = par1TextureAtlasSprite.getIconHeight();
+ 		this.rotated = this.ceil16(this.height) > this.ceil16(this.width);
+ 	}
+ 
+@@ -34,13 +34,13 @@
+ 		return this.rotated;
+ 	}
+ 
+-	private int ceil16(int var1) {
+-		return (var1 >> 0) + ((var1 & 0) == 0 ? 0 : 1) << 0;
++	private int ceil16(int par1) {
++		return (par1 >> 0) + ((par1 & 0) == 0 ? 0 : 1) << 0;
+ 	}
+ 
+-	public void setNewDimension(int var1) {
+-		if(this.width > var1 && this.height > var1) {
+-			this.scaleFactor = (float)var1 / (float)Math.min(this.width, this.height);
++	public void setNewDimension(int par1) {
++		if (this.width > par1 && this.height > par1) {
++			this.scaleFactor = (float)par1 / (float)Math.min(this.width, this.height);
+ 		}
+ 	}
+ 
+@@ -48,26 +48,30 @@
+ 		return "Holder{width=" + this.width + ", height=" + this.height + '}';
+ 	}
+ 
+-	public int compareToStitchHolder(StitchHolder var1) {
++	/**
++	 * See Comparable.compareTo.
++	 */
++	public int compareToStitchHolder(StitchHolder par1StitchHolder) {
+ 		int var2;
+-		if(this.getHeight() == var1.getHeight()) {
+-			if(this.getWidth() == var1.getWidth()) {
+-				if(this.theTexture.getIconName() == null) {
+-					return var1.theTexture.getIconName() == null ? 0 : -1;
++
++		if (this.getHeight() == par1StitchHolder.getHeight()) {
++			if (this.getWidth() == par1StitchHolder.getWidth()) {
++				if (this.theTexture.getIconName() == null) {
++					return par1StitchHolder.theTexture.getIconName() == null ? 0 : -1;
+ 				}
+ 
+-				return this.theTexture.getIconName().compareTo(var1.theTexture.getIconName());
++				return this.theTexture.getIconName().compareTo(par1StitchHolder.theTexture.getIconName());
+ 			}
+ 
+-			var2 = this.getWidth() < var1.getWidth() ? 1 : -1;
++			var2 = this.getWidth() < par1StitchHolder.getWidth() ? 1 : -1;
+ 		} else {
+-			var2 = this.getHeight() < var1.getHeight() ? 1 : -1;
++			var2 = this.getHeight() < par1StitchHolder.getHeight() ? 1 : -1;
+ 		}
+ 
+ 		return var2;
+ 	}
+ 
+-	public int compareTo(Object var1) {
+-		return this.compareToStitchHolder((StitchHolder)var1);
++	public int compareTo(Object par1Obj) {
++		return this.compareToStitchHolder((StitchHolder)par1Obj);
+ 	}
+ }

@@ -1,0 +1,105 @@
+--- net/minecraft/src/AttributeModifier.java
++++ net/minecraft/src/AttributeModifier.java
+@@ -6,30 +6,34 @@
+ public class AttributeModifier {
+ 	private final double amount;
+ 	private final int operation;
+-	private final String c;
+-	private final UUID d;
++	private final String name;
++	private final UUID id;
++
++	/**
++	 * If false, this modifier is not saved in NBT. Used for "natural" modifiers like speed boost from sprinting
++	 */
+ 	private boolean isSaved;
+ 
+-	public AttributeModifier(String var1, double var2, int var4) {
+-		this(UUID.randomUUID(), var1, var2, var4);
++	public AttributeModifier(String par1Str, double par2, int par4) {
++		this(UUID.randomUUID(), par1Str, par2, par4);
+ 	}
+ 
+-	public AttributeModifier(UUID var1, String var2, double var3, int var5) {
++	public AttributeModifier(UUID par1UUID, String par2Str, double par3, int par5) {
+ 		this.isSaved = true;
+-		this.d = var1;
+-		this.c = var2;
+-		this.amount = var3;
+-		this.operation = var5;
+-		Validate.notEmpty((CharSequence)var2, "Modifier name cannot be empty", new Object[0]);
+-		Validate.inclusiveBetween(Integer.valueOf(0), Integer.valueOf(2), Integer.valueOf(var5), "Invalid operation", new Object[0]);
++		this.id = par1UUID;
++		this.name = par2Str;
++		this.amount = par3;
++		this.operation = par5;
++		Validate.notEmpty(par2Str, "Modifier name cannot be empty", new Object[0]);
++		Validate.inclusiveBetween(Integer.valueOf(0), Integer.valueOf(2), Integer.valueOf(par5), "Invalid operation", new Object[0]);
+ 	}
+ 
+ 	public UUID getID() {
+-		return this.d;
++		return this.id;
+ 	}
+ 
+ 	public String getName() {
+-		return this.c;
++		return this.name;
+ 	}
+ 
+ 	public int getOperation() {
+@@ -40,25 +44,32 @@
+ 		return this.amount;
+ 	}
+ 
++	/**
++	 * @see #isSaved
++	 */
+ 	public boolean isSaved() {
+ 		return this.isSaved;
+ 	}
+ 
+-	public AttributeModifier setSaved(boolean var1) {
+-		this.isSaved = var1;
++	/**
++	 * @see #isSaved
++	 */
++	public AttributeModifier setSaved(boolean par1) {
++		this.isSaved = par1;
+ 		return this;
+ 	}
+ 
+-	public boolean equals(Object var1) {
+-		if(this == var1) {
++	public boolean equals(Object par1Obj) {
++		if (this == par1Obj) {
+ 			return true;
+-		} else if(var1 != null && this.getClass() == var1.getClass()) {
+-			AttributeModifier var2 = (AttributeModifier)var1;
+-			if(this.d != null) {
+-				if(!this.d.equals(var2.d)) {
++		} else if (par1Obj != null && this.getClass() == par1Obj.getClass()) {
++			AttributeModifier var2 = (AttributeModifier)par1Obj;
++
++			if (this.id != null) {
++				if (!this.id.equals(var2.id)) {
+ 					return false;
+ 				}
+-			} else if(var2.d != null) {
++			} else if (var2.id != null) {
+ 				return false;
+ 			}
+ 
+@@ -69,10 +80,10 @@
+ 	}
+ 
+ 	public int hashCode() {
+-		return this.d != null ? this.d.hashCode() : 0;
++		return this.id != null ? this.id.hashCode() : 0;
+ 	}
+ 
+ 	public String toString() {
+-		return "AttributeModifier{amount=" + this.amount + ", operation=" + this.operation + ", name=\'" + this.c + '\'' + ", id=" + this.d + ", serialize=" + this.isSaved + '}';
++		return "AttributeModifier{amount=" + this.amount + ", operation=" + this.operation + ", name=\'" + this.name + '\'' + ", id=" + this.id + ", serialize=" + this.isSaved + '}';
+ 	}
+ }

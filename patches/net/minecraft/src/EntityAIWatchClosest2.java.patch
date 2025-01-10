@@ -1,0 +1,13 @@
+--- net/minecraft/src/EntityAIWatchClosest2.java
++++ net/minecraft/src/EntityAIWatchClosest2.java
+@@ -1,8 +1,8 @@
+ package net.minecraft.src;
+ 
+ public class EntityAIWatchClosest2 extends EntityAIWatchClosest {
+-	public EntityAIWatchClosest2(EntityLiving var1, Class var2, float var3, float var4) {
+-		super(var1, var2, var3, var4);
++	public EntityAIWatchClosest2(EntityLiving par1EntityLiving, Class par2Class, float par3, float par4) {
++		super(par1EntityLiving, par2Class, par3, par4);
+ 		this.setMutexBits(3);
+ 	}
+ }

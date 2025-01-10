@@ -1,0 +1,15 @@
+--- net/minecraft/src/DispenserBehaviorPotion.java
++++ net/minecraft/src/DispenserBehaviorPotion.java
+@@ -3,7 +3,10 @@
+ final class DispenserBehaviorPotion implements IBehaviorDispenseItem {
+ 	private final BehaviorDefaultDispenseItem defaultDispenserItemBehavior = new BehaviorDefaultDispenseItem();
+ 
+-	public ItemStack dispense(IBlockSource var1, ItemStack var2) {
+-		return ItemPotion.isSplash(var2.getItemDamage()) ? (new DispenserBehaviorPotionProjectile(this, var2)).dispense(var1, var2) : this.defaultDispenserItemBehavior.dispense(var1, var2);
++	/**
++	 * Dispenses the specified ItemStack from a dispenser.
++	 */
++	public ItemStack dispense(IBlockSource par1IBlockSource, ItemStack par2ItemStack) {
++		return ItemPotion.isSplash(par2ItemStack.getItemDamage()) ? (new DispenserBehaviorPotionProjectile(this, par2ItemStack)).dispense(par1IBlockSource, par2ItemStack) : this.defaultDispenserItemBehavior.dispense(par1IBlockSource, par2ItemStack);
+ 	}
+ }

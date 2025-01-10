@@ -1,0 +1,39 @@
+--- net/minecraft/src/EnchantmentModifierDamage.java
++++ net/minecraft/src/EnchantmentModifierDamage.java
+@@ -1,17 +1,28 @@
+ package net.minecraft.src;
+ 
+ final class EnchantmentModifierDamage implements IEnchantmentModifier {
++
++	/**
++	 * Used to calculate the damage modifier (extra armor) on enchantments that the player have on equipped armors.
++	 */
+ 	public int damageModifier;
++
++	/**
++	 * Used as parameter to calculate the damage modifier (extra armor) on enchantments that the player have on equipped
++	 * armors.
++	 */
+ 	public DamageSource source;
+ 
+-	private EnchantmentModifierDamage() {
+-	}
+-
+-	public void calculateModifier(Enchantment var1, int var2) {
+-		this.damageModifier += var1.calcModifierDamage(var2, this.source);
+-	}
+-
+-	EnchantmentModifierDamage(Empty3 var1) {
++	private EnchantmentModifierDamage() {}
++
++	/**
++	 * Generic method use to calculate modifiers of offensive or defensive enchantment values.
++	 */
++	public void calculateModifier(Enchantment par1Enchantment, int par2) {
++		this.damageModifier += par1Enchantment.calcModifierDamage(par2, this.source);
++	}
++
++	EnchantmentModifierDamage(Empty3 par1Empty3) {
+ 		this();
+ 	}
+ }

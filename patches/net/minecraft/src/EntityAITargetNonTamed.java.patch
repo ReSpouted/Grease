@@ -1,0 +1,20 @@
+--- net/minecraft/src/EntityAITargetNonTamed.java
++++ net/minecraft/src/EntityAITargetNonTamed.java
+@@ -3,11 +3,14 @@
+ public class EntityAITargetNonTamed extends EntityAINearestAttackableTarget {
+ 	private EntityTameable theTameable;
+ 
+-	public EntityAITargetNonTamed(EntityTameable var1, Class var2, int var3, boolean var4) {
+-		super(var1, var2, var3, var4);
+-		this.theTameable = var1;
++	public EntityAITargetNonTamed(EntityTameable par1EntityTameable, Class par2Class, int par3, boolean par4) {
++		super(par1EntityTameable, par2Class, par3, par4);
++		this.theTameable = par1EntityTameable;
+ 	}
+ 
++	/**
++	 * Returns whether the EntityAIBase should begin execution.
++	 */
+ 	public boolean shouldExecute() {
+ 		return !this.theTameable.isTamed() && super.shouldExecute();
+ 	}

@@ -1,0 +1,12 @@
+--- /dev/null
++++ com/prupe/mcpatcher/MCLogger$ErrorLevel.java
+@@ -1,0 +1,9 @@
++package com.prupe.mcpatcher;
++
++import java.util.logging.Level;
++
++class MCLogger$ErrorLevel extends Level {
++	protected MCLogger$ErrorLevel() {
++		super("ERROR", (Level.WARNING.intValue() + Level.SEVERE.intValue()) / 2);
++	}
++}

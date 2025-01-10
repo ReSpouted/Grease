@@ -1,0 +1,89 @@
+--- net/minecraft/src/ComponentStrongholdPrison.java
++++ net/minecraft/src/ComponentStrongholdPrison.java
+@@ -4,44 +4,50 @@
+ import java.util.Random;
+ 
+ public class ComponentStrongholdPrison extends ComponentStronghold {
+-	public ComponentStrongholdPrison() {
+-	}
+-
+-	public ComponentStrongholdPrison(int var1, Random var2, StructureBoundingBox var3, int var4) {
+-		super(var1);
+-		this.coordBaseMode = var4;
+-		this.field_143013_d = this.getRandomDoor(var2);
+-		this.boundingBox = var3;
+-	}
+-
+-	public void buildComponent(StructureComponent var1, List var2, Random var3) {
+-		this.getNextComponentNormal((ComponentStrongholdStairs2)var1, var2, var3, 1, 1);
+-	}
+-
+-	public static ComponentStrongholdPrison findValidPlacement(List var0, Random var1, int var2, int var3, int var4, int var5, int var6) {
+-		StructureBoundingBox var7 = StructureBoundingBox.getComponentToAddBoundingBox(var2, var3, var4, -1, -1, 0, 9, 5, 11, var5);
+-		return canStrongholdGoDeeper(var7) && StructureComponent.findIntersecting(var0, var7) == null ? new ComponentStrongholdPrison(var6, var1, var7, var5) : null;
+-	}
+-
+-	public boolean addComponentParts(World var1, Random var2, StructureBoundingBox var3) {
+-		if(this.isLiquidInStructureBoundingBox(var1, var3)) {
++	public ComponentStrongholdPrison() {}
++
++	public ComponentStrongholdPrison(int par1, Random par2Random, StructureBoundingBox par3StructureBoundingBox, int par4) {
++		super(par1);
++		this.coordBaseMode = par4;
++		this.field_143013_d = this.getRandomDoor(par2Random);
++		this.boundingBox = par3StructureBoundingBox;
++	}
++
++	/**
++	 * Initiates construction of the Structure Component picked, at the current Location of StructGen
++	 */
++	public void buildComponent(StructureComponent par1StructureComponent, List par2List, Random par3Random) {
++		this.getNextComponentNormal((ComponentStrongholdStairs2)par1StructureComponent, par2List, par3Random, 1, 1);
++	}
++
++	public static ComponentStrongholdPrison findValidPlacement(List par0List, Random par1Random, int par2, int par3, int par4, int par5, int par6) {
++		StructureBoundingBox var7 = StructureBoundingBox.getComponentToAddBoundingBox(par2, par3, par4, -1, -1, 0, 9, 5, 11, par5);
++		return canStrongholdGoDeeper(var7) && StructureComponent.findIntersecting(par0List, var7) == null ? new ComponentStrongholdPrison(par6, par1Random, var7, par5) : null;
++	}
++
++	/**
++	 * second Part of Structure generating, this for example places Spiderwebs, Mob Spawners, it closes Mineshafts at the
++	 * end, it adds Fences...
++	 */
++	public boolean addComponentParts(World par1World, Random par2Random, StructureBoundingBox par3StructureBoundingBox) {
++		if (this.isLiquidInStructureBoundingBox(par1World, par3StructureBoundingBox)) {
+ 			return false;
+ 		} else {
+-			this.fillWithRandomizedBlocks(var1, var3, 0, 0, 0, 8, 4, 10, true, var2, StructureStrongholdPieces.getStrongholdStones());
+-			this.placeDoor(var1, var2, var3, this.field_143013_d, 1, 1, 0);
+-			this.fillWithBlocks(var1, var3, 1, 1, 10, 3, 3, 10, 0, 0, false);
+-			this.fillWithRandomizedBlocks(var1, var3, 4, 1, 1, 4, 3, 1, false, var2, StructureStrongholdPieces.getStrongholdStones());
+-			this.fillWithRandomizedBlocks(var1, var3, 4, 1, 3, 4, 3, 3, false, var2, StructureStrongholdPieces.getStrongholdStones());
+-			this.fillWithRandomizedBlocks(var1, var3, 4, 1, 7, 4, 3, 7, false, var2, StructureStrongholdPieces.getStrongholdStones());
+-			this.fillWithRandomizedBlocks(var1, var3, 4, 1, 9, 4, 3, 9, false, var2, StructureStrongholdPieces.getStrongholdStones());
+-			this.fillWithBlocks(var1, var3, 4, 1, 4, 4, 3, 6, Block.fenceIron.blockID, Block.fenceIron.blockID, false);
+-			this.fillWithBlocks(var1, var3, 5, 1, 5, 7, 3, 5, Block.fenceIron.blockID, Block.fenceIron.blockID, false);
+-			this.placeBlockAtCurrentPosition(var1, Block.fenceIron.blockID, 0, 4, 3, 2, var3);
+-			this.placeBlockAtCurrentPosition(var1, Block.fenceIron.blockID, 0, 4, 3, 8, var3);
+-			this.placeBlockAtCurrentPosition(var1, Block.doorIron.blockID, this.getMetadataWithOffset(Block.doorIron.blockID, 3), 4, 1, 2, var3);
+-			this.placeBlockAtCurrentPosition(var1, Block.doorIron.blockID, this.getMetadataWithOffset(Block.doorIron.blockID, 3) + 8, 4, 2, 2, var3);
+-			this.placeBlockAtCurrentPosition(var1, Block.doorIron.blockID, this.getMetadataWithOffset(Block.doorIron.blockID, 3), 4, 1, 8, var3);
+-			this.placeBlockAtCurrentPosition(var1, Block.doorIron.blockID, this.getMetadataWithOffset(Block.doorIron.blockID, 3) + 8, 4, 2, 8, var3);
++			this.fillWithRandomizedBlocks(par1World, par3StructureBoundingBox, 0, 0, 0, 8, 4, 10, true, par2Random, StructureStrongholdPieces.getStrongholdStones());
++			this.placeDoor(par1World, par2Random, par3StructureBoundingBox, this.field_143013_d, 1, 1, 0);
++			this.fillWithBlocks(par1World, par3StructureBoundingBox, 1, 1, 10, 3, 3, 10, 0, 0, false);
++			this.fillWithRandomizedBlocks(par1World, par3StructureBoundingBox, 4, 1, 1, 4, 3, 1, false, par2Random, StructureStrongholdPieces.getStrongholdStones());
++			this.fillWithRandomizedBlocks(par1World, par3StructureBoundingBox, 4, 1, 3, 4, 3, 3, false, par2Random, StructureStrongholdPieces.getStrongholdStones());
++			this.fillWithRandomizedBlocks(par1World, par3StructureBoundingBox, 4, 1, 7, 4, 3, 7, false, par2Random, StructureStrongholdPieces.getStrongholdStones());
++			this.fillWithRandomizedBlocks(par1World, par3StructureBoundingBox, 4, 1, 9, 4, 3, 9, false, par2Random, StructureStrongholdPieces.getStrongholdStones());
++			this.fillWithBlocks(par1World, par3StructureBoundingBox, 4, 1, 4, 4, 3, 6, Block.fenceIron.blockID, Block.fenceIron.blockID, false);
++			this.fillWithBlocks(par1World, par3StructureBoundingBox, 5, 1, 5, 7, 3, 5, Block.fenceIron.blockID, Block.fenceIron.blockID, false);
++			this.placeBlockAtCurrentPosition(par1World, Block.fenceIron.blockID, 0, 4, 3, 2, par3StructureBoundingBox);
++			this.placeBlockAtCurrentPosition(par1World, Block.fenceIron.blockID, 0, 4, 3, 8, par3StructureBoundingBox);
++			this.placeBlockAtCurrentPosition(par1World, Block.doorIron.blockID, this.getMetadataWithOffset(Block.doorIron.blockID, 3), 4, 1, 2, par3StructureBoundingBox);
++			this.placeBlockAtCurrentPosition(par1World, Block.doorIron.blockID, this.getMetadataWithOffset(Block.doorIron.blockID, 3) + 8, 4, 2, 2, par3StructureBoundingBox);
++			this.placeBlockAtCurrentPosition(par1World, Block.doorIron.blockID, this.getMetadataWithOffset(Block.doorIron.blockID, 3), 4, 1, 8, par3StructureBoundingBox);
++			this.placeBlockAtCurrentPosition(par1World, Block.doorIron.blockID, this.getMetadataWithOffset(Block.doorIron.blockID, 3) + 8, 4, 2, 8, par3StructureBoundingBox);
+ 			return true;
+ 		}
+ 	}

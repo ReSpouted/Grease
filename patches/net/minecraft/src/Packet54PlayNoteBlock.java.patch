@@ -1,0 +1,100 @@
+--- net/minecraft/src/Packet54PlayNoteBlock.java
++++ net/minecraft/src/Packet54PlayNoteBlock.java
+@@ -8,44 +8,63 @@
+ 	public int xLocation;
+ 	public int yLocation;
+ 	public int zLocation;
++
++	/** 1=Double Bass, 2=Snare Drum, 3=Clicks / Sticks, 4=Bass Drum, 5=Harp */
+ 	public int instrumentType;
++
++	/**
++	 * The pitch of the note (between 0-24 inclusive where 0 is the lowest and 24 is the highest).
++	 */
+ 	public int pitch;
++
++	/** The block ID this action is set for. */
+ 	public int blockId;
+ 
+-	public Packet54PlayNoteBlock() {
+-	}
+-
+-	public Packet54PlayNoteBlock(int var1, int var2, int var3, int var4, int var5, int var6) {
+-		this.xLocation = var1;
+-		this.yLocation = var2;
+-		this.zLocation = var3;
+-		this.instrumentType = var5;
+-		this.pitch = var6;
+-		this.blockId = var4;
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.xLocation = var1.readInt();
+-		this.yLocation = var1.readShort();
+-		this.zLocation = var1.readInt();
+-		this.instrumentType = var1.readUnsignedByte();
+-		this.pitch = var1.readUnsignedByte();
+-		this.blockId = var1.readShort() & 4095;
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeInt(this.xLocation);
+-		var1.writeShort(this.yLocation);
+-		var1.writeInt(this.zLocation);
+-		var1.write(this.instrumentType);
+-		var1.write(this.pitch);
+-		var1.writeShort(this.blockId & 4095);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleBlockEvent(this);
+-	}
+-
++	public Packet54PlayNoteBlock() {}
++
++	public Packet54PlayNoteBlock(int par1, int par2, int par3, int par4, int par5, int par6) {
++		this.xLocation = par1;
++		this.yLocation = par2;
++		this.zLocation = par3;
++		this.instrumentType = par5;
++		this.pitch = par6;
++		this.blockId = par4;
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.xLocation = par1DataInput.readInt();
++		this.yLocation = par1DataInput.readShort();
++		this.zLocation = par1DataInput.readInt();
++		this.instrumentType = par1DataInput.readUnsignedByte();
++		this.pitch = par1DataInput.readUnsignedByte();
++		this.blockId = par1DataInput.readShort() & 4095;
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeInt(this.xLocation);
++		par1DataOutput.writeShort(this.yLocation);
++		par1DataOutput.writeInt(this.zLocation);
++		par1DataOutput.write(this.instrumentType);
++		par1DataOutput.write(this.pitch);
++		par1DataOutput.writeShort(this.blockId & 4095);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleBlockEvent(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 14;
+ 	}

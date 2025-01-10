@@ -1,0 +1,54 @@
+--- net/minecraft/src/WorldGenDeadBush.java
++++ net/minecraft/src/WorldGenDeadBush.java
+@@ -3,31 +3,31 @@
+ import java.util.Random;
+ 
+ public class WorldGenDeadBush extends WorldGenerator {
++
++	/** stores the ID for WorldGenDeadBush */
+ 	private int deadBushID;
+ 
+-	public WorldGenDeadBush(int var1) {
+-		this.deadBushID = var1;
++	public WorldGenDeadBush(int par1) {
++		this.deadBushID = par1;
+ 	}
+ 
+-	public boolean generate(World var1, Random var2, int var3, int var4, int var5) {
+-		boolean var6 = false;
+-
+-		while(true) {
+-			int var11 = var1.getBlockId(var3, var4, var5);
+-			if(var11 != 0 && var11 != Block.leaves.blockID || var4 <= 0) {
+-				for(int var7 = 0; var7 < 4; ++var7) {
+-					int var8 = var3 + var2.nextInt(8) - var2.nextInt(8);
+-					int var9 = var4 + var2.nextInt(4) - var2.nextInt(4);
+-					int var10 = var5 + var2.nextInt(8) - var2.nextInt(8);
+-					if(var1.isAirBlock(var8, var9, var10) && Block.blocksList[this.deadBushID].canBlockStay(var1, var8, var9, var10)) {
+-						var1.setBlock(var8, var9, var10, this.deadBushID, 0, 2);
+-					}
+-				}
+-
+-				return true;
++	public boolean generate(World par1World, Random par2Random, int par3, int par4, int par5) {
++		int var11;
++
++		for (boolean var6 = false; ((var11 = par1World.getBlockId(par3, par4, par5)) == 0 || var11 == Block.leaves.blockID) && par4 > 0; --par4) {
++			;
++		}
++
++		for (int var7 = 0; var7 < 4; ++var7) {
++			int var8 = par3 + par2Random.nextInt(8) - par2Random.nextInt(8);
++			int var9 = par4 + par2Random.nextInt(4) - par2Random.nextInt(4);
++			int var10 = par5 + par2Random.nextInt(8) - par2Random.nextInt(8);
++
++			if (par1World.isAirBlock(var8, var9, var10) && Block.blocksList[this.deadBushID].canBlockStay(par1World, var8, var9, var10)) {
++				par1World.setBlock(var8, var9, var10, this.deadBushID, 0, 2);
+ 			}
+-
+-			--var4;
+ 		}
++
++		return true;
+ 	}
+ }

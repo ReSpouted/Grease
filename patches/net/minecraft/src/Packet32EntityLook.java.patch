@@ -1,0 +1,53 @@
+--- net/minecraft/src/Packet32EntityLook.java
++++ net/minecraft/src/Packet32EntityLook.java
+@@ -9,25 +9,34 @@
+ 		this.rotating = true;
+ 	}
+ 
+-	public Packet32EntityLook(int var1, byte var2, byte var3) {
+-		super(var1);
+-		this.yaw = var2;
+-		this.pitch = var3;
++	public Packet32EntityLook(int par1, byte par2, byte par3) {
++		super(par1);
++		this.yaw = par2;
++		this.pitch = par3;
+ 		this.rotating = true;
+ 	}
+ 
+-	public void readPacketData(DataInput var1) throws IOException {
+-		super.readPacketData(var1);
+-		this.yaw = var1.readByte();
+-		this.pitch = var1.readByte();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		super.writePacketData(var1);
+-		var1.writeByte(this.yaw);
+-		var1.writeByte(this.pitch);
+-	}
+-
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		super.readPacketData(par1DataInput);
++		this.yaw = par1DataInput.readByte();
++		this.pitch = par1DataInput.readByte();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		super.writePacketData(par1DataOutput);
++		par1DataOutput.writeByte(this.yaw);
++		par1DataOutput.writeByte(this.pitch);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 6;
+ 	}

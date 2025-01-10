@@ -1,0 +1,22 @@
+--- net/minecraft/src/CallableMPL2.java
++++ net/minecraft/src/CallableMPL2.java
+@@ -3,12 +3,17 @@
+ import java.util.concurrent.Callable;
+ 
+ class CallableMPL2 implements Callable {
++
++	/** Reference to the WorldClient object. */
+ 	final WorldClient theWorldClient;
+ 
+-	CallableMPL2(WorldClient var1) {
+-		this.theWorldClient = var1;
++	CallableMPL2(WorldClient par1WorldClient) {
++		this.theWorldClient = par1WorldClient;
+ 	}
+ 
++	/**
++	 * Returns the size and contents of the entity spawn queue.
++	 */
+ 	public String getEntitySpawnQueueCountAndList() {
+ 		return WorldClient.getEntitySpawnQueue(this.theWorldClient).size() + " total; " + WorldClient.getEntitySpawnQueue(this.theWorldClient).toString();
+ 	}

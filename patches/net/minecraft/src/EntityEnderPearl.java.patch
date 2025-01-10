@@ -1,0 +1,71 @@
+--- net/minecraft/src/EntityEnderPearl.java
++++ net/minecraft/src/EntityEnderPearl.java
+@@ -1,32 +1,36 @@
+ package net.minecraft.src;
+ 
+ public class EntityEnderPearl extends EntityThrowable {
+-	public EntityEnderPearl(World var1) {
+-		super(var1);
+-	}
+-
+-	public EntityEnderPearl(World var1, EntityLivingBase var2) {
+-		super(var1, var2);
+-	}
+-
+-	public EntityEnderPearl(World var1, double var2, double var4, double var6) {
+-		super(var1, var2, var4, var6);
+-	}
+-
+-	protected void onImpact(MovingObjectPosition var1) {
+-		if(var1.entityHit != null) {
+-			var1.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.0F);
+-		}
+-
+-		for(int var2 = 0; var2 < 32; ++var2) {
+-			this.worldObj.spawnParticle("portal", this.posX, this.posY + this.ab.nextDouble() * 2.0D, this.posZ, this.ab.nextGaussian(), 0.0D, this.ab.nextGaussian());
+-		}
+-
+-		if(!this.worldObj.isRemote) {
+-			if(this.getThrower() != null && this.getThrower() instanceof EntityPlayerMP) {
++	public EntityEnderPearl(World par1World) {
++		super(par1World);
++	}
++
++	public EntityEnderPearl(World par1World, EntityLivingBase par2EntityLivingBase) {
++		super(par1World, par2EntityLivingBase);
++	}
++
++	public EntityEnderPearl(World par1World, double par2, double par4, double par6) {
++		super(par1World, par2, par4, par6);
++	}
++
++	/**
++	 * Called when this EntityThrowable hits a block or entity.
++	 */
++	protected void onImpact(MovingObjectPosition par1MovingObjectPosition) {
++		if (par1MovingObjectPosition.entityHit != null) {
++			par1MovingObjectPosition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.0F);
++		}
++
++		for (int var2 = 0; var2 < 32; ++var2) {
++			this.worldObj.spawnParticle("portal", this.posX, this.posY + this.rand.nextDouble() * 2.0D, this.posZ, this.rand.nextGaussian(), 0.0D, this.rand.nextGaussian());
++		}
++
++		if (!this.worldObj.isRemote) {
++			if (this.getThrower() != null && this.getThrower() instanceof EntityPlayerMP) {
+ 				EntityPlayerMP var3 = (EntityPlayerMP)this.getThrower();
+-				if(!var3.playerNetServerHandler.connectionClosed && var3.worldObj == this.worldObj) {
+-					if(this.getThrower().isRiding()) {
++
++				if (!var3.playerNetServerHandler.connectionClosed && var3.worldObj == this.worldObj) {
++					if (this.getThrower().isRiding()) {
+ 						this.getThrower().mountEntity((Entity)null);
+ 					}
+ 
+@@ -38,6 +42,5 @@
+ 
+ 			this.setDead();
+ 		}
+-
+ 	}
+ }

@@ -1,0 +1,22 @@
+--- net/minecraft/src/CallableJavaInfo.java
++++ net/minecraft/src/CallableJavaInfo.java
+@@ -3,12 +3,17 @@
+ import java.util.concurrent.Callable;
+ 
+ class CallableJavaInfo implements Callable {
++
++	/** Reference to the CrashReport object. */
+ 	final CrashReport theCrashReport;
+ 
+-	CallableJavaInfo(CrashReport var1) {
+-		this.theCrashReport = var1;
++	CallableJavaInfo(CrashReport par1CrashReport) {
++		this.theCrashReport = par1CrashReport;
+ 	}
+ 
++	/**
++	 * Returns the Java VM Information as a String.  Includes the Version and Vender.
++	 */
+ 	public String getJavaInfoAsString() {
+ 		return System.getProperty("java.version") + ", " + System.getProperty("java.vendor");
+ 	}

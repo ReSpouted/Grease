@@ -1,0 +1,40 @@
+--- net/minecraft/src/CommandServerEmote.java
++++ net/minecraft/src/CommandServerEmote.java
+@@ -8,24 +8,30 @@
+ 		return "me";
+ 	}
+ 
++	/**
++	 * Return the required permission level for this command.
++	 */
+ 	public int getRequiredPermissionLevel() {
+ 		return 0;
+ 	}
+ 
+-	public String getCommandUsage(ICommandSender var1) {
++	public String getCommandUsage(ICommandSender par1ICommandSender) {
+ 		return "commands.me.usage";
+ 	}
+ 
+-	public void processCommand(ICommandSender var1, String[] var2) {
+-		if(var2.length > 0) {
+-			String var3 = func_82361_a(var1, var2, 0, var1.canCommandSenderUseCommand(1, "me"));
+-			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(ChatMessageComponent.createFromTranslationWithSubstitutions("chat.type.emote", new Object[]{var1.getCommandSenderName(), var3}));
++	public void processCommand(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
++		if (par2ArrayOfStr.length > 0) {
++			String var3 = func_82361_a(par1ICommandSender, par2ArrayOfStr, 0, par1ICommandSender.canCommandSenderUseCommand(1, "me"));
++			MinecraftServer.getServer().getConfigurationManager().sendChatMsg(ChatMessageComponent.createFromTranslationWithSubstitutions("chat.type.emote", new Object[] {par1ICommandSender.getCommandSenderName(), var3}));
+ 		} else {
+ 			throw new WrongUsageException("commands.me.usage", new Object[0]);
+ 		}
+ 	}
+ 
+-	public List addTabCompletionOptions(ICommandSender var1, String[] var2) {
+-		return getListOfStringsMatchingLastWord(var2, MinecraftServer.getServer().getAllUsernames());
++	/**
++	 * Adds the strings available in this command to the given list of tab completion options.
++	 */
++	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
++		return getListOfStringsMatchingLastWord(par2ArrayOfStr, MinecraftServer.getServer().getAllUsernames());
+ 	}
+ }

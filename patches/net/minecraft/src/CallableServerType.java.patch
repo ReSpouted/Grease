@@ -1,0 +1,13 @@
+--- net/minecraft/src/CallableServerType.java
++++ net/minecraft/src/CallableServerType.java
+@@ -5,8 +5,8 @@
+ class CallableServerType implements Callable {
+ 	final DedicatedServer theDedicatedServer;
+ 
+-	CallableServerType(DedicatedServer var1) {
+-		this.theDedicatedServer = var1;
++	CallableServerType(DedicatedServer par1DedicatedServer) {
++		this.theDedicatedServer = par1DedicatedServer;
+ 	}
+ 
+ 	public String callServerType() {

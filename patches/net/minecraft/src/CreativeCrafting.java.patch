@@ -1,0 +1,40 @@
+--- net/minecraft/src/CreativeCrafting.java
++++ net/minecraft/src/CreativeCrafting.java
+@@ -5,17 +5,24 @@
+ public class CreativeCrafting implements ICrafting {
+ 	private final Minecraft mc;
+ 
+-	public CreativeCrafting(Minecraft var1) {
+-		this.mc = var1;
+-	}
+-
+-	public void updateCraftingInventory(Container var1, List var2) {
+-	}
+-
+-	public void sendSlotContents(Container var1, int var2, ItemStack var3) {
+-		this.mc.playerController.sendSlotPacket(var3, var2);
+-	}
+-
+-	public void sendProgressBarUpdate(Container var1, int var2, int var3) {
+-	}
++	public CreativeCrafting(Minecraft par1Minecraft) {
++		this.mc = par1Minecraft;
++	}
++
++	public void sendContainerAndContentsToPlayer(Container par1Container, List par2List) {}
++
++	/**
++	 * Sends the contents of an inventory slot to the client-side Container. This doesn't have to match the actual contents
++	 * of that slot. Args: Container, slot number, slot contents
++	 */
++	public void sendSlotContents(Container par1Container, int par2, ItemStack par3ItemStack) {
++		this.mc.playerController.sendSlotPacket(par3ItemStack, par2);
++	}
++
++	/**
++	 * Sends two ints to the client-side Container. Used for furnace burning time, smelting progress, brewing progress, and
++	 * enchanting level. Normally the first int identifies which variable to update, and the second contains the new value.
++	 * Both are truncated to shorts in non-local SMP.
++	 */
++	public void sendProgressBarUpdate(Container par1Container, int par2, int par3) {}
+ }

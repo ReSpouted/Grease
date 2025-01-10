@@ -1,0 +1,205 @@
+--- net/minecraft/src/Packet24MobSpawn.java
++++ net/minecraft/src/Packet24MobSpawn.java
+@@ -6,109 +6,139 @@
+ import java.util.List;
+ 
+ public class Packet24MobSpawn extends Packet {
++
++	/** The entity ID. */
+ 	public int entityId;
++
++	/** The type of mob. */
+ 	public int type;
++
++	/** The X position of the entity. */
+ 	public int xPosition;
++
++	/** The Y position of the entity. */
+ 	public int yPosition;
++
++	/** The Z position of the entity. */
+ 	public int zPosition;
+ 	public int velocityX;
+ 	public int velocityY;
+ 	public int velocityZ;
++
++	/** The yaw of the entity. */
+ 	public byte yaw;
++
++	/** The pitch of the entity. */
+ 	public byte pitch;
++
++	/** The yaw of the entity's head. */
+ 	public byte headYaw;
++
++	/** Indexed metadata for Mob, terminated by 0x7F */
+ 	private DataWatcher metaData;
+-	private List u;
+-
+-	public Packet24MobSpawn() {
+-	}
+-
+-	public Packet24MobSpawn(EntityLivingBase var1) {
+-		this.entityId = var1.entityId;
+-		this.type = (byte)EntityList.getEntityID(var1);
+-		this.xPosition = var1.myEntitySize.multiplyBy32AndRound(var1.posX);
+-		this.yPosition = MathHelper.floor_double(var1.posY * 32.0D);
+-		this.zPosition = var1.myEntitySize.multiplyBy32AndRound(var1.posZ);
+-		this.yaw = (byte)((int)(var1.rotationYaw * 256.0F / 360.0F));
+-		this.pitch = (byte)((int)(var1.rotationPitch * 256.0F / 360.0F));
+-		this.headYaw = (byte)((int)(var1.rotationYawHead * 256.0F / 360.0F));
++	private List metadata;
++
++	public Packet24MobSpawn() {}
++
++	public Packet24MobSpawn(EntityLivingBase par1EntityLivingBase) {
++		this.entityId = par1EntityLivingBase.entityId;
++		this.type = (byte)EntityList.getEntityID(par1EntityLivingBase);
++		this.xPosition = par1EntityLivingBase.myEntitySize.multiplyBy32AndRound(par1EntityLivingBase.posX);
++		this.yPosition = MathHelper.floor_double(par1EntityLivingBase.posY * 32.0D);
++		this.zPosition = par1EntityLivingBase.myEntitySize.multiplyBy32AndRound(par1EntityLivingBase.posZ);
++		this.yaw = (byte)((int)(par1EntityLivingBase.rotationYaw * 256.0F / 360.0F));
++		this.pitch = (byte)((int)(par1EntityLivingBase.rotationPitch * 256.0F / 360.0F));
++		this.headYaw = (byte)((int)(par1EntityLivingBase.rotationYawHead * 256.0F / 360.0F));
+ 		double var2 = 3.9D;
+-		double var4 = var1.motionX;
+-		double var6 = var1.motionY;
+-		double var8 = var1.motionZ;
+-		if(var4 < -var2) {
++		double var4 = par1EntityLivingBase.motionX;
++		double var6 = par1EntityLivingBase.motionY;
++		double var8 = par1EntityLivingBase.motionZ;
++
++		if (var4 < -var2) {
+ 			var4 = -var2;
+ 		}
+ 
+-		if(var6 < -var2) {
++		if (var6 < -var2) {
+ 			var6 = -var2;
+ 		}
+ 
+-		if(var8 < -var2) {
++		if (var8 < -var2) {
+ 			var8 = -var2;
+ 		}
+ 
+-		if(var4 > var2) {
++		if (var4 > var2) {
+ 			var4 = var2;
+ 		}
+ 
+-		if(var6 > var2) {
++		if (var6 > var2) {
+ 			var6 = var2;
+ 		}
+ 
+-		if(var8 > var2) {
++		if (var8 > var2) {
+ 			var8 = var2;
+ 		}
+ 
+ 		this.velocityX = (int)(var4 * 8000.0D);
+ 		this.velocityY = (int)(var6 * 8000.0D);
+ 		this.velocityZ = (int)(var8 * 8000.0D);
+-		this.metaData = var1.getDataWatcher();
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.entityId = var1.readInt();
+-		this.type = var1.readByte() & 255;
+-		this.xPosition = var1.readInt();
+-		this.yPosition = var1.readInt();
+-		this.zPosition = var1.readInt();
+-		this.yaw = var1.readByte();
+-		this.pitch = var1.readByte();
+-		this.headYaw = var1.readByte();
+-		this.velocityX = var1.readShort();
+-		this.velocityY = var1.readShort();
+-		this.velocityZ = var1.readShort();
+-		this.u = DataWatcher.readWatchableObjects(var1);
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeInt(this.entityId);
+-		var1.writeByte(this.type & 255);
+-		var1.writeInt(this.xPosition);
+-		var1.writeInt(this.yPosition);
+-		var1.writeInt(this.zPosition);
+-		var1.writeByte(this.yaw);
+-		var1.writeByte(this.pitch);
+-		var1.writeByte(this.headYaw);
+-		var1.writeShort(this.velocityX);
+-		var1.writeShort(this.velocityY);
+-		var1.writeShort(this.velocityZ);
+-		this.metaData.writeWatchableObjects(var1);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleMobSpawn(this);
+-	}
+-
++		this.metaData = par1EntityLivingBase.getDataWatcher();
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.entityId = par1DataInput.readInt();
++		this.type = par1DataInput.readByte() & 255;
++		this.xPosition = par1DataInput.readInt();
++		this.yPosition = par1DataInput.readInt();
++		this.zPosition = par1DataInput.readInt();
++		this.yaw = par1DataInput.readByte();
++		this.pitch = par1DataInput.readByte();
++		this.headYaw = par1DataInput.readByte();
++		this.velocityX = par1DataInput.readShort();
++		this.velocityY = par1DataInput.readShort();
++		this.velocityZ = par1DataInput.readShort();
++		this.metadata = DataWatcher.readWatchableObjects(par1DataInput);
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeInt(this.entityId);
++		par1DataOutput.writeByte(this.type & 255);
++		par1DataOutput.writeInt(this.xPosition);
++		par1DataOutput.writeInt(this.yPosition);
++		par1DataOutput.writeInt(this.zPosition);
++		par1DataOutput.writeByte(this.yaw);
++		par1DataOutput.writeByte(this.pitch);
++		par1DataOutput.writeByte(this.headYaw);
++		par1DataOutput.writeShort(this.velocityX);
++		par1DataOutput.writeShort(this.velocityY);
++		par1DataOutput.writeShort(this.velocityZ);
++		this.metaData.writeWatchableObjects(par1DataOutput);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleMobSpawn(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 26;
+ 	}
+ 
+ 	public List getMetadata() {
+-		if(this.u == null) {
+-			this.u = this.metaData.getAllWatched();
++		if (this.metadata == null) {
++			this.metadata = this.metaData.getAllWatched();
+ 		}
+ 
+-		return this.u;
++		return this.metadata;
+ 	}
+ }

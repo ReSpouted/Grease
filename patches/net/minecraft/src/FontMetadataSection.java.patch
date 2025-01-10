@@ -1,0 +1,16 @@
+--- net/minecraft/src/FontMetadataSection.java
++++ net/minecraft/src/FontMetadataSection.java
+@@ -5,9 +5,9 @@
+ 	private final float[] charLefts;
+ 	private final float[] charSpacings;
+ 
+-	public FontMetadataSection(float[] var1, float[] var2, float[] var3) {
+-		this.charWidths = var1;
+-		this.charLefts = var2;
+-		this.charSpacings = var3;
++	public FontMetadataSection(float[] par1ArrayOfFloat, float[] par2ArrayOfFloat, float[] par3ArrayOfFloat) {
++		this.charWidths = par1ArrayOfFloat;
++		this.charLefts = par2ArrayOfFloat;
++		this.charSpacings = par3ArrayOfFloat;
+ 	}
+ }

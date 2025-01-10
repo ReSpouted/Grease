@@ -1,0 +1,17 @@
+--- net/minecraft/src/PositionImpl.java
++++ net/minecraft/src/PositionImpl.java
+@@ -5,10 +5,10 @@
+ 	protected final double y;
+ 	protected final double z;
+ 
+-	public PositionImpl(double var1, double var3, double var5) {
+-		this.x = var1;
+-		this.y = var3;
+-		this.z = var5;
++	public PositionImpl(double par1, double par3, double par5) {
++		this.x = par1;
++		this.y = par3;
++		this.z = par5;
+ 	}
+ 
+ 	public double getX() {

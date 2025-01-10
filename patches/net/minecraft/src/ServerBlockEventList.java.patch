@@ -1,0 +1,15 @@
+--- net/minecraft/src/ServerBlockEventList.java
++++ net/minecraft/src/ServerBlockEventList.java
+@@ -3,10 +3,9 @@
+ import java.util.ArrayList;
+ 
+ class ServerBlockEventList extends ArrayList {
+-	private ServerBlockEventList() {
+-	}
++	private ServerBlockEventList() {}
+ 
+-	ServerBlockEventList(ServerBlockEvent var1) {
++	ServerBlockEventList(ServerBlockEvent par1ServerBlockEvent) {
+ 		this();
+ 	}
+ }

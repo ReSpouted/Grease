@@ -1,0 +1,69 @@
+--- net/minecraft/src/ItemFishingRod.java
++++ net/minecraft/src/ItemFishingRod.java
+@@ -3,41 +3,51 @@
+ public class ItemFishingRod extends Item {
+ 	private Icon theIcon;
+ 
+-	public ItemFishingRod(int var1) {
+-		super(var1);
++	public ItemFishingRod(int par1) {
++		super(par1);
+ 		this.setMaxDamage(64);
+ 		this.setMaxStackSize(1);
+ 		this.setCreativeTab(CreativeTabs.tabTools);
+ 	}
+ 
++	/**
++	 * Returns True is the item is renderer in full 3D when hold.
++	 */
+ 	public boolean isFull3D() {
+ 		return true;
+ 	}
+ 
++	/**
++	 * Returns true if this item should be rotated by 180 degrees around the Y axis when being held in an entities hands.
++	 */
+ 	public boolean shouldRotateAroundWhenRendering() {
+ 		return true;
+ 	}
+ 
+-	public ItemStack onItemRightClick(ItemStack var1, World var2, EntityPlayer var3) {
+-		if(var3.fishEntity != null) {
+-			int var4 = var3.fishEntity.catchFish();
+-			var1.damageItem(var4, var3);
+-			var3.swingItem();
++	/**
++	 * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
++	 */
++	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
++		if (par3EntityPlayer.fishEntity != null) {
++			int var4 = par3EntityPlayer.fishEntity.catchFish();
++			par1ItemStack.damageItem(var4, par3EntityPlayer);
++			par3EntityPlayer.swingItem();
+ 		} else {
+-			var2.playSoundAtEntity(var3, "random.bow", 0.5F, 0.4F / (f.nextFloat() * 0.4F + 0.8F));
+-			if(!var2.isRemote) {
+-				var2.spawnEntityInWorld(new EntityFishHook(var2, var3));
++			par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
++
++			if (!par2World.isRemote) {
++				par2World.spawnEntityInWorld(new EntityFishHook(par2World, par3EntityPlayer));
+ 			}
+ 
+-			var3.swingItem();
++			par3EntityPlayer.swingItem();
+ 		}
+ 
+-		return var1;
++		return par1ItemStack;
+ 	}
+ 
+-	public void registerIcons(IconRegister var1) {
+-		this.itemIcon = var1.registerIcon(this.getIconString() + "_uncast");
+-		this.theIcon = var1.registerIcon(this.getIconString() + "_cast");
++	public void registerIcons(IconRegister par1IconRegister) {
++		this.itemIcon = par1IconRegister.registerIcon(this.getIconString() + "_uncast");
++		this.theIcon = par1IconRegister.registerIcon(this.getIconString() + "_cast");
+ 	}
+ 
+ 	public Icon func_94597_g() {

@@ -1,0 +1,104 @@
+--- net/minecraft/src/LowerStringMap.java
++++ net/minecraft/src/LowerStringMap.java
+@@ -8,63 +8,65 @@
+ import java.util.Map.Entry;
+ 
+ public class LowerStringMap implements Map {
+-	private final Map a = new LinkedHashMap();
++	private final Map internalMap = new LinkedHashMap();
+ 
+ 	public int size() {
+-		return this.a.size();
++		return this.internalMap.size();
+ 	}
+ 
+ 	public boolean isEmpty() {
+-		return this.a.isEmpty();
+-	}
+-
+-	public boolean containsKey(Object var1) {
+-		return this.a.containsKey(var1.toString().toLowerCase());
+-	}
+-
+-	public boolean containsValue(Object var1) {
+-		return this.a.containsKey(var1);
+-	}
+-
+-	public Object get(Object var1) {
+-		return this.a.get(var1.toString().toLowerCase());
+-	}
+-
+-	public Object putLower(String var1, Object var2) {
+-		return this.a.put(var1.toLowerCase(), var2);
+-	}
+-
+-	public Object remove(Object var1) {
+-		return this.a.remove(var1.toString().toLowerCase());
+-	}
+-
+-	public void putAll(Map var1) {
+-		Iterator var2 = var1.entrySet().iterator();
+-
+-		while(var2.hasNext()) {
++		return this.internalMap.isEmpty();
++	}
++
++	public boolean containsKey(Object par1Obj) {
++		return this.internalMap.containsKey(par1Obj.toString().toLowerCase());
++	}
++
++	public boolean containsValue(Object par1Obj) {
++		return this.internalMap.containsKey(par1Obj);
++	}
++
++	public Object get(Object par1Obj) {
++		return this.internalMap.get(par1Obj.toString().toLowerCase());
++	}
++
++	/**
++	 * a map already defines a general put
++	 */
++	public Object putLower(String par1Str, Object par2Obj) {
++		return this.internalMap.put(par1Str.toLowerCase(), par2Obj);
++	}
++
++	public Object remove(Object par1Obj) {
++		return this.internalMap.remove(par1Obj.toString().toLowerCase());
++	}
++
++	public void putAll(Map par1Map) {
++		Iterator var2 = par1Map.entrySet().iterator();
++
++		while (var2.hasNext()) {
+ 			Entry var3 = (Entry)var2.next();
+ 			this.putLower((String)var3.getKey(), var3.getValue());
+ 		}
+-
+ 	}
+ 
+ 	public void clear() {
+-		this.a.clear();
++		this.internalMap.clear();
+ 	}
+ 
+ 	public Set keySet() {
+-		return this.a.keySet();
++		return this.internalMap.keySet();
+ 	}
+ 
+ 	public Collection values() {
+-		return this.a.values();
++		return this.internalMap.values();
+ 	}
+ 
+ 	public Set entrySet() {
+-		return this.a.entrySet();
++		return this.internalMap.entrySet();
+ 	}
+ 
+-	public Object put(Object var1, Object var2) {
+-		return this.putLower((String)var1, var2);
++	public Object put(Object par1Obj, Object par2Obj) {
++		return this.putLower((String)par1Obj, par2Obj);
+ 	}
+ }

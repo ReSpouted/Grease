@@ -1,0 +1,12 @@
+--- net/minecraft/src/StatPlaceholder.java
++++ net/minecraft/src/StatPlaceholder.java
+@@ -1,7 +1,7 @@
+ package net.minecraft.src;
+ 
+ public class StatPlaceholder extends StatBase {
+-	public StatPlaceholder(int var1) {
+-		super(var1, "Unknown stat");
++	public StatPlaceholder(int par1) {
++		super(par1, "Unknown stat");
+ 	}
+ }

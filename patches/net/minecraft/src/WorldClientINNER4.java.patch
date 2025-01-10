@@ -1,0 +1,13 @@
+--- net/minecraft/src/WorldClientINNER4.java
++++ net/minecraft/src/WorldClientINNER4.java
+@@ -5,8 +5,8 @@
+ class WorldClientINNER4 implements Callable {
+ 	final WorldClient theWorldClient;
+ 
+-	WorldClientINNER4(WorldClient var1) {
+-		this.theWorldClient = var1;
++	WorldClientINNER4(WorldClient par1WorldClient) {
++		this.theWorldClient = par1WorldClient;
+ 	}
+ 
+ 	public String func_142028_a() {

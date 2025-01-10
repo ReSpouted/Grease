@@ -1,0 +1,117 @@
+--- net/minecraft/src/ComponentVillageWell.java
++++ net/minecraft/src/ComponentVillageWell.java
+@@ -4,60 +4,68 @@
+ import java.util.Random;
+ 
+ public class ComponentVillageWell extends ComponentVillage {
+-	public ComponentVillageWell() {
+-	}
+-
+-	public ComponentVillageWell(ComponentVillageStartPiece var1, int var2, Random var3, int var4, int var5) {
+-		super(var1, var2);
+-		this.coordBaseMode = var3.nextInt(4);
+-		switch(this.coordBaseMode) {
+-		case 0:
+-		case 2:
+-			this.boundingBox = new StructureBoundingBox(var4, 64, var5, var4 + 6 - 1, 78, var5 + 6 - 1);
+-			break;
+-		default:
+-			this.boundingBox = new StructureBoundingBox(var4, 64, var5, var4 + 6 - 1, 78, var5 + 6 - 1);
++	public ComponentVillageWell() {}
++
++	public ComponentVillageWell(ComponentVillageStartPiece par1ComponentVillageStartPiece, int par2, Random par3Random, int par4, int par5) {
++		super(par1ComponentVillageStartPiece, par2);
++		this.coordBaseMode = par3Random.nextInt(4);
++
++		switch (this.coordBaseMode) {
++			case 0:
++			case 2:
++				this.boundingBox = new StructureBoundingBox(par4, 64, par5, par4 + 6 - 1, 78, par5 + 6 - 1);
++				break;
++
++			default:
++				this.boundingBox = new StructureBoundingBox(par4, 64, par5, par4 + 6 - 1, 78, par5 + 6 - 1);
+ 		}
+-
+-	}
+-
+-	public void buildComponent(StructureComponent var1, List var2, Random var3) {
+-		StructureVillagePieces.getNextStructureComponentVillagePath((ComponentVillageStartPiece)var1, var2, var3, this.boundingBox.minX - 1, this.boundingBox.maxY - 4, this.boundingBox.minZ + 1, 1, this.getComponentType());
+-		StructureVillagePieces.getNextStructureComponentVillagePath((ComponentVillageStartPiece)var1, var2, var3, this.boundingBox.maxX + 1, this.boundingBox.maxY - 4, this.boundingBox.minZ + 1, 3, this.getComponentType());
+-		StructureVillagePieces.getNextStructureComponentVillagePath((ComponentVillageStartPiece)var1, var2, var3, this.boundingBox.minX + 1, this.boundingBox.maxY - 4, this.boundingBox.minZ - 1, 2, this.getComponentType());
+-		StructureVillagePieces.getNextStructureComponentVillagePath((ComponentVillageStartPiece)var1, var2, var3, this.boundingBox.minX + 1, this.boundingBox.maxY - 4, this.boundingBox.maxZ + 1, 0, this.getComponentType());
+-	}
+-
+-	public boolean addComponentParts(World var1, Random var2, StructureBoundingBox var3) {
+-		if(this.field_143015_k < 0) {
+-			this.field_143015_k = this.getAverageGroundLevel(var1, var3);
+-			if(this.field_143015_k < 0) {
++	}
++
++	/**
++	 * Initiates construction of the Structure Component picked, at the current Location of StructGen
++	 */
++	public void buildComponent(StructureComponent par1StructureComponent, List par2List, Random par3Random) {
++		StructureVillagePieces.getNextStructureComponentVillagePath((ComponentVillageStartPiece)par1StructureComponent, par2List, par3Random, this.boundingBox.minX - 1, this.boundingBox.maxY - 4, this.boundingBox.minZ + 1, 1, this.getComponentType());
++		StructureVillagePieces.getNextStructureComponentVillagePath((ComponentVillageStartPiece)par1StructureComponent, par2List, par3Random, this.boundingBox.maxX + 1, this.boundingBox.maxY - 4, this.boundingBox.minZ + 1, 3, this.getComponentType());
++		StructureVillagePieces.getNextStructureComponentVillagePath((ComponentVillageStartPiece)par1StructureComponent, par2List, par3Random, this.boundingBox.minX + 1, this.boundingBox.maxY - 4, this.boundingBox.minZ - 1, 2, this.getComponentType());
++		StructureVillagePieces.getNextStructureComponentVillagePath((ComponentVillageStartPiece)par1StructureComponent, par2List, par3Random, this.boundingBox.minX + 1, this.boundingBox.maxY - 4, this.boundingBox.maxZ + 1, 0, this.getComponentType());
++	}
++
++	/**
++	 * second Part of Structure generating, this for example places Spiderwebs, Mob Spawners, it closes Mineshafts at the
++	 * end, it adds Fences...
++	 */
++	public boolean addComponentParts(World par1World, Random par2Random, StructureBoundingBox par3StructureBoundingBox) {
++		if (this.field_143015_k < 0) {
++			this.field_143015_k = this.getAverageGroundLevel(par1World, par3StructureBoundingBox);
++
++			if (this.field_143015_k < 0) {
+ 				return true;
+ 			}
+ 
+ 			this.boundingBox.offset(0, this.field_143015_k - this.boundingBox.maxY + 3, 0);
+ 		}
+ 
+-		this.fillWithBlocks(var1, var3, 1, 0, 1, 4, 12, 4, Block.cobblestone.blockID, Block.waterMoving.blockID, false);
+-		this.placeBlockAtCurrentPosition(var1, 0, 0, 2, 12, 2, var3);
+-		this.placeBlockAtCurrentPosition(var1, 0, 0, 3, 12, 2, var3);
+-		this.placeBlockAtCurrentPosition(var1, 0, 0, 2, 12, 3, var3);
+-		this.placeBlockAtCurrentPosition(var1, 0, 0, 3, 12, 3, var3);
+-		this.placeBlockAtCurrentPosition(var1, Block.fence.blockID, 0, 1, 13, 1, var3);
+-		this.placeBlockAtCurrentPosition(var1, Block.fence.blockID, 0, 1, 14, 1, var3);
+-		this.placeBlockAtCurrentPosition(var1, Block.fence.blockID, 0, 4, 13, 1, var3);
+-		this.placeBlockAtCurrentPosition(var1, Block.fence.blockID, 0, 4, 14, 1, var3);
+-		this.placeBlockAtCurrentPosition(var1, Block.fence.blockID, 0, 1, 13, 4, var3);
+-		this.placeBlockAtCurrentPosition(var1, Block.fence.blockID, 0, 1, 14, 4, var3);
+-		this.placeBlockAtCurrentPosition(var1, Block.fence.blockID, 0, 4, 13, 4, var3);
+-		this.placeBlockAtCurrentPosition(var1, Block.fence.blockID, 0, 4, 14, 4, var3);
+-		this.fillWithBlocks(var1, var3, 1, 15, 1, 4, 15, 4, Block.cobblestone.blockID, Block.cobblestone.blockID, false);
++		this.fillWithBlocks(par1World, par3StructureBoundingBox, 1, 0, 1, 4, 12, 4, Block.cobblestone.blockID, Block.waterMoving.blockID, false);
++		this.placeBlockAtCurrentPosition(par1World, 0, 0, 2, 12, 2, par3StructureBoundingBox);
++		this.placeBlockAtCurrentPosition(par1World, 0, 0, 3, 12, 2, par3StructureBoundingBox);
++		this.placeBlockAtCurrentPosition(par1World, 0, 0, 2, 12, 3, par3StructureBoundingBox);
++		this.placeBlockAtCurrentPosition(par1World, 0, 0, 3, 12, 3, par3StructureBoundingBox);
++		this.placeBlockAtCurrentPosition(par1World, Block.fence.blockID, 0, 1, 13, 1, par3StructureBoundingBox);
++		this.placeBlockAtCurrentPosition(par1World, Block.fence.blockID, 0, 1, 14, 1, par3StructureBoundingBox);
++		this.placeBlockAtCurrentPosition(par1World, Block.fence.blockID, 0, 4, 13, 1, par3StructureBoundingBox);
++		this.placeBlockAtCurrentPosition(par1World, Block.fence.blockID, 0, 4, 14, 1, par3StructureBoundingBox);
++		this.placeBlockAtCurrentPosition(par1World, Block.fence.blockID, 0, 1, 13, 4, par3StructureBoundingBox);
++		this.placeBlockAtCurrentPosition(par1World, Block.fence.blockID, 0, 1, 14, 4, par3StructureBoundingBox);
++		this.placeBlockAtCurrentPosition(par1World, Block.fence.blockID, 0, 4, 13, 4, par3StructureBoundingBox);
++		this.placeBlockAtCurrentPosition(par1World, Block.fence.blockID, 0, 4, 14, 4, par3StructureBoundingBox);
++		this.fillWithBlocks(par1World, par3StructureBoundingBox, 1, 15, 1, 4, 15, 4, Block.cobblestone.blockID, Block.cobblestone.blockID, false);
+ 
+-		for(int var4 = 0; var4 <= 5; ++var4) {
+-			for(int var5 = 0; var5 <= 5; ++var5) {
+-				if(var5 == 0 || var5 == 5 || var4 == 0 || var4 == 5) {
+-					this.placeBlockAtCurrentPosition(var1, Block.gravel.blockID, 0, var5, 11, var4, var3);
+-					this.clearCurrentPositionBlocksUpwards(var1, var5, 12, var4, var3);
++		for (int var4 = 0; var4 <= 5; ++var4) {
++			for (int var5 = 0; var5 <= 5; ++var5) {
++				if (var5 == 0 || var5 == 5 || var4 == 0 || var4 == 5) {
++					this.placeBlockAtCurrentPosition(par1World, Block.gravel.blockID, 0, var5, 11, var4, par3StructureBoundingBox);
++					this.clearCurrentPositionBlocksUpwards(par1World, var5, 12, var4, par3StructureBoundingBox);
+ 				}
+ 			}
+ 		}

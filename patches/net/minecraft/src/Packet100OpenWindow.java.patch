@@ -1,0 +1,121 @@
+--- net/minecraft/src/Packet100OpenWindow.java
++++ net/minecraft/src/Packet100OpenWindow.java
+@@ -7,56 +7,72 @@
+ public class Packet100OpenWindow extends Packet {
+ 	public int windowId;
+ 	public int inventoryType;
+-	public String c;
++	public String windowTitle;
+ 	public int slotsCount;
++
++	/**
++	 * If false, the client will look up a string like "window.minecart". If true, the client uses what the server
++	 * provides.
++	 */
+ 	public boolean useProvidedWindowTitle;
+ 	public int field_111008_f;
+ 
+-	public Packet100OpenWindow() {
+-	}
+-
+-	public Packet100OpenWindow(int var1, int var2, String var3, int var4, boolean var5) {
+-		this.windowId = var1;
+-		this.inventoryType = var2;
+-		this.c = var3;
+-		this.slotsCount = var4;
+-		this.useProvidedWindowTitle = var5;
+-	}
+-
+-	public Packet100OpenWindow(int var1, int var2, String var3, int var4, boolean var5, int var6) {
+-		this(var1, var2, var3, var4, var5);
+-		this.field_111008_f = var6;
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleOpenWindow(this);
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.windowId = var1.readByte() & 255;
+-		this.inventoryType = var1.readByte() & 255;
+-		this.c = readString(var1, 32);
+-		this.slotsCount = var1.readByte() & 255;
+-		this.useProvidedWindowTitle = var1.readBoolean();
+-		if(this.inventoryType == 11) {
+-			this.field_111008_f = var1.readInt();
+-		}
+-
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeByte(this.windowId & 255);
+-		var1.writeByte(this.inventoryType & 255);
+-		writeString(this.c, var1);
+-		var1.writeByte(this.slotsCount & 255);
+-		var1.writeBoolean(this.useProvidedWindowTitle);
+-		if(this.inventoryType == 11) {
+-			var1.writeInt(this.field_111008_f);
+-		}
+-
+-	}
+-
++	public Packet100OpenWindow() {}
++
++	public Packet100OpenWindow(int par1, int par2, String par3Str, int par4, boolean par5) {
++		this.windowId = par1;
++		this.inventoryType = par2;
++		this.windowTitle = par3Str;
++		this.slotsCount = par4;
++		this.useProvidedWindowTitle = par5;
++	}
++
++	public Packet100OpenWindow(int par1, int par2, String par3Str, int par4, boolean par5, int par6) {
++		this(par1, par2, par3Str, par4, par5);
++		this.field_111008_f = par6;
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleOpenWindow(this);
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.windowId = par1DataInput.readByte() & 255;
++		this.inventoryType = par1DataInput.readByte() & 255;
++		this.windowTitle = readString(par1DataInput, 32);
++		this.slotsCount = par1DataInput.readByte() & 255;
++		this.useProvidedWindowTitle = par1DataInput.readBoolean();
++
++		if (this.inventoryType == 11) {
++			this.field_111008_f = par1DataInput.readInt();
++		}
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeByte(this.windowId & 255);
++		par1DataOutput.writeByte(this.inventoryType & 255);
++		writeString(this.windowTitle, par1DataOutput);
++		par1DataOutput.writeByte(this.slotsCount & 255);
++		par1DataOutput.writeBoolean(this.useProvidedWindowTitle);
++
++		if (this.inventoryType == 11) {
++			par1DataOutput.writeInt(this.field_111008_f);
++		}
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+-		return this.inventoryType == 11 ? 8 + this.c.length() : 4 + this.c.length();
++		return this.inventoryType == 11 ? 8 + this.windowTitle.length() : 4 + this.windowTitle.length();
+ 	}
+ }

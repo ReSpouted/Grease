@@ -1,0 +1,17 @@
+--- net/minecraft/src/ContainerSheep.java
++++ net/minecraft/src/ContainerSheep.java
+@@ -3,11 +3,11 @@
+ class ContainerSheep extends Container {
+ 	final EntitySheep field_90034_a;
+ 
+-	ContainerSheep(EntitySheep var1) {
+-		this.field_90034_a = var1;
++	ContainerSheep(EntitySheep par1EntitySheep) {
++		this.field_90034_a = par1EntitySheep;
+ 	}
+ 
+-	public boolean canInteractWith(EntityPlayer var1) {
++	public boolean canInteractWith(EntityPlayer par1EntityPlayer) {
+ 		return false;
+ 	}
+ }

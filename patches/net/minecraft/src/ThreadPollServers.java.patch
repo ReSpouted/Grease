@@ -1,0 +1,131 @@
+--- net/minecraft/src/ThreadPollServers.java
++++ net/minecraft/src/ThreadPollServers.java
+@@ -6,18 +6,20 @@
+ import java.net.UnknownHostException;
+ 
+ class ThreadPollServers extends Thread {
++
++	/** An Instnace of ServerData. */
+ 	final ServerData pollServersServerData;
++
++	/** Slot container for the server list */
+ 	final GuiSlotServer serverSlotContainer;
+ 
+-	ThreadPollServers(GuiSlotServer var1, ServerData var2) {
+-		this.serverSlotContainer = var1;
+-		this.pollServersServerData = var2;
++	ThreadPollServers(GuiSlotServer par1GuiSlotServer, ServerData par2ServerData) {
++		this.serverSlotContainer = par1GuiSlotServer;
++		this.pollServersServerData = par2ServerData;
+ 	}
+ 
+ 	public void run() {
+ 		boolean var27 = false;
+-
+-		Object var41;
+ 		label183: {
+ 			label184: {
+ 				label185: {
+@@ -25,7 +27,7 @@
+ 						label187: {
+ 							try {
+ 								var27 = true;
+-								this.pollServersServerData.d = EnumChatFormatting.DARK_GRAY + "Polling..";
++								this.pollServersServerData.serverMOTD = EnumChatFormatting.DARK_GRAY + "Polling..";
+ 								long var1 = System.nanoTime();
+ 								GuiMultiplayer.func_82291_a(this.pollServersServerData);
+ 								long var3 = System.nanoTime();
+@@ -34,76 +36,68 @@
+ 								break label183;
+ 							} catch (UnknownHostException var35) {
+ 								this.pollServersServerData.pingToServer = -1L;
+-								this.pollServersServerData.d = EnumChatFormatting.DARK_RED + "Can\'t resolve hostname";
++								this.pollServersServerData.serverMOTD = EnumChatFormatting.DARK_RED + "Can\'t resolve hostname";
+ 								var27 = false;
++								break label184;
+ 							} catch (SocketTimeoutException var36) {
+ 								this.pollServersServerData.pingToServer = -1L;
+-								this.pollServersServerData.d = EnumChatFormatting.DARK_RED + "Can\'t reach server";
++								this.pollServersServerData.serverMOTD = EnumChatFormatting.DARK_RED + "Can\'t reach server";
+ 								var27 = false;
+-								break label187;
+ 							} catch (ConnectException var37) {
+ 								this.pollServersServerData.pingToServer = -1L;
+-								this.pollServersServerData.d = EnumChatFormatting.DARK_RED + "Can\'t reach server";
++								this.pollServersServerData.serverMOTD = EnumChatFormatting.DARK_RED + "Can\'t reach server";
+ 								var27 = false;
+-								break label186;
++								break label187;
+ 							} catch (IOException var38) {
+ 								this.pollServersServerData.pingToServer = -1L;
+-								this.pollServersServerData.d = EnumChatFormatting.DARK_RED + "Communication error";
++								this.pollServersServerData.serverMOTD = EnumChatFormatting.DARK_RED + "Communication error";
+ 								var27 = false;
+-								break label185;
++								break label186;
+ 							} catch (Exception var39) {
+ 								this.pollServersServerData.pingToServer = -1L;
+-								this.pollServersServerData.d = "ERROR: " + var39.getClass();
++								this.pollServersServerData.serverMOTD = "ERROR: " + var39.getClass();
+ 								var27 = false;
+-								break label184;
++								break label185;
+ 							} finally {
+-								if(var27) {
+-									Object var12 = GuiMultiplayer.getLock();
+-									synchronized(var12) {
++								if (var27) {
++									synchronized (GuiMultiplayer.getLock()) {
+ 										GuiMultiplayer.decreaseThreadsPending();
+ 									}
+ 								}
+ 							}
+ 
+-							var41 = GuiMultiplayer.getLock();
+-							synchronized(var41) {
++							synchronized (GuiMultiplayer.getLock()) {
+ 								GuiMultiplayer.decreaseThreadsPending();
+ 								return;
+ 							}
+ 						}
+ 
+-						var41 = GuiMultiplayer.getLock();
+-						synchronized(var41) {
++						synchronized (GuiMultiplayer.getLock()) {
+ 							GuiMultiplayer.decreaseThreadsPending();
+ 							return;
+ 						}
+ 					}
+ 
+-					var41 = GuiMultiplayer.getLock();
+-					synchronized(var41) {
++					synchronized (GuiMultiplayer.getLock()) {
+ 						GuiMultiplayer.decreaseThreadsPending();
+ 						return;
+ 					}
+ 				}
+ 
+-				var41 = GuiMultiplayer.getLock();
+-				synchronized(var41) {
++				synchronized (GuiMultiplayer.getLock()) {
+ 					GuiMultiplayer.decreaseThreadsPending();
+ 					return;
+ 				}
+ 			}
+ 
+-			var41 = GuiMultiplayer.getLock();
+-			synchronized(var41) {
++			synchronized (GuiMultiplayer.getLock()) {
+ 				GuiMultiplayer.decreaseThreadsPending();
+ 				return;
+ 			}
+ 		}
+ 
+-		var41 = GuiMultiplayer.getLock();
+-		synchronized(var41) {
++		synchronized (GuiMultiplayer.getLock()) {
+ 			GuiMultiplayer.decreaseThreadsPending();
+ 		}
+-
+ 	}
+ }

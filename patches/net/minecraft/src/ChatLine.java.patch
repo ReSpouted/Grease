@@ -1,0 +1,33 @@
+--- net/minecraft/src/ChatLine.java
++++ net/minecraft/src/ChatLine.java
+@@ -1,18 +1,24 @@
+ package net.minecraft.src;
+ 
+ public class ChatLine {
++
++	/** GUI Update Counter value this Line was created at */
+ 	private final int updateCounterCreated;
+-	private final String b;
++	private final String lineString;
++
++	/**
++	 * int value to refer to existing Chat Lines, can be 0 which means unreferrable
++	 */
+ 	private final int chatLineID;
+ 
+-	public ChatLine(int var1, String var2, int var3) {
+-		this.b = var2;
+-		this.updateCounterCreated = var1;
+-		this.chatLineID = var3;
++	public ChatLine(int par1, String par2Str, int par3) {
++		this.lineString = par2Str;
++		this.updateCounterCreated = par1;
++		this.chatLineID = par3;
+ 	}
+ 
+ 	public String getChatLineString() {
+-		return this.b;
++		return this.lineString;
+ 	}
+ 
+ 	public int getUpdatedCounter() {

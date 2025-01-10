@@ -1,0 +1,20 @@
+--- net/minecraft/src/BlockButtonStone.java
++++ net/minecraft/src/BlockButtonStone.java
+@@ -1,11 +1,14 @@
+ package net.minecraft.src;
+ 
+ public class BlockButtonStone extends BlockButton {
+-	protected BlockButtonStone(int var1) {
+-		super(var1, false);
++	protected BlockButtonStone(int par1) {
++		super(par1, false);
+ 	}
+ 
+-	public Icon getIcon(int var1, int var2) {
++	/**
++	 * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
++	 */
++	public Icon getIcon(int par1, int par2) {
+ 		return Block.stone.getBlockTextureFromSide(1);
+ 	}
+ }

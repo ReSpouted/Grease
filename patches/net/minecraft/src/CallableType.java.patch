@@ -1,0 +1,17 @@
+--- net/minecraft/src/CallableType.java
++++ net/minecraft/src/CallableType.java
+@@ -3,10 +3,12 @@
+ import java.util.concurrent.Callable;
+ 
+ class CallableType implements Callable {
++
++	/** Reference to the DecitatedServer object. */
+ 	final DedicatedServer theDecitatedServer;
+ 
+-	CallableType(DedicatedServer var1) {
+-		this.theDecitatedServer = var1;
++	CallableType(DedicatedServer par1DedicatedServer) {
++		this.theDecitatedServer = par1DedicatedServer;
+ 	}
+ 
+ 	public String getType() {

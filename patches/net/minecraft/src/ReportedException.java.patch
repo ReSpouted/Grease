@@ -1,0 +1,22 @@
+--- net/minecraft/src/ReportedException.java
++++ net/minecraft/src/ReportedException.java
+@@ -1,12 +1,17 @@
+ package net.minecraft.src;
+ 
+ public class ReportedException extends RuntimeException {
++
++	/** Instance of CrashReport. */
+ 	private final CrashReport theReportedExceptionCrashReport;
+ 
+-	public ReportedException(CrashReport var1) {
+-		this.theReportedExceptionCrashReport = var1;
++	public ReportedException(CrashReport par1CrashReport) {
++		this.theReportedExceptionCrashReport = par1CrashReport;
+ 	}
+ 
++	/**
++	 * Gets the CrashReport wrapped by this exception.
++	 */
+ 	public CrashReport getCrashReport() {
+ 		return this.theReportedExceptionCrashReport;
+ 	}

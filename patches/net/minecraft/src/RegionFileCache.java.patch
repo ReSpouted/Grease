@@ -1,0 +1,93 @@
+--- net/minecraft/src/RegionFileCache.java
++++ net/minecraft/src/RegionFileCache.java
+@@ -9,37 +9,43 @@
+ import java.util.Map;
+ 
+ public class RegionFileCache {
+-	private static final Map a = new HashMap();
+-
+-	public static synchronized RegionFile createOrLoadRegionFile(File var0, int var1, int var2) {
+-		File var3 = new File(var0, "region");
+-		File var4 = new File(var3, "r." + (var1 >> 5) + "." + (var2 >> 5) + ".mca");
+-		RegionFile var5 = (RegionFile)a.get(var4);
+-		if(var5 != null) {
++
++	/** A map containing Files as keys and RegionFiles as values */
++	private static final Map regionsByFilename = new HashMap();
++
++	public static synchronized RegionFile createOrLoadRegionFile(File par0File, int par1, int par2) {
++		File var3 = new File(par0File, "region");
++		File var4 = new File(var3, "r." + (par1 >> 5) + "." + (par2 >> 5) + ".mca");
++		RegionFile var5 = (RegionFile)regionsByFilename.get(var4);
++
++		if (var5 != null) {
+ 			return var5;
+ 		} else {
+-			if(!var3.exists()) {
++			if (!var3.exists()) {
+ 				var3.mkdirs();
+ 			}
+ 
+-			if(a.size() >= 256) {
++			if (regionsByFilename.size() >= 256) {
+ 				clearRegionFileReferences();
+ 			}
+ 
+ 			RegionFile var6 = new RegionFile(var4);
+-			a.put(var4, var6);
++			regionsByFilename.put(var4, var6);
+ 			return var6;
+ 		}
+ 	}
+ 
++	/**
++	 * Saves the current Chunk Map Cache
++	 */
+ 	public static synchronized void clearRegionFileReferences() {
+-		Iterator var0 = a.values().iterator();
++		Iterator var0 = regionsByFilename.values().iterator();
+ 
+-		while(var0.hasNext()) {
++		while (var0.hasNext()) {
+ 			RegionFile var1 = (RegionFile)var0.next();
+ 
+ 			try {
+-				if(var1 != null) {
++				if (var1 != null) {
+ 					var1.close();
+ 				}
+ 			} catch (IOException var3) {
+@@ -47,16 +53,22 @@
+ 			}
+ 		}
+ 
+-		a.clear();
+-	}
+-
+-	public static DataInputStream getChunkInputStream(File var0, int var1, int var2) {
+-		RegionFile var3 = createOrLoadRegionFile(var0, var1, var2);
+-		return var3.getChunkDataInputStream(var1 & 31, var2 & 31);
+-	}
+-
+-	public static DataOutputStream getChunkOutputStream(File var0, int var1, int var2) {
+-		RegionFile var3 = createOrLoadRegionFile(var0, var1, var2);
+-		return var3.getChunkDataOutputStream(var1 & 31, var2 & 31);
++		regionsByFilename.clear();
++	}
++
++	/**
++	 * Returns an input stream for the specified chunk. Args: worldDir, chunkX, chunkZ
++	 */
++	public static DataInputStream getChunkInputStream(File par0File, int par1, int par2) {
++		RegionFile var3 = createOrLoadRegionFile(par0File, par1, par2);
++		return var3.getChunkDataInputStream(par1 & 31, par2 & 31);
++	}
++
++	/**
++	 * Returns an output stream for the specified chunk. Args: worldDir, chunkX, chunkZ
++	 */
++	public static DataOutputStream getChunkOutputStream(File par0File, int par1, int par2) {
++		RegionFile var3 = createOrLoadRegionFile(par0File, par1, par2);
++		return var3.getChunkDataOutputStream(par1 & 31, par2 & 31);
+ 	}
+ }

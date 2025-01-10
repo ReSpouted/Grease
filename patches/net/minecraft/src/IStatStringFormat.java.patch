@@ -1,0 +1,12 @@
+--- net/minecraft/src/IStatStringFormat.java
++++ net/minecraft/src/IStatStringFormat.java
+@@ -1,5 +1,9 @@
+ package net.minecraft.src;
+ 
+ public interface IStatStringFormat {
++
++	/**
++	 * Formats the strings based on 'IStatStringFormat' interface.
++	 */
+ 	String formatString(String var1);
+ }

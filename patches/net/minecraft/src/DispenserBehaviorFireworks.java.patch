@@ -1,0 +1,39 @@
+--- net/minecraft/src/DispenserBehaviorFireworks.java
++++ net/minecraft/src/DispenserBehaviorFireworks.java
+@@ -1,18 +1,25 @@
+ package net.minecraft.src;
+ 
+ final class DispenserBehaviorFireworks extends BehaviorDefaultDispenseItem {
+-	public ItemStack dispenseStack(IBlockSource var1, ItemStack var2) {
+-		EnumFacing var3 = BlockDispenser.getFacing(var1.getBlockMetadata());
+-		double var4 = var1.getX() + (double)var3.getFrontOffsetX();
+-		double var6 = (double)((float)var1.getYInt() + 0.2F);
+-		double var8 = var1.getZ() + (double)var3.getFrontOffsetZ();
+-		EntityFireworkRocket var10 = new EntityFireworkRocket(var1.getWorld(), var4, var6, var8, var2);
+-		var1.getWorld().spawnEntityInWorld(var10);
+-		var2.splitStack(1);
+-		return var2;
++
++	/**
++	 * Dispense the specified stack, play the dispense sound and spawn particles.
++	 */
++	public ItemStack dispenseStack(IBlockSource par1IBlockSource, ItemStack par2ItemStack) {
++		EnumFacing var3 = BlockDispenser.getFacing(par1IBlockSource.getBlockMetadata());
++		double var4 = par1IBlockSource.getX() + (double)var3.getFrontOffsetX();
++		double var6 = (double)((float)par1IBlockSource.getYInt() + 0.2F);
++		double var8 = par1IBlockSource.getZ() + (double)var3.getFrontOffsetZ();
++		EntityFireworkRocket var10 = new EntityFireworkRocket(par1IBlockSource.getWorld(), var4, var6, var8, par2ItemStack);
++		par1IBlockSource.getWorld().spawnEntityInWorld(var10);
++		par2ItemStack.splitStack(1);
++		return par2ItemStack;
+ 	}
+ 
+-	protected void playDispenseSound(IBlockSource var1) {
+-		var1.getWorld().playAuxSFX(1002, var1.getXInt(), var1.getYInt(), var1.getZInt(), 0);
++	/**
++	 * Play the dispense sound from the specified block.
++	 */
++	protected void playDispenseSound(IBlockSource par1IBlockSource) {
++		par1IBlockSource.getWorld().playAuxSFX(1002, par1IBlockSource.getXInt(), par1IBlockSource.getYInt(), par1IBlockSource.getZInt(), 0);
+ 	}
+ }

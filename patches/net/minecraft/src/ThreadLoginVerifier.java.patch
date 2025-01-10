@@ -1,0 +1,38 @@
+--- net/minecraft/src/ThreadLoginVerifier.java
++++ net/minecraft/src/ThreadLoginVerifier.java
+@@ -7,10 +7,12 @@
+ import java.net.URLEncoder;
+ 
+ class ThreadLoginVerifier extends Thread {
++
++	/** The login handler that spawned this thread. */
+ 	final NetLoginHandler loginHandler;
+ 
+-	ThreadLoginVerifier(NetLoginHandler var1) {
+-		this.loginHandler = var1;
++	ThreadLoginVerifier(NetLoginHandler par1NetLoginHandler) {
++		this.loginHandler = par1NetLoginHandler;
+ 	}
+ 
+ 	public void run() {
+@@ -20,16 +22,16 @@
+ 			BufferedReader var3 = new BufferedReader(new InputStreamReader(var2.openConnection(NetLoginHandler.getLoginMinecraftServer(this.loginHandler).getServerProxy()).getInputStream()));
+ 			String var4 = var3.readLine();
+ 			var3.close();
+-			if(!"YES".equals(var4)) {
+-				this.loginHandler.kickUser("Failed to verify username!");
++
++			if (!"YES".equals(var4)) {
++				this.loginHandler.raiseErrorAndDisconnect("Failed to verify username!");
+ 				return;
+ 			}
+ 
+ 			NetLoginHandler.func_72531_a(this.loginHandler, true);
+ 		} catch (Exception var5) {
+-			this.loginHandler.kickUser("Failed to verify username! [internal error " + var5 + "]");
++			this.loginHandler.raiseErrorAndDisconnect("Failed to verify username! [internal error " + var5 + "]");
+ 			var5.printStackTrace();
+ 		}
+-
+ 	}
+ }

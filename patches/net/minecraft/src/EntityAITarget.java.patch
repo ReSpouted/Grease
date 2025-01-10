@@ -1,0 +1,192 @@
+--- net/minecraft/src/EntityAITarget.java
++++ net/minecraft/src/EntityAITarget.java
+@@ -1,38 +1,61 @@
+ package net.minecraft.src;
+ 
+ public abstract class EntityAITarget extends EntityAIBase {
++
++	/** The entity that this task belongs to */
+ 	protected EntityCreature taskOwner;
++
++	/**
++	 * If true, EntityAI targets must be able to be seen (cannot be blocked by walls) to be suitable targets.
++	 */
+ 	protected boolean shouldCheckSight;
++
++	/**
++	 * When true, only entities that can be reached with minimal effort will be targetted.
++	 */
+ 	private boolean nearbyOnly;
++
++	/**
++	 * When nearbyOnly is true: 0 -> No target, but OK to search; 1 -> Nearby target found; 2 -> Target too far.
++	 */
+ 	private int targetSearchStatus;
++
++	/**
++	 * When nearbyOnly is true, this throttles target searching to avoid excessive pathfinding.
++	 */
+ 	private int targetSearchDelay;
+ 	private int field_75298_g;
+ 
+-	public EntityAITarget(EntityCreature var1, boolean var2) {
+-		this(var1, var2, false);
+-	}
+-
+-	public EntityAITarget(EntityCreature var1, boolean var2, boolean var3) {
+-		this.taskOwner = var1;
+-		this.shouldCheckSight = var2;
+-		this.nearbyOnly = var3;
+-	}
+-
++	public EntityAITarget(EntityCreature par1EntityCreature, boolean par2) {
++		this(par1EntityCreature, par2, false);
++	}
++
++	public EntityAITarget(EntityCreature par1EntityCreature, boolean par2, boolean par3) {
++		this.taskOwner = par1EntityCreature;
++		this.shouldCheckSight = par2;
++		this.nearbyOnly = par3;
++	}
++
++	/**
++	 * Returns whether an in-progress EntityAIBase should continue executing
++	 */
+ 	public boolean continueExecuting() {
+ 		EntityLivingBase var1 = this.taskOwner.getAttackTarget();
+-		if(var1 == null) {
++
++		if (var1 == null) {
+ 			return false;
+-		} else if(!var1.isEntityAlive()) {
++		} else if (!var1.isEntityAlive()) {
+ 			return false;
+ 		} else {
+ 			double var2 = this.getTargetDistance();
+-			if(this.taskOwner.getDistanceSqToEntity(var1) > var2 * var2) {
++
++			if (this.taskOwner.getDistanceSqToEntity(var1) > var2 * var2) {
+ 				return false;
+ 			} else {
+-				if(this.shouldCheckSight) {
+-					if(this.taskOwner.getEntitySenses().canSee(var1)) {
++				if (this.shouldCheckSight) {
++					if (this.taskOwner.getEntitySenses().canSee(var1)) {
+ 						this.field_75298_g = 0;
+-					} else if(++this.field_75298_g > 60) {
++					} else if (++this.field_75298_g > 60) {
+ 						return false;
+ 					}
+ 				}
+@@ -47,53 +70,62 @@
+ 		return var1 == null ? 16.0D : var1.getAttributeValue();
+ 	}
+ 
++	/**
++	 * Execute a one shot task or start executing a continuous task
++	 */
+ 	public void startExecuting() {
+ 		this.targetSearchStatus = 0;
+ 		this.targetSearchDelay = 0;
+ 		this.field_75298_g = 0;
+ 	}
+ 
++	/**
++	 * Resets the task
++	 */
+ 	public void resetTask() {
+ 		this.taskOwner.setAttackTarget((EntityLivingBase)null);
+ 	}
+ 
+-	protected boolean isSuitableTarget(EntityLivingBase var1, boolean var2) {
+-		if(var1 == null) {
+-			return false;
+-		} else if(var1 == this.taskOwner) {
+-			return false;
+-		} else if(!var1.isEntityAlive()) {
+-			return false;
+-		} else if(!this.taskOwner.canAttackClass(var1.getClass())) {
++	/**
++	 * A method used to see if an entity is a suitable target through a number of checks.
++	 */
++	protected boolean isSuitableTarget(EntityLivingBase par1EntityLivingBase, boolean par2) {
++		if (par1EntityLivingBase == null) {
++			return false;
++		} else if (par1EntityLivingBase == this.taskOwner) {
++			return false;
++		} else if (!par1EntityLivingBase.isEntityAlive()) {
++			return false;
++		} else if (!this.taskOwner.canAttackClass(par1EntityLivingBase.getClass())) {
+ 			return false;
+ 		} else {
+-			if(this.taskOwner instanceof EntityOwnable && org.apache.commons.lang3.StringUtils.isNotEmpty(((EntityOwnable)this.taskOwner).getOwnerName())) {
+-				if(var1 instanceof EntityOwnable && ((EntityOwnable)this.taskOwner).getOwnerName().equals(((EntityOwnable)var1).getOwnerName())) {
++			if (this.taskOwner instanceof EntityOwnable && org.apache.commons.lang3.StringUtils.isNotEmpty(((EntityOwnable)this.taskOwner).getOwnerName())) {
++				if (par1EntityLivingBase instanceof EntityOwnable && ((EntityOwnable)this.taskOwner).getOwnerName().equals(((EntityOwnable)par1EntityLivingBase).getOwnerName())) {
+ 					return false;
+ 				}
+ 
+-				if(var1 == ((EntityOwnable)this.taskOwner).getOwner()) {
++				if (par1EntityLivingBase == ((EntityOwnable)this.taskOwner).getOwner()) {
+ 					return false;
+ 				}
+-			} else if(var1 instanceof EntityPlayer && !var2 && ((EntityPlayer)var1).capabilities.disableDamage) {
++			} else if (par1EntityLivingBase instanceof EntityPlayer && !par2 && ((EntityPlayer)par1EntityLivingBase).capabilities.disableDamage) {
+ 				return false;
+ 			}
+ 
+-			if(!this.taskOwner.func_110176_b(MathHelper.floor_double(var1.posX), MathHelper.floor_double(var1.posY), MathHelper.floor_double(var1.posZ))) {
++			if (!this.taskOwner.func_110176_b(MathHelper.floor_double(par1EntityLivingBase.posX), MathHelper.floor_double(par1EntityLivingBase.posY), MathHelper.floor_double(par1EntityLivingBase.posZ))) {
+ 				return false;
+-			} else if(this.shouldCheckSight && !this.taskOwner.getEntitySenses().canSee(var1)) {
++			} else if (this.shouldCheckSight && !this.taskOwner.getEntitySenses().canSee(par1EntityLivingBase)) {
+ 				return false;
+ 			} else {
+-				if(this.nearbyOnly) {
+-					if(--this.targetSearchDelay <= 0) {
++				if (this.nearbyOnly) {
++					if (--this.targetSearchDelay <= 0) {
+ 						this.targetSearchStatus = 0;
+ 					}
+ 
+-					if(this.targetSearchStatus == 0) {
+-						this.targetSearchStatus = this.canEasilyReach(var1) ? 1 : 2;
++					if (this.targetSearchStatus == 0) {
++						this.targetSearchStatus = this.canEasilyReach(par1EntityLivingBase) ? 1 : 2;
+ 					}
+ 
+-					if(this.targetSearchStatus == 2) {
++					if (this.targetSearchStatus == 2) {
+ 						return false;
+ 					}
+ 				}
+@@ -103,18 +135,23 @@
+ 		}
+ 	}
+ 
+-	private boolean canEasilyReach(EntityLivingBase var1) {
++	/**
++	 * Checks to see if this entity can find a short path to the given target.
++	 */
++	private boolean canEasilyReach(EntityLivingBase par1EntityLivingBase) {
+ 		this.targetSearchDelay = 10 + this.taskOwner.getRNG().nextInt(5);
+-		PathEntity var2 = this.taskOwner.getNavigator().getPathToEntityLiving(var1);
+-		if(var2 == null) {
++		PathEntity var2 = this.taskOwner.getNavigator().getPathToEntityLiving(par1EntityLivingBase);
++
++		if (var2 == null) {
+ 			return false;
+ 		} else {
+ 			PathPoint var3 = var2.getFinalPathPoint();
+-			if(var3 == null) {
++
++			if (var3 == null) {
+ 				return false;
+ 			} else {
+-				int var4 = var3.xCoord - MathHelper.floor_double(var1.posX);
+-				int var5 = var3.zCoord - MathHelper.floor_double(var1.posZ);
++				int var4 = var3.xCoord - MathHelper.floor_double(par1EntityLivingBase.posX);
++				int var5 = var3.zCoord - MathHelper.floor_double(par1EntityLivingBase.posZ);
+ 				return (double)(var4 * var4 + var5 * var5) <= 2.25D;
+ 			}
+ 		}

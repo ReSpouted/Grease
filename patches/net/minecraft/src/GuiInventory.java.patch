@@ -1,0 +1,159 @@
+--- net/minecraft/src/GuiInventory.java
++++ net/minecraft/src/GuiInventory.java
+@@ -4,43 +4,65 @@
+ import org.lwjgl.opengl.GL12;
+ 
+ public class GuiInventory extends InventoryEffectRenderer {
++
++	/**
++	 * x size of the inventory window in pixels. Defined as float, passed as int
++	 */
+ 	private float xSize_lo;
++
++	/**
++	 * y size of the inventory window in pixels. Defined as float, passed as int.
++	 */
+ 	private float ySize_lo;
+ 
+-	public GuiInventory(EntityPlayer var1) {
+-		super(var1.inventoryContainer);
++	public GuiInventory(EntityPlayer par1EntityPlayer) {
++		super(par1EntityPlayer.inventoryContainer);
+ 		this.allowUserInput = true;
+-		var1.addStat(AchievementList.openInventory, 1);
++		par1EntityPlayer.addStat(AchievementList.openInventory, 1);
+ 	}
+ 
++	/**
++	 * Called from the main game loop to update the screen.
++	 */
+ 	public void updateScreen() {
+-		if(this.mc.playerController.isInCreativeMode()) {
++		if (this.mc.playerController.isInCreativeMode()) {
+ 			this.mc.displayGuiScreen(new GuiContainerCreative(this.mc.thePlayer));
+ 		}
+-
+ 	}
+ 
++	/**
++	 * Adds the buttons (and other controls) to the screen in question.
++	 */
+ 	public void initGui() {
+-		this.i.clear();
+-		if(this.mc.playerController.isInCreativeMode()) {
++		this.buttonList.clear();
++
++		if (this.mc.playerController.isInCreativeMode()) {
+ 			this.mc.displayGuiScreen(new GuiContainerCreative(this.mc.thePlayer));
+ 		} else {
+ 			super.initGui();
+ 		}
+-
+ 	}
+ 
+-	protected void drawGuiContainerForegroundLayer(int var1, int var2) {
++	/**
++	 * Draw the foreground layer for the GuiContainer (everything in front of the items)
++	 */
++	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+ 		this.fontRenderer.drawString(I18n.getString("container.crafting"), 86, 16, 4210752);
+ 	}
+ 
+-	public void drawScreen(int var1, int var2, float var3) {
+-		super.drawScreen(var1, var2, var3);
+-		this.xSize_lo = (float)var1;
+-		this.ySize_lo = (float)var2;
++	/**
++	 * Draws the screen and all the components in it.
++	 */
++	public void drawScreen(int par1, int par2, float par3) {
++		super.drawScreen(par1, par2, par3);
++		this.xSize_lo = (float)par1;
++		this.ySize_lo = (float)par2;
+ 	}
+ 
+-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
++	/**
++	 * Draw the background layer for the GuiContainer (everything behind the items)
++	 */
++	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
+ 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+ 		this.mc.getTextureManager().bindTexture(field_110408_a);
+ 		int var4 = this.guiLeft;
+@@ -49,34 +71,34 @@
+ 		func_110423_a(var4 + 51, var5 + 75, 30, (float)(var4 + 51) - this.xSize_lo, (float)(var5 + 75 - 50) - this.ySize_lo, this.mc.thePlayer);
+ 	}
+ 
+-	public static void func_110423_a(int var0, int var1, int var2, float var3, float var4, EntityLivingBase var5) {
++	public static void func_110423_a(int par0, int par1, int par2, float par3, float par4, EntityLivingBase par5EntityLivingBase) {
+ 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+ 		GL11.glPushMatrix();
+-		GL11.glTranslatef((float)var0, (float)var1, 50.0F);
+-		GL11.glScalef((float)(-var2), (float)var2, (float)var2);
++		GL11.glTranslatef((float)par0, (float)par1, 50.0F);
++		GL11.glScalef((float)(-par2), (float)par2, (float)par2);
+ 		GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+-		float var6 = var5.renderYawOffset;
+-		float var7 = var5.rotationYaw;
+-		float var8 = var5.rotationPitch;
+-		float var9 = var5.prevRotationYawHead;
+-		float var10 = var5.rotationYawHead;
++		float var6 = par5EntityLivingBase.renderYawOffset;
++		float var7 = par5EntityLivingBase.rotationYaw;
++		float var8 = par5EntityLivingBase.rotationPitch;
++		float var9 = par5EntityLivingBase.prevRotationYawHead;
++		float var10 = par5EntityLivingBase.rotationYawHead;
+ 		GL11.glRotatef(135.0F, 0.0F, 1.0F, 0.0F);
+ 		RenderHelper.enableStandardItemLighting();
+ 		GL11.glRotatef(-135.0F, 0.0F, 1.0F, 0.0F);
+-		GL11.glRotatef(-((float)Math.atan((double)(var4 / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
+-		var5.renderYawOffset = (float)Math.atan((double)(var3 / 40.0F)) * 20.0F;
+-		var5.rotationYaw = (float)Math.atan((double)(var3 / 40.0F)) * 40.0F;
+-		var5.rotationPitch = -((float)Math.atan((double)(var4 / 40.0F))) * 20.0F;
+-		var5.rotationYawHead = var5.rotationYaw;
+-		var5.prevRotationYawHead = var5.rotationYaw;
+-		GL11.glTranslatef(0.0F, var5.yOffset, 0.0F);
++		GL11.glRotatef(-((float)Math.atan((double)(par4 / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
++		par5EntityLivingBase.renderYawOffset = (float)Math.atan((double)(par3 / 40.0F)) * 20.0F;
++		par5EntityLivingBase.rotationYaw = (float)Math.atan((double)(par3 / 40.0F)) * 40.0F;
++		par5EntityLivingBase.rotationPitch = -((float)Math.atan((double)(par4 / 40.0F))) * 20.0F;
++		par5EntityLivingBase.rotationYawHead = par5EntityLivingBase.rotationYaw;
++		par5EntityLivingBase.prevRotationYawHead = par5EntityLivingBase.rotationYaw;
++		GL11.glTranslatef(0.0F, par5EntityLivingBase.yOffset, 0.0F);
+ 		RenderManager.instance.playerViewY = 180.0F;
+-		RenderManager.instance.renderEntityWithPosYaw(var5, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+-		var5.renderYawOffset = var6;
+-		var5.rotationYaw = var7;
+-		var5.rotationPitch = var8;
+-		var5.prevRotationYawHead = var9;
+-		var5.rotationYawHead = var10;
++		RenderManager.instance.renderEntityWithPosYaw(par5EntityLivingBase, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
++		par5EntityLivingBase.renderYawOffset = var6;
++		par5EntityLivingBase.rotationYaw = var7;
++		par5EntityLivingBase.rotationPitch = var8;
++		par5EntityLivingBase.prevRotationYawHead = var9;
++		par5EntityLivingBase.rotationYawHead = var10;
+ 		GL11.glPopMatrix();
+ 		RenderHelper.disableStandardItemLighting();
+ 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+@@ -85,14 +107,16 @@
+ 		OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+ 	}
+ 
+-	protected void actionPerformed(GuiButton var1) {
+-		if(var1.id == 0) {
++	/**
++	 * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
++	 */
++	protected void actionPerformed(GuiButton par1GuiButton) {
++		if (par1GuiButton.id == 0) {
+ 			this.mc.displayGuiScreen(new GuiAchievements(this.mc.statFileWriter));
+ 		}
+ 
+-		if(var1.id == 1) {
++		if (par1GuiButton.id == 1) {
+ 			this.mc.displayGuiScreen(new GuiStats(this, this.mc.statFileWriter));
+ 		}
+-
+ 	}
+ }

@@ -1,0 +1,75 @@
+--- net/minecraft/src/EntityDragonPart.java
++++ net/minecraft/src/EntityDragonPart.java
+@@ -1,34 +1,50 @@
+ package net.minecraft.src;
+ 
+ public class EntityDragonPart extends Entity {
++
++	/** The dragon entity this dragon part belongs to */
+ 	public final IEntityMultiPart entityDragonObj;
+-	public final String b;
+-
+-	public EntityDragonPart(IEntityMultiPart var1, String var2, float var3, float var4) {
+-		super(var1.func_82194_d());
+-		this.setSize(var3, var4);
+-		this.entityDragonObj = var1;
+-		this.b = var2;
+-	}
+-
+-	protected void entityInit() {
+-	}
+-
+-	protected void readEntityFromNBT(NBTTagCompound var1) {
+-	}
+-
+-	protected void writeEntityToNBT(NBTTagCompound var1) {
+-	}
+-
++
++	/** The name of the Dragon Part */
++	public final String name;
++
++	public EntityDragonPart(IEntityMultiPart par1IEntityMultiPart, String par2Str, float par3, float par4) {
++		super(par1IEntityMultiPart.func_82194_d());
++		this.setSize(par3, par4);
++		this.entityDragonObj = par1IEntityMultiPart;
++		this.name = par2Str;
++	}
++
++	protected void entityInit() {}
++
++	/**
++	 * (abstract) Protected helper method to read subclass entity data from NBT.
++	 */
++	protected void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {}
++
++	/**
++	 * (abstract) Protected helper method to write subclass entity data to NBT.
++	 */
++	protected void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {}
++
++	/**
++	 * Returns true if other Entities should be prevented from moving through this Entity.
++	 */
+ 	public boolean canBeCollidedWith() {
+ 		return true;
+ 	}
+ 
+-	public boolean attackEntityFrom(DamageSource var1, float var2) {
+-		return this.isEntityInvulnerable() ? false : this.entityDragonObj.attackEntityFromPart(this, var1, var2);
++	/**
++	 * Called when the entity is attacked.
++	 */
++	public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
++		return this.isEntityInvulnerable() ? false : this.entityDragonObj.attackEntityFromPart(this, par1DamageSource, par2);
+ 	}
+ 
+-	public boolean isEntityEqual(Entity var1) {
+-		return this == var1 || this.entityDragonObj == var1;
++	/**
++	 * Returns true if Entity argument is equal to this Entity
++	 */
++	public boolean isEntityEqual(Entity par1Entity) {
++		return this == par1Entity || this.entityDragonObj == par1Entity;
+ 	}
+ }

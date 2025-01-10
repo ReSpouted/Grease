@@ -1,0 +1,29 @@
+--- net/minecraft/src/ContainerHorseInventorySlotArmor.java
++++ net/minecraft/src/ContainerHorseInventorySlotArmor.java
+@@ -2,16 +2,20 @@
+ 
+ class ContainerHorseInventorySlotArmor extends Slot {
+ 	final EntityHorse theHorse;
++
+ 	final ContainerHorseInventory field_111240_b;
+ 
+-	ContainerHorseInventorySlotArmor(ContainerHorseInventory var1, IInventory var2, int var3, int var4, int var5, EntityHorse var6) {
+-		super(var2, var3, var4, var5);
+-		this.field_111240_b = var1;
+-		this.theHorse = var6;
++	ContainerHorseInventorySlotArmor(ContainerHorseInventory par1ContainerHorseInventory, IInventory par2IInventory, int par3, int par4, int par5, EntityHorse par6EntityHorse) {
++		super(par2IInventory, par3, par4, par5);
++		this.field_111240_b = par1ContainerHorseInventory;
++		this.theHorse = par6EntityHorse;
+ 	}
+ 
+-	public boolean isItemValid(ItemStack var1) {
+-		return super.isItemValid(var1) && this.theHorse.func_110259_cr() && EntityHorse.func_110211_v(var1.itemID);
++	/**
++	 * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
++	 */
++	public boolean isItemValid(ItemStack par1ItemStack) {
++		return super.isItemValid(par1ItemStack) && this.theHorse.func_110259_cr() && EntityHorse.func_110211_v(par1ItemStack.itemID);
+ 	}
+ 
+ 	public boolean func_111238_b() {

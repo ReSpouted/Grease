@@ -1,0 +1,16 @@
+--- net/minecraft/src/EntitySelectorInventory.java
++++ net/minecraft/src/EntitySelectorInventory.java
+@@ -1,7 +1,11 @@
+ package net.minecraft.src;
+ 
+ final class EntitySelectorInventory implements IEntitySelector {
+-	public boolean isEntityApplicable(Entity var1) {
+-		return var1 instanceof IInventory && var1.isEntityAlive();
++
++	/**
++	 * Return whether the specified entity is applicable to this filter.
++	 */
++	public boolean isEntityApplicable(Entity par1Entity) {
++		return par1Entity instanceof IInventory && par1Entity.isEntityAlive();
+ 	}
+ }

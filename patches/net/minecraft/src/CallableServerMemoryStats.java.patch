@@ -1,0 +1,24 @@
+--- net/minecraft/src/CallableServerMemoryStats.java
++++ net/minecraft/src/CallableServerMemoryStats.java
+@@ -4,14 +4,16 @@
+ import net.minecraft.server.MinecraftServer;
+ 
+ public class CallableServerMemoryStats implements Callable {
+-	final MinecraftServer a;
+-
+-	public CallableServerMemoryStats(MinecraftServer var1) {
+-		this.a = var1;
++
++	/** Reference to the MinecraftServer object. */
++	final MinecraftServer mcServer;
++
++	public CallableServerMemoryStats(MinecraftServer par1MinecraftServer) {
++		this.mcServer = par1MinecraftServer;
+ 	}
+ 
+ 	public String callServerMemoryStats() {
+-		return MinecraftServer.getServerConfigurationManager(this.a).getCurrentPlayerCount() + " / " + MinecraftServer.getServerConfigurationManager(this.a).getMaxPlayers() + "; " + MinecraftServer.getServerConfigurationManager(this.a).a;
++		return MinecraftServer.getServerConfigurationManager(this.mcServer).getCurrentPlayerCount() + " / " + MinecraftServer.getServerConfigurationManager(this.mcServer).getMaxPlayers() + "; " + MinecraftServer.getServerConfigurationManager(this.mcServer).playerEntityList;
+ 	}
+ 
+ 	public Object call() {

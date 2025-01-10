@@ -1,0 +1,398 @@
+--- net/minecraft/src/DedicatedServer.java
++++ net/minecraft/src/DedicatedServer.java
+@@ -10,7 +10,7 @@
+ import net.minecraft.server.MinecraftServer;
+ 
+ public class DedicatedServer extends MinecraftServer implements IServer {
+-	private final List l = Collections.synchronizedList(new ArrayList());
++	private final List pendingCommandList = Collections.synchronizedList(new ArrayList());
+ 	private final ILogAgent field_98131_l;
+ 	private RConThreadQuery theRConThreadQuery;
+ 	private RConThreadMain theRConThreadMain;
+@@ -20,41 +20,47 @@
+ 	private NetworkListenThread networkThread;
+ 	private boolean guiIsEnabled;
+ 
+-	public DedicatedServer(File var1) {
+-		super(var1);
+-		this.field_98131_l = new LogAgent("Minecraft-Server", (String)null, (new File(var1, "server.log")).getAbsolutePath());
++	public DedicatedServer(File par1File) {
++		super(par1File);
++		this.field_98131_l = new LogAgent("Minecraft-Server", (String)null, (new File(par1File, "server.log")).getAbsolutePath());
+ 		new DedicatedServerSleepThread(this);
+ 	}
+ 
++	/**
++	 * Initialises the server and starts it.
++	 */
+ 	protected boolean startServer() throws IOException {
+ 		DedicatedServerCommandThread var1 = new DedicatedServerCommandThread(this);
+ 		var1.setDaemon(true);
+ 		var1.start();
+ 		this.getLogAgent().logInfo("Starting minecraft server version 1.6.4");
+-		if(Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L) {
++
++		if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L) {
+ 			this.getLogAgent().logWarning("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar minecraft_server.jar\"");
+ 		}
+ 
+ 		this.getLogAgent().logInfo("Loading properties");
+ 		this.settings = new PropertyManager(new File("server.properties"), this.getLogAgent());
+-		if(this.isSinglePlayer()) {
++
++		if (this.isSinglePlayer()) {
+ 			this.setHostname("127.0.0.1");
+ 		} else {
+ 			this.setOnlineMode(this.settings.getBooleanProperty("online-mode", true));
+-			this.setHostname(this.settings.getStringProperty("server-ip", ""));
++			this.setHostname(this.settings.getProperty("server-ip", ""));
+ 		}
+ 
+ 		this.setCanSpawnAnimals(this.settings.getBooleanProperty("spawn-animals", true));
+ 		this.setCanSpawnNPCs(this.settings.getBooleanProperty("spawn-npcs", true));
+ 		this.setAllowPvp(this.settings.getBooleanProperty("pvp", true));
+ 		this.setAllowFlight(this.settings.getBooleanProperty("allow-flight", false));
+-		this.setTexturePack(this.settings.getStringProperty("texture-pack", ""));
+-		this.setMOTD(this.settings.getStringProperty("motd", "A Minecraft Server"));
++		this.setTexturePack(this.settings.getProperty("texture-pack", ""));
++		this.setMOTD(this.settings.getProperty("motd", "A Minecraft Server"));
+ 		this.setForceGamemode(this.settings.getBooleanProperty("force-gamemode", false));
+ 		this.func_143006_e(this.settings.getIntProperty("player-idle-timeout", 0));
+-		if(this.settings.getIntProperty("difficulty", 1) < 0) {
++
++		if (this.settings.getIntProperty("difficulty", 1) < 0) {
+ 			this.settings.setProperty("difficulty", Integer.valueOf(0));
+-		} else if(this.settings.getIntProperty("difficulty", 1) > 3) {
++		} else if (this.settings.getIntProperty("difficulty", 1) > 3) {
+ 			this.settings.setProperty("difficulty", Integer.valueOf(3));
+ 		}
+ 
+@@ -63,28 +69,29 @@
+ 		this.gameType = WorldSettings.getGameTypeById(var2);
+ 		this.getLogAgent().logInfo("Default game type: " + this.gameType);
+ 		InetAddress var3 = null;
+-		if(this.getServerHostname().length() > 0) {
++
++		if (this.getServerHostname().length() > 0) {
+ 			var3 = InetAddress.getByName(this.getServerHostname());
+ 		}
+ 
+-		if(this.getServerPort() < 0) {
++		if (this.getServerPort() < 0) {
+ 			this.setServerPort(this.settings.getIntProperty("server-port", 25565));
+ 		}
+ 
+ 		this.getLogAgent().logInfo("Generating keypair");
+-		this.setKeyPair(CryptManager.generateKeyPair());
++		this.setKeyPair(CryptManager.createNewKeyPair());
+ 		this.getLogAgent().logInfo("Starting Minecraft server on " + (this.getServerHostname().length() == 0 ? "*" : this.getServerHostname()) + ":" + this.getServerPort());
+ 
+ 		try {
+ 			this.networkThread = new DedicatedServerListenThread(this, var3, this.getServerPort());
+ 		} catch (IOException var16) {
+ 			this.getLogAgent().logWarning("**** FAILED TO BIND TO PORT!");
+-			this.getLogAgent().logWarningFormatted("The exception was: {0}", new Object[]{var16.toString()});
++			this.getLogAgent().logWarningFormatted("The exception was: {0}", new Object[] {var16.toString()});
+ 			this.getLogAgent().logWarning("Perhaps a server is already running on that port?");
+ 			return false;
+ 		}
+ 
+-		if(!this.isServerInOnlineMode()) {
++		if (!this.isServerInOnlineMode()) {
+ 			this.getLogAgent().logWarning("**** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!");
+ 			this.getLogAgent().logWarning("The server will make no attempt to authenticate usernames. Beware.");
+ 			this.getLogAgent().logWarning("While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.");
+@@ -93,18 +100,21 @@
+ 
+ 		this.setConfigurationManager(new DedicatedPlayerList(this));
+ 		long var4 = System.nanoTime();
+-		if(this.getFolderName() == null) {
+-			this.setFolderName(this.settings.getStringProperty("level-name", "world"));
++
++		if (this.getFolderName() == null) {
++			this.setFolderName(this.settings.getProperty("level-name", "world"));
+ 		}
+ 
+-		String var6 = this.settings.getStringProperty("level-seed", "");
+-		String var7 = this.settings.getStringProperty("level-type", "DEFAULT");
+-		String var8 = this.settings.getStringProperty("generator-settings", "");
++		String var6 = this.settings.getProperty("level-seed", "");
++		String var7 = this.settings.getProperty("level-type", "DEFAULT");
++		String var8 = this.settings.getProperty("generator-settings", "");
+ 		long var9 = (new Random()).nextLong();
+-		if(var6.length() > 0) {
++
++		if (var6.length() > 0) {
+ 			try {
+ 				long var11 = Long.parseLong(var6);
+-				if(var11 != 0L) {
++
++				if (var11 != 0L) {
+ 					var9 = var11;
+ 				}
+ 			} catch (NumberFormatException var15) {
+@@ -113,7 +123,8 @@
+ 		}
+ 
+ 		WorldType var17 = WorldType.parseWorldType(var7);
+-		if(var17 == null) {
++
++		if (var17 == null) {
+ 			var17 = WorldType.DEFAULT;
+ 		}
+ 
+@@ -124,15 +135,16 @@
+ 		this.getLogAgent().logInfo("Preparing level \"" + this.getFolderName() + "\"");
+ 		this.loadAllWorlds(this.getFolderName(), this.getFolderName(), var9, var17, var8);
+ 		long var12 = System.nanoTime() - var4;
+-		String var14 = String.format("%.3fs", new Object[]{Double.valueOf((double)var12 / 1.0E9D)});
++		String var14 = String.format("%.3fs", new Object[] {Double.valueOf((double)var12 / 1.0E9D)});
+ 		this.getLogAgent().logInfo("Done (" + var14 + ")! For help, type \"help\" or \"?\"");
+-		if(this.settings.getBooleanProperty("enable-query", false)) {
++
++		if (this.settings.getBooleanProperty("enable-query", false)) {
+ 			this.getLogAgent().logInfo("Starting GS4 status listener");
+ 			this.theRConThreadQuery = new RConThreadQuery(this);
+ 			this.theRConThreadQuery.startThread();
+ 		}
+ 
+-		if(this.settings.getBooleanProperty("enable-rcon", false)) {
++		if (this.settings.getBooleanProperty("enable-rcon", false)) {
+ 			this.getLogAgent().logInfo("Starting remote control listener");
+ 			this.theRConThreadMain = new RConThreadMain(this);
+ 			this.theRConThreadMain.startThread();
+@@ -149,16 +161,25 @@
+ 		return this.gameType;
+ 	}
+ 
++	/**
++	 * Defaults to "1" (Easy) for the dedicated server, defaults to "2" (Normal) on the client.
++	 */
+ 	public int getDifficulty() {
+ 		return this.settings.getIntProperty("difficulty", 1);
+ 	}
+ 
++	/**
++	 * Defaults to false.
++	 */
+ 	public boolean isHardcore() {
+ 		return this.settings.getBooleanProperty("hardcore", false);
+ 	}
+ 
+-	protected void finalTick(CrashReport var1) {
+-		while(this.isServerRunning()) {
++	/**
++	 * Called on exit from the main run() loop.
++	 */
++	protected void finalTick(CrashReport par1CrashReport) {
++		while (this.isServerRunning()) {
+ 			this.executePendingCommands();
+ 
+ 			try {
+@@ -167,21 +188,26 @@
+ 				var3.printStackTrace();
+ 			}
+ 		}
+-
+-	}
+-
+-	public CrashReport addServerInfoToCrashReport(CrashReport var1) {
+-		var1 = super.addServerInfoToCrashReport(var1);
+-		var1.getCategory().addCrashSectionCallable("Is Modded", new CallableType(this));
+-		var1.getCategory().addCrashSectionCallable("Type", new CallableServerType(this));
+-		return var1;
+-	}
+-
++	}
++
++	/**
++	 * Adds the server info, including from theWorldServer, to the crash report.
++	 */
++	public CrashReport addServerInfoToCrashReport(CrashReport par1CrashReport) {
++		par1CrashReport = super.addServerInfoToCrashReport(par1CrashReport);
++		par1CrashReport.getCategory().addCrashSectionCallable("Is Modded", new CallableType(this));
++		par1CrashReport.getCategory().addCrashSectionCallable("Type", new CallableServerType(this));
++		return par1CrashReport;
++	}
++
++	/**
++	 * Directly calls System.exit(0), instantly killing the program.
++	 */
+ 	protected void systemExitNow() {
+ 		System.exit(0);
+ 	}
+ 
+-	protected void updateTimeLightAndEntities() {
++	public void updateTimeLightAndEntities() {
+ 		super.updateTimeLightAndEntities();
+ 		this.executePendingCommands();
+ 	}
+@@ -194,26 +220,28 @@
+ 		return this.settings.getBooleanProperty("spawn-monsters", true);
+ 	}
+ 
+-	public void addServerStatsToSnooper(PlayerUsageSnooper var1) {
+-		var1.addData("whitelist_enabled", Boolean.valueOf(this.getDedicatedPlayerList().isWhiteListEnabled()));
+-		var1.addData("whitelist_count", Integer.valueOf(this.getDedicatedPlayerList().getWhiteListedPlayers().size()));
+-		super.addServerStatsToSnooper(var1);
++	public void addServerStatsToSnooper(PlayerUsageSnooper par1PlayerUsageSnooper) {
++		par1PlayerUsageSnooper.addData("whitelist_enabled", Boolean.valueOf(this.getDedicatedPlayerList().isWhiteListEnabled()));
++		par1PlayerUsageSnooper.addData("whitelist_count", Integer.valueOf(this.getDedicatedPlayerList().getWhiteListedPlayers().size()));
++		super.addServerStatsToSnooper(par1PlayerUsageSnooper);
+ 	}
+ 
++	/**
++	 * Returns whether snooping is enabled or not.
++	 */
+ 	public boolean isSnooperEnabled() {
+ 		return this.settings.getBooleanProperty("snooper-enabled", true);
+ 	}
+ 
+-	public void addPendingCommand(String var1, ICommandSender var2) {
+-		this.l.add(new ServerCommand(var1, var2));
++	public void addPendingCommand(String par1Str, ICommandSender par2ICommandSender) {
++		this.pendingCommandList.add(new ServerCommand(par1Str, par2ICommandSender));
+ 	}
+ 
+ 	public void executePendingCommands() {
+-		while(!this.l.isEmpty()) {
+-			ServerCommand var1 = (ServerCommand)this.l.remove(0);
+-			this.getCommandManager().executeCommand(var1.sender, var1.a);
++		while (!this.pendingCommandList.isEmpty()) {
++			ServerCommand var1 = (ServerCommand)this.pendingCommandList.remove(0);
++			this.getCommandManager().executeCommand(var1.sender, var1.command);
+ 		}
+-
+ 	}
+ 
+ 	public boolean isDedicatedServer() {
+@@ -228,26 +256,44 @@
+ 		return this.networkThread;
+ 	}
+ 
+-	public int getIntProperty(String var1, int var2) {
+-		return this.settings.getIntProperty(var1, var2);
+-	}
+-
+-	public String getStringProperty(String var1, String var2) {
+-		return this.settings.getStringProperty(var1, var2);
+-	}
+-
+-	public boolean getBooleanProperty(String var1, boolean var2) {
+-		return this.settings.getBooleanProperty(var1, var2);
+-	}
+-
+-	public void setProperty(String var1, Object var2) {
+-		this.settings.setProperty(var1, var2);
+-	}
+-
++	/**
++	 * Gets an integer property. If it does not exist, set it to the specified value.
++	 */
++	public int getIntProperty(String par1Str, int par2) {
++		return this.settings.getIntProperty(par1Str, par2);
++	}
++
++	/**
++	 * Gets a string property. If it does not exist, set it to the specified value.
++	 */
++	public String getStringProperty(String par1Str, String par2Str) {
++		return this.settings.getProperty(par1Str, par2Str);
++	}
++
++	/**
++	 * Gets a boolean property. If it does not exist, set it to the specified value.
++	 */
++	public boolean getBooleanProperty(String par1Str, boolean par2) {
++		return this.settings.getBooleanProperty(par1Str, par2);
++	}
++
++	/**
++	 * Saves an Object with the given property name.
++	 */
++	public void setProperty(String par1Str, Object par2Obj) {
++		this.settings.setProperty(par1Str, par2Obj);
++	}
++
++	/**
++	 * Saves all of the server properties to the properties file.
++	 */
+ 	public void saveProperties() {
+ 		this.settings.saveProperties();
+ 	}
+ 
++	/**
++	 * Returns the filename where server properties are stored
++	 */
+ 	public String getSettingsFilename() {
+ 		File var1 = this.settings.getPropertiesFile();
+ 		return var1 != null ? var1.getAbsolutePath() : "No settings file";
+@@ -257,31 +303,43 @@
+ 		return this.guiIsEnabled;
+ 	}
+ 
+-	public String shareToLAN(EnumGameType var1, boolean var2) {
++	/**
++	 * On dedicated does nothing. On integrated, sets commandsAllowedForAll, gameType and allows external connections.
++	 */
++	public String shareToLAN(EnumGameType par1EnumGameType, boolean par2) {
+ 		return "";
+ 	}
+ 
++	/**
++	 * Return whether command blocks are enabled.
++	 */
+ 	public boolean isCommandBlockEnabled() {
+ 		return this.settings.getBooleanProperty("enable-command-block", false);
+ 	}
+ 
++	/**
++	 * Return the spawn protection area's size.
++	 */
+ 	public int getSpawnProtectionSize() {
+ 		return this.settings.getIntProperty("spawn-protection", super.getSpawnProtectionSize());
+ 	}
+ 
+-	public boolean isBlockProtected(World var1, int var2, int var3, int var4, EntityPlayer var5) {
+-		if(var1.provider.dimensionId != 0) {
+-			return false;
+-		} else if(this.getDedicatedPlayerList().getOps().isEmpty()) {
+-			return false;
+-		} else if(this.getDedicatedPlayerList().isPlayerOpped(var5.getCommandSenderName())) {
+-			return false;
+-		} else if(this.getSpawnProtectionSize() <= 0) {
++	/**
++	 * Returns true if a player does not have permission to edit the block at the given coordinates.
++	 */
++	public boolean isBlockProtected(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer) {
++		if (par1World.provider.dimensionId != 0) {
++			return false;
++		} else if (this.getDedicatedPlayerList().getOps().isEmpty()) {
++			return false;
++		} else if (this.getDedicatedPlayerList().isPlayerOpped(par5EntityPlayer.getCommandSenderName())) {
++			return false;
++		} else if (this.getSpawnProtectionSize() <= 0) {
+ 			return false;
+ 		} else {
+-			ChunkCoordinates var6 = var1.getSpawnPoint();
+-			int var7 = MathHelper.abs_int(var2 - var6.posX);
+-			int var8 = MathHelper.abs_int(var4 - var6.posZ);
++			ChunkCoordinates var6 = par1World.getSpawnPoint();
++			int var7 = MathHelper.abs_int(par2 - var6.posX);
++			int var8 = MathHelper.abs_int(par4 - var6.posZ);
+ 			int var9 = Math.max(var7, var8);
+ 			return var9 <= this.getSpawnProtectionSize();
+ 		}
+@@ -295,9 +353,9 @@
+ 		return this.settings.getIntProperty("op-permission-level", 4);
+ 	}
+ 
+-	public void func_143006_e(int var1) {
+-		super.func_143006_e(var1);
+-		this.settings.setProperty("player-idle-timeout", Integer.valueOf(var1));
++	public void func_143006_e(int par1) {
++		super.func_143006_e(par1);
++		this.settings.setProperty("player-idle-timeout", Integer.valueOf(par1));
+ 		this.saveProperties();
+ 	}
+ 

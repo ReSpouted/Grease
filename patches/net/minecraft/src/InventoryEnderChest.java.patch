@@ -1,0 +1,87 @@
+--- net/minecraft/src/InventoryEnderChest.java
++++ net/minecraft/src/InventoryEnderChest.java
+@@ -7,32 +7,34 @@
+ 		super("container.enderchest", false, 27);
+ 	}
+ 
+-	public void setAssociatedChest(TileEntityEnderChest var1) {
+-		this.associatedChest = var1;
++	public void setAssociatedChest(TileEntityEnderChest par1TileEntityEnderChest) {
++		this.associatedChest = par1TileEntityEnderChest;
+ 	}
+ 
+-	public void loadInventoryFromNBT(NBTTagList var1) {
++	public void loadInventoryFromNBT(NBTTagList par1NBTTagList) {
+ 		int var2;
+-		for(var2 = 0; var2 < this.getSizeInventory(); ++var2) {
++
++		for (var2 = 0; var2 < this.getSizeInventory(); ++var2) {
+ 			this.setInventorySlotContents(var2, (ItemStack)null);
+ 		}
+ 
+-		for(var2 = 0; var2 < var1.tagCount(); ++var2) {
+-			NBTTagCompound var3 = (NBTTagCompound)var1.tagAt(var2);
++		for (var2 = 0; var2 < par1NBTTagList.tagCount(); ++var2) {
++			NBTTagCompound var3 = (NBTTagCompound)par1NBTTagList.tagAt(var2);
+ 			int var4 = var3.getByte("Slot") & 255;
+-			if(var4 >= 0 && var4 < this.getSizeInventory()) {
++
++			if (var4 >= 0 && var4 < this.getSizeInventory()) {
+ 				this.setInventorySlotContents(var4, ItemStack.loadItemStackFromNBT(var3));
+ 			}
+ 		}
+-
+ 	}
+ 
+ 	public NBTTagList saveInventoryToNBT() {
+ 		NBTTagList var1 = new NBTTagList("EnderItems");
+ 
+-		for(int var2 = 0; var2 < this.getSizeInventory(); ++var2) {
++		for (int var2 = 0; var2 < this.getSizeInventory(); ++var2) {
+ 			ItemStack var3 = this.getStackInSlot(var2);
+-			if(var3 != null) {
++
++			if (var3 != null) {
+ 				NBTTagCompound var4 = new NBTTagCompound();
+ 				var4.setByte("Slot", (byte)var2);
+ 				var3.writeToNBT(var4);
+@@ -43,12 +45,15 @@
+ 		return var1;
+ 	}
+ 
+-	public boolean isUseableByPlayer(EntityPlayer var1) {
+-		return this.associatedChest != null && !this.associatedChest.isUseableByPlayer(var1) ? false : super.isUseableByPlayer(var1);
++	/**
++	 * Do not make give this method the name canInteractWith because it clashes with Container
++	 */
++	public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer) {
++		return this.associatedChest != null && !this.associatedChest.isUseableByPlayer(par1EntityPlayer) ? false : super.isUseableByPlayer(par1EntityPlayer);
+ 	}
+ 
+ 	public void openChest() {
+-		if(this.associatedChest != null) {
++		if (this.associatedChest != null) {
+ 			this.associatedChest.openChest();
+ 		}
+ 
+@@ -56,7 +61,7 @@
+ 	}
+ 
+ 	public void closeChest() {
+-		if(this.associatedChest != null) {
++		if (this.associatedChest != null) {
+ 			this.associatedChest.closeChest();
+ 		}
+ 
+@@ -64,7 +69,10 @@
+ 		this.associatedChest = null;
+ 	}
+ 
+-	public boolean isItemValidForSlot(int var1, ItemStack var2) {
++	/**
++	 * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
++	 */
++	public boolean isItemValidForSlot(int par1, ItemStack par2ItemStack) {
+ 		return true;
+ 	}
+ }

@@ -1,0 +1,31 @@
+--- net/minecraft/src/ThreadStatSyncherSend.java
++++ net/minecraft/src/ThreadStatSyncherSend.java
+@@ -3,22 +3,22 @@
+ import java.util.Map;
+ 
+ class ThreadStatSyncherSend extends Thread {
+-	final Map a;
++	final Map field_77483_a;
++
+ 	final StatsSyncher syncher;
+ 
+-	ThreadStatSyncherSend(StatsSyncher var1, Map var2) {
+-		this.syncher = var1;
+-		this.a = var2;
++	ThreadStatSyncherSend(StatsSyncher par1StatsSyncher, Map par2Map) {
++		this.syncher = par1StatsSyncher;
++		this.field_77483_a = par2Map;
+ 	}
+ 
+ 	public void run() {
+ 		try {
+-			StatsSyncher.func_77414_a(this.syncher, this.a, StatsSyncher.getUnsentDataFile(this.syncher), StatsSyncher.getUnsentTempFile(this.syncher), StatsSyncher.getUnsentOldFile(this.syncher));
++			StatsSyncher.func_77414_a(this.syncher, this.field_77483_a, StatsSyncher.getUnsentDataFile(this.syncher), StatsSyncher.getUnsentTempFile(this.syncher), StatsSyncher.getUnsentOldFile(this.syncher));
+ 		} catch (Exception var5) {
+ 			var5.printStackTrace();
+ 		} finally {
+ 			StatsSyncher.setBusy(this.syncher, false);
+ 		}
+-
+ 	}
+ }

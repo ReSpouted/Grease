@@ -1,0 +1,223 @@
+--- net/minecraft/src/SaveFormatOld.java
++++ net/minecraft/src/SaveFormatOld.java
+@@ -7,23 +7,28 @@
+ import java.util.List;
+ 
+ public class SaveFormatOld implements ISaveFormat {
+-	protected final File a;
+-
+-	public SaveFormatOld(File var1) {
+-		if(!var1.exists()) {
+-			var1.mkdirs();
++
++	/**
++	 * Reference to the File object representing the directory for the world saves
++	 */
++	protected final File savesDirectory;
++
++	public SaveFormatOld(File par1File) {
++		if (!par1File.exists()) {
++			par1File.mkdirs();
+ 		}
+ 
+-		this.a = var1;
++		this.savesDirectory = par1File;
+ 	}
+ 
+ 	public List getSaveList() throws AnvilConverterException {
+ 		ArrayList var1 = new ArrayList();
+ 
+-		for(int var2 = 0; var2 < 5; ++var2) {
++		for (int var2 = 0; var2 < 5; ++var2) {
+ 			String var3 = "World" + (var2 + 1);
+ 			WorldInfo var4 = this.getWorldInfo(var3);
+-			if(var4 != null) {
++
++			if (var4 != null) {
+ 				var1.add(new SaveFormatComparator(var3, "", var4.getLastTimePlayed(), var4.getSizeOnDisk(), var4.getGameType(), false, var4.isHardcoreModeEnabled(), var4.areCommandsAllowed()));
+ 			}
+ 		}
+@@ -31,18 +36,22 @@
+ 		return var1;
+ 	}
+ 
+-	public void flushCache() {
+-	}
+-
+-	public WorldInfo getWorldInfo(String var1) {
+-		File var2 = new File(this.a, var1);
+-		if(!var2.exists()) {
++	public void flushCache() {}
++
++	/**
++	 * gets the world info
++	 */
++	public WorldInfo getWorldInfo(String par1Str) {
++		File var2 = new File(this.savesDirectory, par1Str);
++
++		if (!var2.exists()) {
+ 			return null;
+ 		} else {
+ 			File var3 = new File(var2, "level.dat");
+ 			NBTTagCompound var4;
+ 			NBTTagCompound var5;
+-			if(var3.exists()) {
++
++			if (var3.exists()) {
+ 				try {
+ 					var4 = CompressedStreamTools.readCompressed(new FileInputStream(var3));
+ 					var5 = var4.getCompoundTag("Data");
+@@ -53,7 +62,8 @@
+ 			}
+ 
+ 			var3 = new File(var2, "level.dat_old");
+-			if(var3.exists()) {
++
++			if (var3.exists()) {
+ 				try {
+ 					var4 = CompressedStreamTools.readCompressed(new FileInputStream(var3));
+ 					var5 = var4.getCompoundTag("Data");
+@@ -67,42 +77,56 @@
+ 		}
+ 	}
+ 
+-	public void renameWorld(String var1, String var2) {
+-		File var3 = new File(this.a, var1);
+-		if(var3.exists()) {
++	/**
++	 * @args: Takes two arguments - first the name of the directory containing the world and second the new name for that
++	 * world. @desc: Renames the world by storing the new name in level.dat. It does *not* rename the directory containing
++	 * the world data.
++	 */
++	public void renameWorld(String par1Str, String par2Str) {
++		File var3 = new File(this.savesDirectory, par1Str);
++
++		if (var3.exists()) {
+ 			File var4 = new File(var3, "level.dat");
+-			if(var4.exists()) {
++
++			if (var4.exists()) {
+ 				try {
+ 					NBTTagCompound var5 = CompressedStreamTools.readCompressed(new FileInputStream(var4));
+ 					NBTTagCompound var6 = var5.getCompoundTag("Data");
+-					var6.setString("LevelName", var2);
++					var6.setString("LevelName", par2Str);
+ 					CompressedStreamTools.writeCompressed(var5, new FileOutputStream(var4));
+ 				} catch (Exception var7) {
+ 					var7.printStackTrace();
+ 				}
+ 			}
+-
+ 		}
+ 	}
+ 
+-	public boolean deleteWorldDirectory(String var1) {
+-		File var2 = new File(this.a, var1);
+-		if(!var2.exists()) {
++	/**
++	 * @args: Takes one argument - the name of the directory of the world to delete. @desc: Delete the world by deleting
++	 * the associated directory recursively.
++	 */
++	public boolean deleteWorldDirectory(String par1Str) {
++		File var2 = new File(this.savesDirectory, par1Str);
++
++		if (!var2.exists()) {
+ 			return true;
+ 		} else {
+-			System.out.println("Deleting level " + var1);
++			System.out.println("Deleting level " + par1Str);
+ 
+-			for(int var3 = 1; var3 <= 5; ++var3) {
++			for (int var3 = 1; var3 <= 5; ++var3) {
+ 				System.out.println("Attempt " + var3 + "...");
+-				if(deleteFiles(var2.listFiles())) {
++
++				if (deleteFiles(var2.listFiles())) {
+ 					break;
+ 				}
+ 
+ 				System.out.println("Unsuccessful in deleting contents.");
+-				if(var3 < 5) {
++
++				if (var3 < 5) {
+ 					try {
+ 						Thread.sleep(500L);
+ 					} catch (InterruptedException var5) {
++						;
+ 					}
+ 				}
+ 			}
+@@ -111,16 +135,21 @@
+ 		}
+ 	}
+ 
+-	protected static boolean deleteFiles(File[] var0) {
+-		for(int var1 = 0; var1 < var0.length; ++var1) {
+-			File var2 = var0[var1];
++	/**
++	 * @args: Takes one argument - the list of files and directories to delete. @desc: Deletes the files and directory
++	 * listed in the list recursively.
++	 */
++	protected static boolean deleteFiles(File[] par0ArrayOfFile) {
++		for (int var1 = 0; var1 < par0ArrayOfFile.length; ++var1) {
++			File var2 = par0ArrayOfFile[var1];
+ 			System.out.println("Deleting " + var2);
+-			if(var2.isDirectory() && !deleteFiles(var2.listFiles())) {
++
++			if (var2.isDirectory() && !deleteFiles(var2.listFiles())) {
+ 				System.out.println("Couldn\'t delete directory " + var2);
+ 				return false;
+ 			}
+ 
+-			if(!var2.delete()) {
++			if (!var2.delete()) {
+ 				System.out.println("Couldn\'t delete file " + var2);
+ 				return false;
+ 			}
+@@ -129,20 +158,32 @@
+ 		return true;
+ 	}
+ 
+-	public ISaveHandler getSaveLoader(String var1, boolean var2) {
+-		return new SaveHandler(this.a, var1, var2);
+-	}
+-
+-	public boolean isOldMapFormat(String var1) {
+-		return false;
+-	}
+-
+-	public boolean convertMapFormat(String var1, IProgressUpdate var2) {
+-		return false;
+-	}
+-
+-	public boolean canLoadWorld(String var1) {
+-		File var2 = new File(this.a, var1);
++	/**
++	 * Returns back a loader for the specified save directory
++	 */
++	public ISaveHandler getSaveLoader(String par1Str, boolean par2) {
++		return new SaveHandler(this.savesDirectory, par1Str, par2);
++	}
++
++	/**
++	 * Checks if the save directory uses the old map format
++	 */
++	public boolean isOldMapFormat(String par1Str) {
++		return false;
++	}
++
++	/**
++	 * Converts the specified map to the new map format. Args: worldName, loadingScreen
++	 */
++	public boolean convertMapFormat(String par1Str, IProgressUpdate par2IProgressUpdate) {
++		return false;
++	}
++
++	/**
++	 * Return whether the given world can be loaded.
++	 */
++	public boolean canLoadWorld(String par1Str) {
++		File var2 = new File(this.savesDirectory, par1Str);
+ 		return var2.isDirectory();
+ 	}
+ }

@@ -1,0 +1,28 @@
+--- net/minecraft/src/ModelBoat.java
++++ net/minecraft/src/ModelBoat.java
+@@ -23,16 +23,18 @@
+ 		this.boatSides[3].setRotationPoint(0.0F, (float)var4, (float)(-var3 / 2 + 1));
+ 		this.boatSides[4].addBox((float)(-var1 / 2 + 2), (float)(-var2 - 1), -1.0F, var1 - 4, var2, 2, 0.0F);
+ 		this.boatSides[4].setRotationPoint(0.0F, (float)var4, (float)(var3 / 2 - 1));
+-		this.boatSides[0].rotateAngleX = (float)Math.PI * 0.5F;
+-		this.boatSides[1].rotateAngleY = (float)Math.PI * 3.0F / 2.0F;
+-		this.boatSides[2].rotateAngleY = (float)Math.PI * 0.5F;
++		this.boatSides[0].rotateAngleX = ((float)Math.PI / 2F);
++		this.boatSides[1].rotateAngleY = ((float)Math.PI * 3F / 2F);
++		this.boatSides[2].rotateAngleY = ((float)Math.PI / 2F);
+ 		this.boatSides[3].rotateAngleY = (float)Math.PI;
+ 	}
+ 
+-	public void render(Entity var1, float var2, float var3, float var4, float var5, float var6, float var7) {
+-		for(int var8 = 0; var8 < 5; ++var8) {
+-			this.boatSides[var8].render(var7);
++	/**
++	 * Sets the models various rotation angles then renders the model.
++	 */
++	public void render(Entity par1Entity, float par2, float par3, float par4, float par5, float par6, float par7) {
++		for (int var8 = 0; var8 < 5; ++var8) {
++			this.boatSides[var8].render(par7);
+ 		}
+-
+ 	}
+ }

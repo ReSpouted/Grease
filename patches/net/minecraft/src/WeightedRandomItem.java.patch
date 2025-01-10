@@ -1,0 +1,18 @@
+--- net/minecraft/src/WeightedRandomItem.java
++++ net/minecraft/src/WeightedRandomItem.java
+@@ -1,9 +1,13 @@
+ package net.minecraft.src;
+ 
+ public class WeightedRandomItem {
++
++	/**
++	 * The Weight is how often the item is chosen(higher number is higher chance(lower is lower))
++	 */
+ 	protected int itemWeight;
+ 
+-	public WeightedRandomItem(int var1) {
+-		this.itemWeight = var1;
++	public WeightedRandomItem(int par1) {
++		this.itemWeight = par1;
+ 	}
+ }

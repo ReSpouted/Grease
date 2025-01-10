@@ -1,0 +1,237 @@
+--- net/minecraft/src/CrashReportCategory.java
++++ net/minecraft/src/CrashReportCategory.java
+@@ -7,30 +7,32 @@
+ 
+ public class CrashReportCategory {
+ 	private final CrashReport theCrashReport;
+-	private final String b;
+-	private final List c = new ArrayList();
+-	private StackTraceElement[] d = new StackTraceElement[0];
+-
+-	public CrashReportCategory(CrashReport var1, String var2) {
+-		this.theCrashReport = var1;
+-		this.b = var2;
+-	}
+-
+-	public static String func_85074_a(double var0, double var2, double var4) {
+-		return String.format("%.2f,%.2f,%.2f - %s", new Object[]{Double.valueOf(var0), Double.valueOf(var2), Double.valueOf(var4), getLocationInfo(MathHelper.floor_double(var0), MathHelper.floor_double(var2), MathHelper.floor_double(var4))});
+-	}
+-
+-	public static String getLocationInfo(int var0, int var1, int var2) {
++	private final String field_85076_b;
++	private final List field_85077_c = new ArrayList();
++	private StackTraceElement[] stackTrace = new StackTraceElement[0];
++
++	public CrashReportCategory(CrashReport par1CrashReport, String par2Str) {
++		this.theCrashReport = par1CrashReport;
++		this.field_85076_b = par2Str;
++	}
++
++	public static String func_85074_a(double par0, double par2, double par4) {
++		return String.format("%.2f,%.2f,%.2f - %s", new Object[] {Double.valueOf(par0), Double.valueOf(par2), Double.valueOf(par4), getLocationInfo(MathHelper.floor_double(par0), MathHelper.floor_double(par2), MathHelper.floor_double(par4))});
++	}
++
++	/**
++	 * Returns a string with world information on location.Args:x,y,z
++	 */
++	public static String getLocationInfo(int par0, int par1, int par2) {
+ 		StringBuilder var3 = new StringBuilder();
+ 
+ 		try {
+-			var3.append(String.format("World: (%d,%d,%d)", new Object[]{Integer.valueOf(var0), Integer.valueOf(var1), Integer.valueOf(var2)}));
++			var3.append(String.format("World: (%d,%d,%d)", new Object[] {Integer.valueOf(par0), Integer.valueOf(par1), Integer.valueOf(par2)}));
+ 		} catch (Throwable var16) {
+ 			var3.append("(Error finding world loc)");
+ 		}
+ 
+ 		var3.append(", ");
+-
+ 		int var4;
+ 		int var5;
+ 		int var6;
+@@ -40,17 +42,18 @@
+ 		int var10;
+ 		int var11;
+ 		int var12;
++
+ 		try {
+-			var4 = var0 >> 4;
+-			var5 = var2 >> 4;
+-			var6 = var0 & 15;
+-			var7 = var1 >> 4;
+-			var8 = var2 & 15;
++			var4 = par0 >> 4;
++			var5 = par2 >> 4;
++			var6 = par0 & 15;
++			var7 = par1 >> 4;
++			var8 = par2 & 15;
+ 			var9 = var4 << 4;
+ 			var10 = var5 << 4;
+ 			var11 = (var4 + 1 << 4) - 1;
+ 			var12 = (var5 + 1 << 4) - 1;
+-			var3.append(String.format("Chunk: (at %d,%d,%d in %d,%d; contains blocks %d,0,%d to %d,255,%d)", new Object[]{Integer.valueOf(var6), Integer.valueOf(var7), Integer.valueOf(var8), Integer.valueOf(var4), Integer.valueOf(var5), Integer.valueOf(var9), Integer.valueOf(var10), Integer.valueOf(var11), Integer.valueOf(var12)}));
++			var3.append(String.format("Chunk: (at %d,%d,%d in %d,%d; contains blocks %d,0,%d to %d,255,%d)", new Object[] {Integer.valueOf(var6), Integer.valueOf(var7), Integer.valueOf(var8), Integer.valueOf(var4), Integer.valueOf(var5), Integer.valueOf(var9), Integer.valueOf(var10), Integer.valueOf(var11), Integer.valueOf(var12)}));
+ 		} catch (Throwable var15) {
+ 			var3.append("(Error finding chunk loc)");
+ 		}
+@@ -58,8 +61,8 @@
+ 		var3.append(", ");
+ 
+ 		try {
+-			var4 = var0 >> 9;
+-			var5 = var2 >> 9;
++			var4 = par0 >> 9;
++			var5 = par2 >> 9;
+ 			var6 = var4 << 5;
+ 			var7 = var5 << 5;
+ 			var8 = (var4 + 1 << 5) - 1;
+@@ -68,7 +71,7 @@
+ 			var11 = var5 << 9;
+ 			var12 = (var4 + 1 << 9) - 1;
+ 			int var13 = (var5 + 1 << 9) - 1;
+-			var3.append(String.format("Region: (%d,%d; contains chunks %d,%d to %d,%d, blocks %d,0,%d to %d,255,%d)", new Object[]{Integer.valueOf(var4), Integer.valueOf(var5), Integer.valueOf(var6), Integer.valueOf(var7), Integer.valueOf(var8), Integer.valueOf(var9), Integer.valueOf(var10), Integer.valueOf(var11), Integer.valueOf(var12), Integer.valueOf(var13)}));
++			var3.append(String.format("Region: (%d,%d; contains chunks %d,%d to %d,%d, blocks %d,0,%d to %d,255,%d)", new Object[] {Integer.valueOf(var4), Integer.valueOf(var5), Integer.valueOf(var6), Integer.valueOf(var7), Integer.valueOf(var8), Integer.valueOf(var9), Integer.valueOf(var10), Integer.valueOf(var11), Integer.valueOf(var12), Integer.valueOf(var13)}));
+ 		} catch (Throwable var14) {
+ 			var3.append("(Error finding world loc)");
+ 		}
+@@ -76,40 +79,49 @@
+ 		return var3.toString();
+ 	}
+ 
+-	public void addCrashSectionCallable(String var1, Callable var2) {
++	/**
++	 * Adds a Crashreport section with the given name with the value set to the result of the given Callable;
++	 */
++	public void addCrashSectionCallable(String par1Str, Callable par2Callable) {
+ 		try {
+-			this.addCrashSection(var1, var2.call());
++			this.addCrashSection(par1Str, par2Callable.call());
+ 		} catch (Throwable var4) {
+-			this.addCrashSectionThrowable(var1, var4);
++			this.addCrashSectionThrowable(par1Str, var4);
+ 		}
+-
+-	}
+-
+-	public void addCrashSection(String var1, Object var2) {
+-		this.c.add(new CrashReportCategoryEntry(var1, var2));
+-	}
+-
+-	public void addCrashSectionThrowable(String var1, Throwable var2) {
+-		this.addCrashSection(var1, var2);
+-	}
+-
+-	public int func_85073_a(int var1) {
++	}
++
++	/**
++	 * Adds a Crashreport section with the given name with the given value (convered .toString())
++	 */
++	public void addCrashSection(String par1Str, Object par2Obj) {
++		this.field_85077_c.add(new CrashReportCategoryEntry(par1Str, par2Obj));
++	}
++
++	/**
++	 * Adds a Crashreport section with the given name with the given Throwable
++	 */
++	public void addCrashSectionThrowable(String par1Str, Throwable par2Throwable) {
++		this.addCrashSection(par1Str, par2Throwable);
++	}
++
++	public int func_85073_a(int par1) {
+ 		StackTraceElement[] var2 = Thread.currentThread().getStackTrace();
+-		this.d = new StackTraceElement[var2.length - 3 - var1];
+-		System.arraycopy(var2, 3 + var1, this.d, 0, this.d.length);
+-		return this.d.length;
++		this.stackTrace = new StackTraceElement[var2.length - 3 - par1];
++		System.arraycopy(var2, 3 + par1, this.stackTrace, 0, this.stackTrace.length);
++		return this.stackTrace.length;
+ 	}
+ 
+-	public boolean func_85069_a(StackTraceElement var1, StackTraceElement var2) {
+-		if(this.d.length != 0 && var1 != null) {
+-			StackTraceElement var3 = this.d[0];
+-			if(var3.isNativeMethod() == var1.isNativeMethod() && var3.getClassName().equals(var1.getClassName()) && var3.getFileName().equals(var1.getFileName()) && var3.getMethodName().equals(var1.getMethodName())) {
+-				if(var2 != null != this.d.length > 1) {
++	public boolean func_85069_a(StackTraceElement par1StackTraceElement, StackTraceElement par2StackTraceElement) {
++		if (this.stackTrace.length != 0 && par1StackTraceElement != null) {
++			StackTraceElement var3 = this.stackTrace[0];
++
++			if (var3.isNativeMethod() == par1StackTraceElement.isNativeMethod() && var3.getClassName().equals(par1StackTraceElement.getClassName()) && var3.getFileName().equals(par1StackTraceElement.getFileName()) && var3.getMethodName().equals(par1StackTraceElement.getMethodName())) {
++				if (par2StackTraceElement != null != this.stackTrace.length > 1) {
+ 					return false;
+-				} else if(var2 != null && !this.d[1].equals(var2)) {
++				} else if (par2StackTraceElement != null && !this.stackTrace[1].equals(par2StackTraceElement)) {
+ 					return false;
+ 				} else {
+-					this.d[0] = var1;
++					this.stackTrace[0] = par1StackTraceElement;
+ 					return true;
+ 				}
+ 			} else {
+@@ -120,42 +132,41 @@
+ 		}
+ 	}
+ 
+-	public void func_85070_b(int var1) {
+-		StackTraceElement[] var2 = new StackTraceElement[this.d.length - var1];
+-		System.arraycopy(this.d, 0, var2, 0, var2.length);
+-		this.d = var2;
++	public void func_85070_b(int par1) {
++		StackTraceElement[] var2 = new StackTraceElement[this.stackTrace.length - par1];
++		System.arraycopy(this.stackTrace, 0, var2, 0, var2.length);
++		this.stackTrace = var2;
+ 	}
+ 
+-	public void func_85072_a(StringBuilder var1) {
+-		var1.append("-- ").append(this.b).append(" --\n");
+-		var1.append("Details:");
+-		Iterator var2 = this.c.iterator();
++	public void func_85072_a(StringBuilder par1StringBuilder) {
++		par1StringBuilder.append("-- ").append(this.field_85076_b).append(" --\n");
++		par1StringBuilder.append("Details:");
++		Iterator var2 = this.field_85077_c.iterator();
+ 
+-		while(var2.hasNext()) {
++		while (var2.hasNext()) {
+ 			CrashReportCategoryEntry var3 = (CrashReportCategoryEntry)var2.next();
+-			var1.append("\n\t");
+-			var1.append(var3.func_85089_a());
+-			var1.append(": ");
+-			var1.append(var3.func_85090_b());
++			par1StringBuilder.append("\n\t");
++			par1StringBuilder.append(var3.func_85089_a());
++			par1StringBuilder.append(": ");
++			par1StringBuilder.append(var3.func_85090_b());
+ 		}
+ 
+-		if(this.d != null && this.d.length > 0) {
+-			var1.append("\nStacktrace:");
+-			StackTraceElement[] var6 = this.d;
++		if (this.stackTrace != null && this.stackTrace.length > 0) {
++			par1StringBuilder.append("\nStacktrace:");
++			StackTraceElement[] var6 = this.stackTrace;
+ 			int var7 = var6.length;
+ 
+-			for(int var4 = 0; var4 < var7; ++var4) {
++			for (int var4 = 0; var4 < var7; ++var4) {
+ 				StackTraceElement var5 = var6[var4];
+-				var1.append("\n\tat ");
+-				var1.append(var5.toString());
++				par1StringBuilder.append("\n\tat ");
++				par1StringBuilder.append(var5.toString());
+ 			}
+ 		}
+-
+ 	}
+ 
+-	public static void addBlockCrashInfo(CrashReportCategory var0, int var1, int var2, int var3, int var4, int var5) {
+-		var0.addCrashSectionCallable("Block type", new CallableBlockType(var4));
+-		var0.addCrashSectionCallable("Block data value", new CallableBlockDataValue(var5));
+-		var0.addCrashSectionCallable("Block location", new CallableBlockLocation(var1, var2, var3));
++	public static void addBlockCrashInfo(CrashReportCategory par0CrashReportCategory, int par1, int par2, int par3, int par4, int par5) {
++		par0CrashReportCategory.addCrashSectionCallable("Block type", new CallableBlockType(par4));
++		par0CrashReportCategory.addCrashSectionCallable("Block data value", new CallableBlockDataValue(par5));
++		par0CrashReportCategory.addCrashSectionCallable("Block location", new CallableBlockLocation(par1, par2, par3));
+ 	}
+ }

@@ -1,0 +1,210 @@
+--- net/minecraft/src/DedicatedPlayerList.java
++++ net/minecraft/src/DedicatedPlayerList.java
+@@ -9,17 +9,18 @@
+ import net.minecraft.server.MinecraftServer;
+ 
+ public class DedicatedPlayerList extends ServerConfigurationManager {
+-	private File d;
+-	private File e;
+-
+-	public DedicatedPlayerList(DedicatedServer var1) {
+-		super(var1);
+-		this.d = var1.getFile("ops.txt");
+-		this.e = var1.getFile("white-list.txt");
+-		this.viewDistance = var1.getIntProperty("view-distance", 10);
+-		this.maxPlayers = var1.getIntProperty("max-players", 20);
+-		this.setWhiteListEnabled(var1.getBooleanProperty("white-list", false));
+-		if(!var1.isSinglePlayer()) {
++	private File opsList;
++	private File whiteList;
++
++	public DedicatedPlayerList(DedicatedServer par1DedicatedServer) {
++		super(par1DedicatedServer);
++		this.opsList = par1DedicatedServer.getFile("ops.txt");
++		this.whiteList = par1DedicatedServer.getFile("white-list.txt");
++		this.viewDistance = par1DedicatedServer.getIntProperty("view-distance", 10);
++		this.maxPlayers = par1DedicatedServer.getIntProperty("max-players", 20);
++		this.setWhiteListEnabled(par1DedicatedServer.getBooleanProperty("white-list", false));
++
++		if (!par1DedicatedServer.isSinglePlayer()) {
+ 			this.getBannedPlayers().setListActive(true);
+ 			this.getBannedIPs().setListActive(true);
+ 		}
+@@ -31,38 +32,53 @@
+ 		this.loadOpsList();
+ 		this.readWhiteList();
+ 		this.saveOpsList();
+-		if(!this.e.exists()) {
++
++		if (!this.whiteList.exists()) {
+ 			this.saveWhiteList();
+ 		}
+-
+ 	}
+ 
+-	public void setWhiteListEnabled(boolean var1) {
+-		super.setWhiteListEnabled(var1);
+-		this.getDedicatedServerInstance().setProperty("white-list", Boolean.valueOf(var1));
++	public void setWhiteListEnabled(boolean par1) {
++		super.setWhiteListEnabled(par1);
++		this.getDedicatedServerInstance().setProperty("white-list", Boolean.valueOf(par1));
+ 		this.getDedicatedServerInstance().saveProperties();
+ 	}
+ 
+-	public void addOp(String var1) {
+-		super.addOp(var1);
+-		this.saveOpsList();
+-	}
+-
+-	public void removeOp(String var1) {
+-		super.removeOp(var1);
+-		this.saveOpsList();
+-	}
+-
+-	public void removeFromWhitelist(String var1) {
+-		super.removeFromWhitelist(var1);
+-		this.saveWhiteList();
+-	}
+-
+-	public void addToWhiteList(String var1) {
+-		super.addToWhiteList(var1);
+-		this.saveWhiteList();
+-	}
+-
++	/**
++	 * This adds a username to the ops list, then saves the op list
++	 */
++	public void addOp(String par1Str) {
++		super.addOp(par1Str);
++		this.saveOpsList();
++	}
++
++	/**
++	 * This removes a username from the ops list, then saves the op list
++	 */
++	public void removeOp(String par1Str) {
++		super.removeOp(par1Str);
++		this.saveOpsList();
++	}
++
++	/**
++	 * Remove the specified player from the whitelist.
++	 */
++	public void removeFromWhitelist(String par1Str) {
++		super.removeFromWhitelist(par1Str);
++		this.saveWhiteList();
++	}
++
++	/**
++	 * Add the specified player to the white list.
++	 */
++	public void addToWhiteList(String par1Str) {
++		super.addToWhiteList(par1Str);
++		this.saveWhiteList();
++	}
++
++	/**
++	 * Either does nothing, or calls readWhiteList.
++	 */
+ 	public void loadWhiteList() {
+ 		this.readWhiteList();
+ 	}
+@@ -70,30 +86,25 @@
+ 	private void loadOpsList() {
+ 		try {
+ 			this.getOps().clear();
+-			BufferedReader var1 = new BufferedReader(new FileReader(this.d));
++			BufferedReader var1 = new BufferedReader(new FileReader(this.opsList));
+ 			String var2 = "";
+ 
+-			while(true) {
+-				var2 = var1.readLine();
+-				if(var2 == null) {
+-					var1.close();
+-					break;
+-				}
+-
++			while ((var2 = var1.readLine()) != null) {
+ 				this.getOps().add(var2.trim().toLowerCase());
+ 			}
++
++			var1.close();
+ 		} catch (Exception var3) {
+ 			this.getDedicatedServerInstance().getLogAgent().logWarning("Failed to load operators list: " + var3);
+ 		}
+-
+ 	}
+ 
+ 	private void saveOpsList() {
+ 		try {
+-			PrintWriter var1 = new PrintWriter(new FileWriter(this.d, false));
++			PrintWriter var1 = new PrintWriter(new FileWriter(this.opsList, false));
+ 			Iterator var2 = this.getOps().iterator();
+ 
+-			while(var2.hasNext()) {
++			while (var2.hasNext()) {
+ 				String var3 = (String)var2.next();
+ 				var1.println(var3);
+ 			}
+@@ -102,36 +113,30 @@
+ 		} catch (Exception var4) {
+ 			this.getDedicatedServerInstance().getLogAgent().logWarning("Failed to save operators list: " + var4);
+ 		}
+-
+ 	}
+ 
+ 	private void readWhiteList() {
+ 		try {
+ 			this.getWhiteListedPlayers().clear();
+-			BufferedReader var1 = new BufferedReader(new FileReader(this.e));
++			BufferedReader var1 = new BufferedReader(new FileReader(this.whiteList));
+ 			String var2 = "";
+ 
+-			while(true) {
+-				var2 = var1.readLine();
+-				if(var2 == null) {
+-					var1.close();
+-					break;
+-				}
+-
++			while ((var2 = var1.readLine()) != null) {
+ 				this.getWhiteListedPlayers().add(var2.trim().toLowerCase());
+ 			}
++
++			var1.close();
+ 		} catch (Exception var3) {
+ 			this.getDedicatedServerInstance().getLogAgent().logWarning("Failed to load white-list: " + var3);
+ 		}
+-
+ 	}
+ 
+ 	private void saveWhiteList() {
+ 		try {
+-			PrintWriter var1 = new PrintWriter(new FileWriter(this.e, false));
++			PrintWriter var1 = new PrintWriter(new FileWriter(this.whiteList, false));
+ 			Iterator var2 = this.getWhiteListedPlayers().iterator();
+ 
+-			while(var2.hasNext()) {
++			while (var2.hasNext()) {
+ 				String var3 = (String)var2.next();
+ 				var1.println(var3);
+ 			}
+@@ -140,12 +145,14 @@
+ 		} catch (Exception var4) {
+ 			this.getDedicatedServerInstance().getLogAgent().logWarning("Failed to save white-list: " + var4);
+ 		}
+-
+ 	}
+ 
+-	public boolean isAllowedToLogin(String var1) {
+-		var1 = var1.trim().toLowerCase();
+-		return !this.isWhiteListEnabled() || this.isPlayerOpped(var1) || this.getWhiteListedPlayers().contains(var1);
++	/**
++	 * Determine if the player is allowed to connect based on current server settings.
++	 */
++	public boolean isAllowedToLogin(String par1Str) {
++		par1Str = par1Str.trim().toLowerCase();
++		return !this.isWhiteListEnabled() || this.isPlayerOpped(par1Str) || this.getWhiteListedPlayers().contains(par1Str);
+ 	}
+ 
+ 	public DedicatedServer getDedicatedServerInstance() {

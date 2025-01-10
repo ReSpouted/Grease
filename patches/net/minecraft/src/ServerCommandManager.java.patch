@@ -1,0 +1,64 @@
+--- net/minecraft/src/ServerCommandManager.java
++++ net/minecraft/src/ServerCommandManager.java
+@@ -30,7 +30,8 @@
+ 		this.registerCommand(new CommandSpreadPlayers());
+ 		this.registerCommand(new CommandPlaySound());
+ 		this.registerCommand(new ServerCommandScoreboard());
+-		if(MinecraftServer.getServer().isDedicatedServer()) {
++
++		if (MinecraftServer.getServer().isDedicatedServer()) {
+ 			this.registerCommand(new CommandServerOp());
+ 			this.registerCommand(new CommandServerDeop());
+ 			this.registerCommand(new CommandServerStop());
+@@ -53,33 +54,39 @@
+ 		CommandBase.setAdminCommander(this);
+ 	}
+ 
+-	public void notifyAdmins(ICommandSender var1, int var2, String var3, Object... var4) {
++	/**
++	 * Sends a message to the admins of the server from a given CommandSender with the given resource string and given
++	 * extra srings. If the int par2 is even or zero, the original sender is also notified.
++	 */
++	public void notifyAdmins(ICommandSender par1ICommandSender, int par2, String par3Str, Object ... par4ArrayOfObj) {
+ 		boolean var5 = true;
+-		if(var1 instanceof TileEntityCommandBlock && !MinecraftServer.getServer().worldServers[0].getGameRules().getGameRuleBooleanValue("commandBlockOutput")) {
++
++		if (par1ICommandSender instanceof TileEntityCommandBlock && !MinecraftServer.getServer().worldServers[0].getGameRules().getGameRuleBooleanValue("commandBlockOutput")) {
+ 			var5 = false;
+ 		}
+ 
+-		ChatMessageComponent var6 = ChatMessageComponent.createFromTranslationWithSubstitutions("chat.type.admin", new Object[]{var1.getCommandSenderName(), ChatMessageComponent.createFromTranslationWithSubstitutions(var3, var4)});
++		ChatMessageComponent var6 = ChatMessageComponent.createFromTranslationWithSubstitutions("chat.type.admin", new Object[] {par1ICommandSender.getCommandSenderName(), ChatMessageComponent.createFromTranslationWithSubstitutions(par3Str, par4ArrayOfObj)});
+ 		var6.setColor(EnumChatFormatting.GRAY);
+ 		var6.setItalic(Boolean.valueOf(true));
+-		if(var5) {
+-			Iterator var7 = MinecraftServer.getServer().getConfigurationManager().a.iterator();
+-
+-			while(var7.hasNext()) {
++
++		if (var5) {
++			Iterator var7 = MinecraftServer.getServer().getConfigurationManager().playerEntityList.iterator();
++
++			while (var7.hasNext()) {
+ 				EntityPlayerMP var8 = (EntityPlayerMP)var7.next();
+-				if(var8 != var1 && MinecraftServer.getServer().getConfigurationManager().isPlayerOpped(var8.getCommandSenderName())) {
++
++				if (var8 != par1ICommandSender && MinecraftServer.getServer().getConfigurationManager().isPlayerOpped(var8.getCommandSenderName())) {
+ 					var8.sendChatToPlayer(var6);
+ 				}
+ 			}
+ 		}
+ 
+-		if(var1 != MinecraftServer.getServer()) {
++		if (par1ICommandSender != MinecraftServer.getServer()) {
+ 			MinecraftServer.getServer().sendChatToPlayer(var6);
+ 		}
+ 
+-		if((var2 & 1) != 1) {
+-			var1.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions(var3, var4));
++		if ((par2 & 1) != 1) {
++			par1ICommandSender.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions(par3Str, par4ArrayOfObj));
+ 		}
+-
+ 	}
+ }

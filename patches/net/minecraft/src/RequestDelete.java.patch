@@ -1,0 +1,27 @@
+--- net/minecraft/src/RequestDelete.java
++++ net/minecraft/src/RequestDelete.java
+@@ -1,18 +1,18 @@
+ package net.minecraft.src;
+ 
+ public class RequestDelete extends Request {
+-	public RequestDelete(String var1, int var2, int var3) {
+-		super(var1, var2, var3);
++	public RequestDelete(String par1Str, int par2, int par3) {
++		super(par1Str, par2, par3);
+ 	}
+ 
+ 	public RequestDelete func_96370_f() {
+ 		try {
+-			this.a.setDoOutput(true);
+-			this.a.setRequestMethod("DELETE");
+-			this.a.connect();
++			this.field_96367_a.setDoOutput(true);
++			this.field_96367_a.setRequestMethod("DELETE");
++			this.field_96367_a.connect();
+ 			return this;
+ 		} catch (Exception var2) {
+-			throw new ExceptionMcoHttp("Failed URL: " + this.b, var2);
++			throw new ExceptionMcoHttp("Failed URL: " + this.field_96365_b, var2);
+ 		}
+ 	}
+ 

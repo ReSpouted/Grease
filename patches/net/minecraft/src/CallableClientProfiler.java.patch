@@ -1,0 +1,13 @@
+--- net/minecraft/src/CallableClientProfiler.java
++++ net/minecraft/src/CallableClientProfiler.java
+@@ -5,8 +5,8 @@
+ class CallableClientProfiler implements Callable {
+ 	final Minecraft theMinecraft;
+ 
+-	CallableClientProfiler(Minecraft var1) {
+-		this.theMinecraft = var1;
++	CallableClientProfiler(Minecraft par1Minecraft) {
++		this.theMinecraft = par1Minecraft;
+ 	}
+ 
+ 	public String callClientProfilerInfo() {

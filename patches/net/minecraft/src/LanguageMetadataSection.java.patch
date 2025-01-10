@@ -1,0 +1,20 @@
+--- net/minecraft/src/LanguageMetadataSection.java
++++ net/minecraft/src/LanguageMetadataSection.java
+@@ -3,13 +3,13 @@
+ import java.util.Collection;
+ 
+ public class LanguageMetadataSection implements MetadataSection {
+-	private final Collection a;
++	private final Collection languages;
+ 
+-	public LanguageMetadataSection(Collection var1) {
+-		this.a = var1;
++	public LanguageMetadataSection(Collection par1Collection) {
++		this.languages = par1Collection;
+ 	}
+ 
+ 	public Collection getLanguages() {
+-		return this.a;
++		return this.languages;
+ 	}
+ }

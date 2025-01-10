@@ -1,0 +1,16 @@
+--- net/minecraft/src/DispenserBehaviorSnowball.java
++++ net/minecraft/src/DispenserBehaviorSnowball.java
+@@ -1,7 +1,11 @@
+ package net.minecraft.src;
+ 
+ final class DispenserBehaviorSnowball extends BehaviorProjectileDispense {
+-	protected IProjectile getProjectileEntity(World var1, IPosition var2) {
+-		return new EntitySnowball(var1, var2.getX(), var2.getY(), var2.getZ());
++
++	/**
++	 * Return the projectile entity spawned by this dispense behavior.
++	 */
++	protected IProjectile getProjectileEntity(World par1World, IPosition par2IPosition) {
++		return new EntitySnowball(par1World, par2IPosition.getX(), par2IPosition.getY(), par2IPosition.getZ());
+ 	}
+ }

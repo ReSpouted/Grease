@@ -1,0 +1,270 @@
+--- net/minecraft/src/PlayerInstance.java
++++ net/minecraft/src/PlayerInstance.java
+@@ -4,159 +4,179 @@
+ import java.util.List;
+ 
+ class PlayerInstance {
+-	private final List b;
+-	private final ChunkCoordIntPair currentChunk;
+-	private short[] blocksToUpdate;
+-	private int numBlocksToUpdate;
++	private final List playersInChunk;
++
++	/** note: this is final */
++	private final ChunkCoordIntPair chunkLocation;
++	private short[] locationOfBlockChange;
++	private int numberOfTilesToUpdate;
++
++	/**
++	 * Integer field where each bit means to make update 16x16x16 division of chunk (from bottom).
++	 */
+ 	private int flagsYAreasToUpdate;
++
++	/** time what is using when chunk InhabitedTime is being calculated */
+ 	private long previousWorldTime;
++
+ 	final PlayerManager thePlayerManager;
+ 
+-	public PlayerInstance(PlayerManager var1, int var2, int var3) {
+-		this.thePlayerManager = var1;
+-		this.b = new ArrayList();
+-		this.blocksToUpdate = new short[64];
+-		this.currentChunk = new ChunkCoordIntPair(var2, var3);
+-		var1.getMinecraftServer().theChunkProviderServer.loadChunk(var2, var3);
++	public PlayerInstance(PlayerManager par1PlayerManager, int par2, int par3) {
++		this.thePlayerManager = par1PlayerManager;
++		this.playersInChunk = new ArrayList();
++		this.locationOfBlockChange = new short[64];
++		this.chunkLocation = new ChunkCoordIntPair(par2, par3);
++		par1PlayerManager.getWorldServer().theChunkProviderServer.loadChunk(par2, par3);
+ 	}
+ 
+-	public void addPlayer(EntityPlayerMP var1) {
+-		if(this.b.contains(var1)) {
+-			throw new IllegalStateException("Failed to add player. " + var1 + " already is in chunk " + this.currentChunk.chunkXPos + ", " + this.currentChunk.chunkZPos);
++	public void addPlayer(EntityPlayerMP par1EntityPlayerMP) {
++		if (this.playersInChunk.contains(par1EntityPlayerMP)) {
++			throw new IllegalStateException("Failed to add player. " + par1EntityPlayerMP + " already is in chunk " + this.chunkLocation.chunkXPos + ", " + this.chunkLocation.chunkZPos);
+ 		} else {
+-			if(this.b.isEmpty()) {
++			if (this.playersInChunk.isEmpty()) {
+ 				this.previousWorldTime = PlayerManager.getWorldServer(this.thePlayerManager).getTotalWorldTime();
+ 			}
+ 
+-			this.b.add(var1);
+-			var1.f.add(this.currentChunk);
++			this.playersInChunk.add(par1EntityPlayerMP);
++			par1EntityPlayerMP.loadedChunks.add(this.chunkLocation);
+ 		}
+ 	}
+ 
+-	public void removePlayer(EntityPlayerMP var1) {
+-		if(this.b.contains(var1)) {
+-			Chunk var2 = PlayerManager.getWorldServer(this.thePlayerManager).getChunkFromChunkCoords(this.currentChunk.chunkXPos, this.currentChunk.chunkZPos);
+-			var1.playerNetServerHandler.sendPacket(new Packet51MapChunk(var2, true, 0));
+-			this.b.remove(var1);
+-			var1.f.remove(this.currentChunk);
+-			if(this.b.isEmpty()) {
+-				long var3 = (long)this.currentChunk.chunkXPos + 2147483647L | (long)this.currentChunk.chunkZPos + 2147483647L << 32;
++	public void removePlayer(EntityPlayerMP par1EntityPlayerMP) {
++		if (this.playersInChunk.contains(par1EntityPlayerMP)) {
++			Chunk var2 = PlayerManager.getWorldServer(this.thePlayerManager).getChunkFromChunkCoords(this.chunkLocation.chunkXPos, this.chunkLocation.chunkZPos);
++			par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet51MapChunk(var2, true, 0));
++			this.playersInChunk.remove(par1EntityPlayerMP);
++			par1EntityPlayerMP.loadedChunks.remove(this.chunkLocation);
++
++			if (this.playersInChunk.isEmpty()) {
++				long var3 = (long)this.chunkLocation.chunkXPos + 2147483647L | (long)this.chunkLocation.chunkZPos + 2147483647L << 32;
+ 				this.increaseInhabitedTime(var2);
+ 				PlayerManager.getChunkWatchers(this.thePlayerManager).remove(var3);
+ 				PlayerManager.getChunkWatcherList(this.thePlayerManager).remove(this);
+-				if(this.numBlocksToUpdate > 0) {
++
++				if (this.numberOfTilesToUpdate > 0) {
+ 					PlayerManager.getChunkWatchersWithPlayers(this.thePlayerManager).remove(this);
+ 				}
+ 
+-				this.thePlayerManager.getMinecraftServer().theChunkProviderServer.dropChunk(this.currentChunk.chunkXPos, this.currentChunk.chunkZPos);
++				this.thePlayerManager.getWorldServer().theChunkProviderServer.unloadChunksIfNotNearSpawn(this.chunkLocation.chunkXPos, this.chunkLocation.chunkZPos);
+ 			}
+-
+ 		}
+ 	}
+ 
++	/**
++	 * This method currently only increases chunk inhabited time. Extension is possible in next versions
++	 */
+ 	public void processChunk() {
+-		this.increaseInhabitedTime(PlayerManager.getWorldServer(this.thePlayerManager).getChunkFromChunkCoords(this.currentChunk.chunkXPos, this.currentChunk.chunkZPos));
++		this.increaseInhabitedTime(PlayerManager.getWorldServer(this.thePlayerManager).getChunkFromChunkCoords(this.chunkLocation.chunkXPos, this.chunkLocation.chunkZPos));
+ 	}
+ 
+-	private void increaseInhabitedTime(Chunk var1) {
+-		var1.inhabitedTime += PlayerManager.getWorldServer(this.thePlayerManager).getTotalWorldTime() - this.previousWorldTime;
++	/**
++	 * Increases chunk inhabited time every 8000 ticks
++	 */
++	private void increaseInhabitedTime(Chunk par1Chunk) {
++		par1Chunk.inhabitedTime += PlayerManager.getWorldServer(this.thePlayerManager).getTotalWorldTime() - this.previousWorldTime;
+ 		this.previousWorldTime = PlayerManager.getWorldServer(this.thePlayerManager).getTotalWorldTime();
+ 	}
+ 
+-	public void markBlockNeedsUpdate(int var1, int var2, int var3) {
+-		if(this.numBlocksToUpdate == 0) {
++	public void flagChunkForUpdate(int par1, int par2, int par3) {
++		if (this.numberOfTilesToUpdate == 0) {
+ 			PlayerManager.getChunkWatchersWithPlayers(this.thePlayerManager).add(this);
+ 		}
+ 
+-		this.flagsYAreasToUpdate |= 1 << (var2 >> 4);
+-		if(this.numBlocksToUpdate < 64) {
+-			short var4 = (short)(var1 << 12 | var3 << 8 | var2);
+-
+-			for(int var5 = 0; var5 < this.numBlocksToUpdate; ++var5) {
+-				if(this.blocksToUpdate[var5] == var4) {
++		this.flagsYAreasToUpdate |= 1 << (par2 >> 4);
++
++		if (this.numberOfTilesToUpdate < 64) {
++			short var4 = (short)(par1 << 12 | par3 << 8 | par2);
++
++			for (int var5 = 0; var5 < this.numberOfTilesToUpdate; ++var5) {
++				if (this.locationOfBlockChange[var5] == var4) {
+ 					return;
+ 				}
+ 			}
+ 
+-			this.blocksToUpdate[this.numBlocksToUpdate++] = var4;
++			this.locationOfBlockChange[this.numberOfTilesToUpdate++] = var4;
+ 		}
+-
+ 	}
+ 
+-	public void sendPacketToPlayersInInstance(Packet var1) {
+-		for(int var2 = 0; var2 < this.b.size(); ++var2) {
+-			EntityPlayerMP var3 = (EntityPlayerMP)this.b.get(var2);
+-			if(!var3.f.contains(this.currentChunk)) {
+-				var3.playerNetServerHandler.sendPacket(var1);
++	public void sendToAllPlayersWatchingChunk(Packet par1Packet) {
++		for (int var2 = 0; var2 < this.playersInChunk.size(); ++var2) {
++			EntityPlayerMP var3 = (EntityPlayerMP)this.playersInChunk.get(var2);
++
++			if (!var3.loadedChunks.contains(this.chunkLocation)) {
++				var3.playerNetServerHandler.sendPacketToPlayer(par1Packet);
+ 			}
+ 		}
+-
+ 	}
+ 
+-	public void onUpdate() {
+-		if(this.numBlocksToUpdate != 0) {
++	public void sendChunkUpdate() {
++		if (this.numberOfTilesToUpdate != 0) {
+ 			int var1;
+ 			int var2;
+ 			int var3;
+-			if(this.numBlocksToUpdate == 1) {
+-				var1 = this.currentChunk.chunkXPos * 16 + (this.blocksToUpdate[0] >> 12 & 15);
+-				var2 = this.blocksToUpdate[0] & 255;
+-				var3 = this.currentChunk.chunkZPos * 16 + (this.blocksToUpdate[0] >> 8 & 15);
+-				this.sendPacketToPlayersInInstance(new Packet53BlockChange(var1, var2, var3, PlayerManager.getWorldServer(this.thePlayerManager)));
+-				if(PlayerManager.getWorldServer(this.thePlayerManager).blockHasTileEntity(var1, var2, var3)) {
+-					this.updateTileEntity(PlayerManager.getWorldServer(this.thePlayerManager).getBlockTileEntity(var1, var2, var3));
++
++			if (this.numberOfTilesToUpdate == 1) {
++				var1 = this.chunkLocation.chunkXPos * 16 + (this.locationOfBlockChange[0] >> 12 & 15);
++				var2 = this.locationOfBlockChange[0] & 255;
++				var3 = this.chunkLocation.chunkZPos * 16 + (this.locationOfBlockChange[0] >> 8 & 15);
++				this.sendToAllPlayersWatchingChunk(new Packet53BlockChange(var1, var2, var3, PlayerManager.getWorldServer(this.thePlayerManager)));
++
++				if (PlayerManager.getWorldServer(this.thePlayerManager).blockHasTileEntity(var1, var2, var3)) {
++					this.sendTileToAllPlayersWatchingChunk(PlayerManager.getWorldServer(this.thePlayerManager).getBlockTileEntity(var1, var2, var3));
+ 				}
+ 			} else {
+ 				int var4;
+-				if(this.numBlocksToUpdate == 64) {
+-					var1 = this.currentChunk.chunkXPos * 16;
+-					var2 = this.currentChunk.chunkZPos * 16;
+-					this.sendPacketToPlayersInInstance(new Packet51MapChunk(PlayerManager.getWorldServer(this.thePlayerManager).getChunkFromChunkCoords(this.currentChunk.chunkXPos, this.currentChunk.chunkZPos), false, this.flagsYAreasToUpdate));
+-
+-					for(var3 = 0; var3 < 16; ++var3) {
+-						if((this.flagsYAreasToUpdate & 1 << var3) != 0) {
++
++				if (this.numberOfTilesToUpdate == 64) {
++					var1 = this.chunkLocation.chunkXPos * 16;
++					var2 = this.chunkLocation.chunkZPos * 16;
++					this.sendToAllPlayersWatchingChunk(new Packet51MapChunk(PlayerManager.getWorldServer(this.thePlayerManager).getChunkFromChunkCoords(this.chunkLocation.chunkXPos, this.chunkLocation.chunkZPos), false, this.flagsYAreasToUpdate));
++
++					for (var3 = 0; var3 < 16; ++var3) {
++						if ((this.flagsYAreasToUpdate & 1 << var3) != 0) {
+ 							var4 = var3 << 4;
+-							List var5 = PlayerManager.getWorldServer(this.thePlayerManager).getTileEntityList(var1, var4, var2, var1 + 16, var4 + 16, var2 + 16);
++							List var5 = PlayerManager.getWorldServer(this.thePlayerManager).getAllTileEntityInBox(var1, var4, var2, var1 + 16, var4 + 16, var2 + 16);
+ 
+-							for(int var6 = 0; var6 < var5.size(); ++var6) {
+-								this.updateTileEntity((TileEntity)var5.get(var6));
++							for (int var6 = 0; var6 < var5.size(); ++var6) {
++								this.sendTileToAllPlayersWatchingChunk((TileEntity)var5.get(var6));
+ 							}
+ 						}
+ 					}
+ 				} else {
+-					this.sendPacketToPlayersInInstance(new Packet52MultiBlockChange(this.currentChunk.chunkXPos, this.currentChunk.chunkZPos, this.blocksToUpdate, this.numBlocksToUpdate, PlayerManager.getWorldServer(this.thePlayerManager)));
+-
+-					for(var1 = 0; var1 < this.numBlocksToUpdate; ++var1) {
+-						var2 = this.currentChunk.chunkXPos * 16 + (this.blocksToUpdate[var1] >> 12 & 15);
+-						var3 = this.blocksToUpdate[var1] & 255;
+-						var4 = this.currentChunk.chunkZPos * 16 + (this.blocksToUpdate[var1] >> 8 & 15);
+-						if(PlayerManager.getWorldServer(this.thePlayerManager).blockHasTileEntity(var2, var3, var4)) {
+-							this.updateTileEntity(PlayerManager.getWorldServer(this.thePlayerManager).getBlockTileEntity(var2, var3, var4));
++					this.sendToAllPlayersWatchingChunk(new Packet52MultiBlockChange(this.chunkLocation.chunkXPos, this.chunkLocation.chunkZPos, this.locationOfBlockChange, this.numberOfTilesToUpdate, PlayerManager.getWorldServer(this.thePlayerManager)));
++
++					for (var1 = 0; var1 < this.numberOfTilesToUpdate; ++var1) {
++						var2 = this.chunkLocation.chunkXPos * 16 + (this.locationOfBlockChange[var1] >> 12 & 15);
++						var3 = this.locationOfBlockChange[var1] & 255;
++						var4 = this.chunkLocation.chunkZPos * 16 + (this.locationOfBlockChange[var1] >> 8 & 15);
++
++						if (PlayerManager.getWorldServer(this.thePlayerManager).blockHasTileEntity(var2, var3, var4)) {
++							this.sendTileToAllPlayersWatchingChunk(PlayerManager.getWorldServer(this.thePlayerManager).getBlockTileEntity(var2, var3, var4));
+ 						}
+ 					}
+ 				}
+ 			}
+ 
+-			this.numBlocksToUpdate = 0;
++			this.numberOfTilesToUpdate = 0;
+ 			this.flagsYAreasToUpdate = 0;
+ 		}
+ 	}
+ 
+-	private void updateTileEntity(TileEntity var1) {
+-		if(var1 != null) {
+-			Packet var2 = var1.getDescriptionPacket();
+-			if(var2 != null) {
+-				this.sendPacketToPlayersInInstance(var2);
++	private void sendTileToAllPlayersWatchingChunk(TileEntity par1TileEntity) {
++		if (par1TileEntity != null) {
++			Packet var2 = par1TileEntity.getDescriptionPacket();
++
++			if (var2 != null) {
++				this.sendToAllPlayersWatchingChunk(var2);
+ 			}
+ 		}
+-
+-	}
+-
+-	static ChunkCoordIntPair getChunkLocation(PlayerInstance var0) {
+-		return var0.currentChunk;
+-	}
+-
+-	static List getPlayersInChunk(PlayerInstance var0) {
+-		return var0.b;
++	}
++
++	static ChunkCoordIntPair getChunkLocation(PlayerInstance par0PlayerInstance) {
++		return par0PlayerInstance.chunkLocation;
++	}
++
++	static List getPlayersInChunk(PlayerInstance par0PlayerInstance) {
++		return par0PlayerInstance.playersInChunk;
+ 	}
+ }

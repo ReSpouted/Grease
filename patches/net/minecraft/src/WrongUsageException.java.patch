@@ -1,0 +1,12 @@
+--- net/minecraft/src/WrongUsageException.java
++++ net/minecraft/src/WrongUsageException.java
+@@ -1,7 +1,7 @@
+ package net.minecraft.src;
+ 
+ public class WrongUsageException extends SyntaxErrorException {
+-	public WrongUsageException(String var1, Object... var2) {
+-		super(var1, var2);
++	public WrongUsageException(String par1Str, Object ... par2ArrayOfObj) {
++		super(par1Str, par2ArrayOfObj);
+ 	}
+ }

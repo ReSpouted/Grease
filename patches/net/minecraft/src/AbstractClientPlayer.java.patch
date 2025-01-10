@@ -1,0 +1,159 @@
+--- net/minecraft/src/AbstractClientPlayer.java
++++ net/minecraft/src/AbstractClientPlayer.java
+@@ -1,24 +1,38 @@
+ package net.minecraft.src;
+ 
++import net.minecraft.src.Minecraft;
++import net.minecraft.src.StringUtils;
++
++import org.bukkit.ChatColor;
++import org.spoutcraft.client.SpoutClient;
++import org.spoutcraft.client.config.Configuration;
++import org.spoutcraft.client.special.Holiday;
++import org.spoutcraft.client.special.Resources;
++import org.spoutcraft.client.special.VIP;
++
+ public abstract class AbstractClientPlayer extends EntityPlayer {
+ 	public static final ResourceLocation locationStevePng = new ResourceLocation("textures/entity/steve.png");
+ 	private ThreadDownloadImageData downloadImageSkin;
+ 	private ThreadDownloadImageData downloadImageCape;
+ 	private ResourceLocation locationSkin;
+ 	private ResourceLocation locationCape;
+-
+-	public AbstractClientPlayer(World var1, String var2) {
+-		super(var1, var2);
++	public String customCapeUrl;
++	public String customSkinUrl;
++	public static boolean forceUpdate = false;
++	
++	public AbstractClientPlayer(World par1World, String par2Str) {
++		super(par1World, par2Str);
+ 		this.setupCustomSkin();
+ 	}
+ 
+-	protected void setupCustomSkin() {
+-		System.out.println("Setting up custom skins");
+-		if(this.bu != null && !this.bu.isEmpty()) {
+-			this.locationSkin = getLocationSkin(this.bu);
+-			this.locationCape = getLocationCape(this.bu);
+-			this.downloadImageSkin = getDownloadImageSkin(this.locationSkin, this.bu);
+-			this.downloadImageCape = getDownloadImageCape(this.locationCape, this.bu);
++	public void setupCustomSkin() {
++		if (this.username != null && !this.username.isEmpty()) {
++			this.locationSkin = getLocationSkin(this.username);
++			this.locationCape = getLocationCape(this.username);
++			forceUpdate = true;
++			this.downloadImageSkin = getDownloadImageSkin(this.locationSkin, this.username, this.customSkinUrl);
++			forceUpdate = true;
++			this.downloadImageCape = getDownloadImageCape(this.locationCape, this.username, this.customCapeUrl);
+ 		}
+ 	}
+ 
+@@ -37,43 +51,74 @@
+ 	public ResourceLocation getLocationCape() {
+ 		return this.locationCape;
+ 	}
+-
+-	public static ThreadDownloadImageData getDownloadImageSkin(ResourceLocation var0, String var1) {
+-		return getDownloadImage(var0, getSkinUrl(var1), locationStevePng, new ImageBufferDownload());
+-	}
+-
+-	public static ThreadDownloadImageData getDownloadImageCape(ResourceLocation var0, String var1) {
+-		return getDownloadImage(var0, getCapeUrl(var1), (ResourceLocation)null, (IImageBuffer)null);
+-	}
+-
+-	private static ThreadDownloadImageData getDownloadImage(ResourceLocation var0, String var1, ResourceLocation var2, IImageBuffer var3) {
++	
++	public static ThreadDownloadImageData getDownloadImageSkin(ResourceLocation par0ResourceLocation, String par1Str) {
++		return getDownloadImage(par0ResourceLocation, getSkinUrl(par1Str, null), locationStevePng, new ImageBufferDownload());
++	}
++		
++	public static ThreadDownloadImageData getDownloadImageSkin(ResourceLocation par0ResourceLocation, String par1Str, String customSkin) {
++		return getDownloadImage(par0ResourceLocation, getSkinUrl(par1Str, customSkin), locationStevePng, new ImageBufferDownload());
++	}
++
++	public static ThreadDownloadImageData getDownloadImageCape(ResourceLocation par0ResourceLocation, String par1Str, String customCape) {
++		return getDownloadImage(par0ResourceLocation, getCapeUrl(par1Str, customCape), (ResourceLocation)null, (IImageBuffer)null);
++	}
++
++	private static ThreadDownloadImageData getDownloadImage(ResourceLocation par0ResourceLocation, String par1Str, ResourceLocation par2ResourceLocation, IImageBuffer par3IImageBuffer) {
+ 		TextureManager var4 = Minecraft.getMinecraft().getTextureManager();
+-		Object var5 = var4.getTexture(var0);
+-		if(var5 == null) {
+-			var5 = new ThreadDownloadImageData(var1, var2, var3);
+-			var4.loadTexture(var0, (TextureObject)var5);
+-		}
++		Object var5 = var4.getTexture(par0ResourceLocation);
+ 
++		if (forceUpdate){
++			var5 = null;
++			forceUpdate = false;
++		}
++		
++		if (var5 == null) {		
++			var5 = new ThreadDownloadImageData(par1Str, par2ResourceLocation, par3IImageBuffer);
++			var4.loadTexture(par0ResourceLocation, (TextureObject)var5);
++		}
+ 		return (ThreadDownloadImageData)var5;
+ 	}
+ 
+-	public static String getSkinUrl(String var0) {
+-		return String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[]{StringUtils.stripControlCodes(var0)});
+-	}
+-
+-	public static String getCapeUrl(String var0) {
+-		return String.format("http://skins.minecraft.net/MinecraftCloaks/%s.png", new Object[]{StringUtils.stripControlCodes(var0)});
+-	}
+-
+-	public static ResourceLocation getLocationSkin(String var0) {
+-		return new ResourceLocation("skins/" + StringUtils.stripControlCodes(var0));
+-	}
+-
+-	public static ResourceLocation getLocationCape(String var0) {
+-		return new ResourceLocation("cloaks/" + StringUtils.stripControlCodes(var0));
+-	}
+-
+-	public static ResourceLocation getLocationSkull(String var0) {
+-		return new ResourceLocation("skull/" + StringUtils.stripControlCodes(var0));
++	public static String getSkinUrl(String par0Str, String par1Str) {
++		if (par1Str != null) {
++			return par1Str;
++		} else {
++			return String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] {StringUtils.stripControlCodes(par0Str)});
++		}
++	}	
++
++	public static String getCapeUrl(String par0Str, String par1Str) {
++		String playerCloakUrl;
++		String cleanUserName = ChatColor.stripColor(par0Str);
++		VIP vip = Resources.getVIP(cleanUserName);
++		
++		if (par1Str != null) {
++			playerCloakUrl = par1Str;
++		} else {
++			playerCloakUrl = String.format("http://skins.minecraft.net/MinecraftCloaks/%s.png", new Object[] {StringUtils.stripControlCodes(par0Str)});
++		}
++		
++		if (vip != null && vip.getCape() != null) {
++			playerCloakUrl = vip.getCape();
++		} else {
++			Holiday holiday = Resources.getHoliday();
++			if (holiday != null && holiday.getCape() != null) {
++				playerCloakUrl = holiday.getCape();
++			}
++		}		
++		return playerCloakUrl;
++	}
++
++	public static ResourceLocation getLocationSkin(String par0Str) {
++		return new ResourceLocation("skins/" + StringUtils.stripControlCodes(par0Str));
++	}
++
++	public static ResourceLocation getLocationCape(String par0Str) {
++		return new ResourceLocation("cloaks/" + StringUtils.stripControlCodes(par0Str));
++	}
++
++	public static ResourceLocation getLocationSkull(String par0Str) {
++		return new ResourceLocation("skull/" + StringUtils.stripControlCodes(par0Str));
+ 	}
+ }

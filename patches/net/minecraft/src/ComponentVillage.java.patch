@@ -1,0 +1,347 @@
+--- net/minecraft/src/ComponentVillage.java
++++ net/minecraft/src/ComponentVillage.java
+@@ -5,174 +5,216 @@
+ 
+ abstract class ComponentVillage extends StructureComponent {
+ 	protected int field_143015_k = -1;
++
++	/** The number of villagers that have been spawned in this component. */
+ 	private int villagersSpawned;
+ 	private boolean field_143014_b;
+ 
+-	public ComponentVillage() {
+-	}
+-
+-	protected ComponentVillage(ComponentVillageStartPiece var1, int var2) {
+-		super(var2);
+-		if(var1 != null) {
+-			this.field_143014_b = var1.inDesert;
+-		}
+-
+-	}
+-
+-	protected void func_143012_a(NBTTagCompound var1) {
+-		var1.setInteger("HPos", this.field_143015_k);
+-		var1.setInteger("VCount", this.villagersSpawned);
+-		var1.setBoolean("Desert", this.field_143014_b);
+-	}
+-
+-	protected void func_143011_b(NBTTagCompound var1) {
+-		this.field_143015_k = var1.getInteger("HPos");
+-		this.villagersSpawned = var1.getInteger("VCount");
+-		this.field_143014_b = var1.getBoolean("Desert");
+-	}
+-
+-	protected StructureComponent getNextComponentNN(ComponentVillageStartPiece var1, List var2, Random var3, int var4, int var5) {
+-		switch(this.coordBaseMode) {
+-		case 0:
+-			return StructureVillagePieces.getNextStructureComponent(var1, var2, var3, this.boundingBox.minX - 1, this.boundingBox.minY + var4, this.boundingBox.minZ + var5, 1, this.getComponentType());
+-		case 1:
+-			return StructureVillagePieces.getNextStructureComponent(var1, var2, var3, this.boundingBox.minX + var5, this.boundingBox.minY + var4, this.boundingBox.minZ - 1, 2, this.getComponentType());
+-		case 2:
+-			return StructureVillagePieces.getNextStructureComponent(var1, var2, var3, this.boundingBox.minX - 1, this.boundingBox.minY + var4, this.boundingBox.minZ + var5, 1, this.getComponentType());
+-		case 3:
+-			return StructureVillagePieces.getNextStructureComponent(var1, var2, var3, this.boundingBox.minX + var5, this.boundingBox.minY + var4, this.boundingBox.minZ - 1, 2, this.getComponentType());
+-		default:
+-			return null;
+-		}
+-	}
+-
+-	protected StructureComponent getNextComponentPP(ComponentVillageStartPiece var1, List var2, Random var3, int var4, int var5) {
+-		switch(this.coordBaseMode) {
+-		case 0:
+-			return StructureVillagePieces.getNextStructureComponent(var1, var2, var3, this.boundingBox.maxX + 1, this.boundingBox.minY + var4, this.boundingBox.minZ + var5, 3, this.getComponentType());
+-		case 1:
+-			return StructureVillagePieces.getNextStructureComponent(var1, var2, var3, this.boundingBox.minX + var5, this.boundingBox.minY + var4, this.boundingBox.maxZ + 1, 0, this.getComponentType());
+-		case 2:
+-			return StructureVillagePieces.getNextStructureComponent(var1, var2, var3, this.boundingBox.maxX + 1, this.boundingBox.minY + var4, this.boundingBox.minZ + var5, 3, this.getComponentType());
+-		case 3:
+-			return StructureVillagePieces.getNextStructureComponent(var1, var2, var3, this.boundingBox.minX + var5, this.boundingBox.minY + var4, this.boundingBox.maxZ + 1, 0, this.getComponentType());
+-		default:
+-			return null;
+-		}
+-	}
+-
+-	protected int getAverageGroundLevel(World var1, StructureBoundingBox var2) {
++	public ComponentVillage() {}
++
++	protected ComponentVillage(ComponentVillageStartPiece par1ComponentVillageStartPiece, int par2) {
++		super(par2);
++
++		if (par1ComponentVillageStartPiece != null) {
++			this.field_143014_b = par1ComponentVillageStartPiece.inDesert;
++		}
++	}
++
++	protected void func_143012_a(NBTTagCompound par1NBTTagCompound) {
++		par1NBTTagCompound.setInteger("HPos", this.field_143015_k);
++		par1NBTTagCompound.setInteger("VCount", this.villagersSpawned);
++		par1NBTTagCompound.setBoolean("Desert", this.field_143014_b);
++	}
++
++	protected void func_143011_b(NBTTagCompound par1NBTTagCompound) {
++		this.field_143015_k = par1NBTTagCompound.getInteger("HPos");
++		this.villagersSpawned = par1NBTTagCompound.getInteger("VCount");
++		this.field_143014_b = par1NBTTagCompound.getBoolean("Desert");
++	}
++
++	/**
++	 * Gets the next village component, with the bounding box shifted -1 in the X and Z direction.
++	 */
++	protected StructureComponent getNextComponentNN(ComponentVillageStartPiece par1ComponentVillageStartPiece, List par2List, Random par3Random, int par4, int par5) {
++		switch (this.coordBaseMode) {
++			case 0:
++				return StructureVillagePieces.getNextStructureComponent(par1ComponentVillageStartPiece, par2List, par3Random, this.boundingBox.minX - 1, this.boundingBox.minY + par4, this.boundingBox.minZ + par5, 1, this.getComponentType());
++
++			case 1:
++				return StructureVillagePieces.getNextStructureComponent(par1ComponentVillageStartPiece, par2List, par3Random, this.boundingBox.minX + par5, this.boundingBox.minY + par4, this.boundingBox.minZ - 1, 2, this.getComponentType());
++
++			case 2:
++				return StructureVillagePieces.getNextStructureComponent(par1ComponentVillageStartPiece, par2List, par3Random, this.boundingBox.minX - 1, this.boundingBox.minY + par4, this.boundingBox.minZ + par5, 1, this.getComponentType());
++
++			case 3:
++				return StructureVillagePieces.getNextStructureComponent(par1ComponentVillageStartPiece, par2List, par3Random, this.boundingBox.minX + par5, this.boundingBox.minY + par4, this.boundingBox.minZ - 1, 2, this.getComponentType());
++
++			default:
++				return null;
++		}
++	}
++
++	/**
++	 * Gets the next village component, with the bounding box shifted +1 in the X and Z direction.
++	 */
++	protected StructureComponent getNextComponentPP(ComponentVillageStartPiece par1ComponentVillageStartPiece, List par2List, Random par3Random, int par4, int par5) {
++		switch (this.coordBaseMode) {
++			case 0:
++				return StructureVillagePieces.getNextStructureComponent(par1ComponentVillageStartPiece, par2List, par3Random, this.boundingBox.maxX + 1, this.boundingBox.minY + par4, this.boundingBox.minZ + par5, 3, this.getComponentType());
++
++			case 1:
++				return StructureVillagePieces.getNextStructureComponent(par1ComponentVillageStartPiece, par2List, par3Random, this.boundingBox.minX + par5, this.boundingBox.minY + par4, this.boundingBox.maxZ + 1, 0, this.getComponentType());
++
++			case 2:
++				return StructureVillagePieces.getNextStructureComponent(par1ComponentVillageStartPiece, par2List, par3Random, this.boundingBox.maxX + 1, this.boundingBox.minY + par4, this.boundingBox.minZ + par5, 3, this.getComponentType());
++
++			case 3:
++				return StructureVillagePieces.getNextStructureComponent(par1ComponentVillageStartPiece, par2List, par3Random, this.boundingBox.minX + par5, this.boundingBox.minY + par4, this.boundingBox.maxZ + 1, 0, this.getComponentType());
++
++			default:
++				return null;
++		}
++	}
++
++	/**
++	 * Discover the y coordinate that will serve as the ground level of the supplied BoundingBox. (A median of all the
++	 * levels in the BB's horizontal rectangle).
++	 */
++	protected int getAverageGroundLevel(World par1World, StructureBoundingBox par2StructureBoundingBox) {
+ 		int var3 = 0;
+ 		int var4 = 0;
+ 
+-		for(int var5 = this.boundingBox.minZ; var5 <= this.boundingBox.maxZ; ++var5) {
+-			for(int var6 = this.boundingBox.minX; var6 <= this.boundingBox.maxX; ++var6) {
+-				if(var2.isVecInside(var6, 64, var5)) {
+-					var3 += Math.max(var1.getTopSolidOrLiquidBlock(var6, var5), var1.provider.getAverageGroundLevel());
++		for (int var5 = this.boundingBox.minZ; var5 <= this.boundingBox.maxZ; ++var5) {
++			for (int var6 = this.boundingBox.minX; var6 <= this.boundingBox.maxX; ++var6) {
++				if (par2StructureBoundingBox.isVecInside(var6, 64, var5)) {
++					var3 += Math.max(par1World.getTopSolidOrLiquidBlock(var6, var5), par1World.provider.getAverageGroundLevel());
+ 					++var4;
+ 				}
+ 			}
+ 		}
+ 
+-		if(var4 == 0) {
++		if (var4 == 0) {
+ 			return -1;
+ 		} else {
+ 			return var3 / var4;
+ 		}
+ 	}
+ 
+-	protected static boolean canVillageGoDeeper(StructureBoundingBox var0) {
+-		return var0 != null && var0.minY > 10;
++	protected static boolean canVillageGoDeeper(StructureBoundingBox par0StructureBoundingBox) {
++		return par0StructureBoundingBox != null && par0StructureBoundingBox.minY > 10;
+ 	}
+ 
+-	protected void spawnVillagers(World var1, StructureBoundingBox var2, int var3, int var4, int var5, int var6) {
+-		if(this.villagersSpawned < var6) {
+-			for(int var7 = this.villagersSpawned; var7 < var6; ++var7) {
+-				int var8 = this.getXWithOffset(var3 + var7, var5);
+-				int var9 = this.getYWithOffset(var4);
+-				int var10 = this.getZWithOffset(var3 + var7, var5);
+-				if(!var2.isVecInside(var8, var9, var10)) {
++	/**
++	 * Spawns a number of villagers in this component. Parameters: world, component bounding box, x offset, y offset, z
++	 * offset, number of villagers
++	 */
++	protected void spawnVillagers(World par1World, StructureBoundingBox par2StructureBoundingBox, int par3, int par4, int par5, int par6) {
++		if (this.villagersSpawned < par6) {
++			for (int var7 = this.villagersSpawned; var7 < par6; ++var7) {
++				int var8 = this.getXWithOffset(par3 + var7, par5);
++				int var9 = this.getYWithOffset(par4);
++				int var10 = this.getZWithOffset(par3 + var7, par5);
++
++				if (!par2StructureBoundingBox.isVecInside(var8, var9, var10)) {
+ 					break;
+ 				}
+ 
+ 				++this.villagersSpawned;
+-				EntityVillager var11 = new EntityVillager(var1, this.getVillagerType(var7));
++				EntityVillager var11 = new EntityVillager(par1World, this.getVillagerType(var7));
+ 				var11.setLocationAndAngles((double)var8 + 0.5D, (double)var9, (double)var10 + 0.5D, 0.0F, 0.0F);
+-				var1.spawnEntityInWorld(var11);
++				par1World.spawnEntityInWorld(var11);
+ 			}
+-
+ 		}
+ 	}
+ 
+-	protected int getVillagerType(int var1) {
++	/**
++	 * Returns the villager type to spawn in this component, based on the number of villagers already spawned.
++	 */
++	protected int getVillagerType(int par1) {
+ 		return 0;
+ 	}
+ 
+-	protected int getBiomeSpecificBlock(int var1, int var2) {
+-		if(this.field_143014_b) {
+-			if(var1 == Block.wood.blockID) {
+-				return Block.sandStone.blockID;
+-			}
+-
+-			if(var1 == Block.cobblestone.blockID) {
+-				return Block.sandStone.blockID;
+-			}
+-
+-			if(var1 == Block.planks.blockID) {
+-				return Block.sandStone.blockID;
+-			}
+-
+-			if(var1 == Block.stairsWoodOak.blockID) {
+-				return Block.stairsSandStone.blockID;
+-			}
+-
+-			if(var1 == Block.stairsCobblestone.blockID) {
+-				return Block.stairsSandStone.blockID;
+-			}
+-
+-			if(var1 == Block.gravel.blockID) {
++	/**
++	 * Gets the replacement block for the current biome
++	 */
++	protected int getBiomeSpecificBlock(int par1, int par2) {
++		if (this.field_143014_b) {
++			if (par1 == Block.wood.blockID) {
++				return Block.sandStone.blockID;
++			}
++
++			if (par1 == Block.cobblestone.blockID) {
++				return Block.sandStone.blockID;
++			}
++
++			if (par1 == Block.planks.blockID) {
++				return Block.sandStone.blockID;
++			}
++
++			if (par1 == Block.stairsWoodOak.blockID) {
++				return Block.stairsSandStone.blockID;
++			}
++
++			if (par1 == Block.stairsCobblestone.blockID) {
++				return Block.stairsSandStone.blockID;
++			}
++
++			if (par1 == Block.gravel.blockID) {
+ 				return Block.sandStone.blockID;
+ 			}
+ 		}
+ 
+-		return var1;
++		return par1;
+ 	}
+ 
+-	protected int getBiomeSpecificBlockMetadata(int var1, int var2) {
+-		if(this.field_143014_b) {
+-			if(var1 == Block.wood.blockID) {
+-				return 0;
+-			}
+-
+-			if(var1 == Block.cobblestone.blockID) {
+-				return 0;
+-			}
+-
+-			if(var1 == Block.planks.blockID) {
++	/**
++	 * Gets the replacement block metadata for the current biome
++	 */
++	protected int getBiomeSpecificBlockMetadata(int par1, int par2) {
++		if (this.field_143014_b) {
++			if (par1 == Block.wood.blockID) {
++				return 0;
++			}
++
++			if (par1 == Block.cobblestone.blockID) {
++				return 0;
++			}
++
++			if (par1 == Block.planks.blockID) {
+ 				return 2;
+ 			}
+ 		}
+ 
+-		return var2;
+-	}
+-
+-	protected void placeBlockAtCurrentPosition(World var1, int var2, int var3, int var4, int var5, int var6, StructureBoundingBox var7) {
+-		int var8 = this.getBiomeSpecificBlock(var2, var3);
+-		int var9 = this.getBiomeSpecificBlockMetadata(var2, var3);
+-		super.placeBlockAtCurrentPosition(var1, var8, var9, var4, var5, var6, var7);
+-	}
+-
+-	protected void fillWithBlocks(World var1, StructureBoundingBox var2, int var3, int var4, int var5, int var6, int var7, int var8, int var9, int var10, boolean var11) {
+-		int var12 = this.getBiomeSpecificBlock(var9, 0);
+-		int var13 = this.getBiomeSpecificBlockMetadata(var9, 0);
+-		int var14 = this.getBiomeSpecificBlock(var10, 0);
+-		int var15 = this.getBiomeSpecificBlockMetadata(var10, 0);
+-		super.fillWithMetadataBlocks(var1, var2, var3, var4, var5, var6, var7, var8, var12, var13, var14, var15, var11);
+-	}
+-
+-	protected void fillCurrentPositionBlocksDownwards(World var1, int var2, int var3, int var4, int var5, int var6, StructureBoundingBox var7) {
+-		int var8 = this.getBiomeSpecificBlock(var2, var3);
+-		int var9 = this.getBiomeSpecificBlockMetadata(var2, var3);
+-		super.fillCurrentPositionBlocksDownwards(var1, var8, var9, var4, var5, var6, var7);
++		return par2;
++	}
++
++	/**
++	 * current Position depends on currently set Coordinates mode, is computed here
++	 */
++	protected void placeBlockAtCurrentPosition(World par1World, int par2, int par3, int par4, int par5, int par6, StructureBoundingBox par7StructureBoundingBox) {
++		int var8 = this.getBiomeSpecificBlock(par2, par3);
++		int var9 = this.getBiomeSpecificBlockMetadata(par2, par3);
++		super.placeBlockAtCurrentPosition(par1World, var8, var9, par4, par5, par6, par7StructureBoundingBox);
++	}
++
++	/**
++	 * arguments: (World worldObj, StructureBoundingBox structBB, int minX, int minY, int minZ, int maxX, int maxY, int
++	 * maxZ, int placeBlockId, int replaceBlockId, boolean alwaysreplace)
++	 */
++	protected void fillWithBlocks(World par1World, StructureBoundingBox par2StructureBoundingBox, int par3, int par4, int par5, int par6, int par7, int par8, int par9, int par10, boolean par11) {
++		int var12 = this.getBiomeSpecificBlock(par9, 0);
++		int var13 = this.getBiomeSpecificBlockMetadata(par9, 0);
++		int var14 = this.getBiomeSpecificBlock(par10, 0);
++		int var15 = this.getBiomeSpecificBlockMetadata(par10, 0);
++		super.fillWithMetadataBlocks(par1World, par2StructureBoundingBox, par3, par4, par5, par6, par7, par8, var12, var13, var14, var15, par11);
++	}
++
++	/**
++	 * Overwrites air and liquids from selected position downwards, stops at hitting anything else.
++	 */
++	protected void fillCurrentPositionBlocksDownwards(World par1World, int par2, int par3, int par4, int par5, int par6, StructureBoundingBox par7StructureBoundingBox) {
++		int var8 = this.getBiomeSpecificBlock(par2, par3);
++		int var9 = this.getBiomeSpecificBlockMetadata(par2, par3);
++		super.fillCurrentPositionBlocksDownwards(par1World, var8, var9, par4, par5, par6, par7StructureBoundingBox);
+ 	}
+ }

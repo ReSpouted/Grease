@@ -1,0 +1,40 @@
+--- net/minecraft/src/Tuple.java
++++ net/minecraft/src/Tuple.java
+@@ -1,19 +1,29 @@
+ package net.minecraft.src;
+ 
+ public class Tuple {
+-	private Object a;
+-	private Object b;
+-
+-	public Tuple(Object var1, Object var2) {
+-		this.a = var1;
+-		this.b = var2;
++
++	/** First Object in the Tuple */
++	private Object first;
++
++	/** Second Object in the Tuple */
++	private Object second;
++
++	public Tuple(Object par1Obj, Object par2Obj) {
++		this.first = par1Obj;
++		this.second = par2Obj;
+ 	}
+ 
++	/**
++	 * Get the first Object in the Tuple
++	 */
+ 	public Object getFirst() {
+-		return this.a;
++		return this.first;
+ 	}
+ 
++	/**
++	 * Get the second Object in the Tuple
++	 */
+ 	public Object getSecond() {
+-		return this.b;
++		return this.second;
+ 	}
+ }

@@ -1,0 +1,98 @@
+--- net/minecraft/src/RenderSpider.java
++++ net/minecraft/src/RenderSpider.java
+@@ -2,35 +2,51 @@
+ 
+ import org.lwjgl.opengl.GL11;
+ 
++import com.prupe.mcpatcher.mob.MobRandomizer;
++
++import org.spoutcraft.client.config.Configuration;
+ public class RenderSpider extends RenderLiving {
+ 	private static final ResourceLocation spiderEyesTextures = new ResourceLocation("textures/entity/spider_eyes.png");
+ 	private static final ResourceLocation spiderTextures = new ResourceLocation("textures/entity/spider/spider.png");
+-
++	
+ 	public RenderSpider() {
+ 		super(new ModelSpider(), 1.0F);
+ 		this.setRenderPassModel(new ModelSpider());
+ 	}
+ 
+-	protected float setSpiderDeathMaxRotation(EntitySpider var1) {
++	protected float setSpiderDeathMaxRotation(EntitySpider par1EntitySpider) {
+ 		return 180.0F;
+ 	}
+ 
+-	protected int setSpiderEyeBrightness(EntitySpider var1, int var2, float var3) {
+-		if(var2 != 0) {
++	/**
++	 * Sets the spider's glowing eyes
++	 */
++	protected int setSpiderEyeBrightness(EntitySpider par1EntitySpider, int par2, float par3) {
++		if (par2 != 0) {
+ 			return -1;
+ 		} else {
+-			this.bindTexture(spiderEyesTextures);
++			// Spout Start
++			if (Configuration.isRandomMobTextures()) {
++			// MCPatcher Start
++				this.bindTexture(MobRandomizer.randomTexture((EntityLivingBase)par1EntitySpider, spiderEyesTextures));
++			// MCPatcher End
++			} else {
++				//ToDo: Spoutcraft API borked.
++				//loadTexture(par1EntitySpider.getCustomTexture(org.spoutcraft.api.entity.EntitySkinType.SPIDER_EYES, "/mob/spider_eyes.png"));
++			}
++			// Spout End
+ 			float var4 = 1.0F;
+ 			GL11.glEnable(GL11.GL_BLEND);
+ 			GL11.glDisable(GL11.GL_ALPHA_TEST);
+ 			GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+-			if(var1.isInvisible()) {
++
++			if (par1EntitySpider.isInvisible()) {
+ 				GL11.glDepthMask(false);
+ 			} else {
+ 				GL11.glDepthMask(true);
+ 			}
+ 
+-			char var5 = '\uf0f0';
++			char var5 = 61680;
+ 			int var6 = var5 % 65536;
+ 			int var7 = var5 / 65536;
+ 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)var6 / 1.0F, (float)var7 / 1.0F);
+@@ -40,19 +56,25 @@
+ 		}
+ 	}
+ 
+-	protected ResourceLocation getSpiderTextures(EntitySpider var1) {
++	protected ResourceLocation getSpiderTextures(EntitySpider par1EntitySpider) {
+ 		return spiderTextures;
+ 	}
+ 
+-	protected float getDeathMaxRotation(EntityLivingBase var1) {
+-		return this.setSpiderDeathMaxRotation((EntitySpider)var1);
+-	}
+-
+-	protected int shouldRenderPass(EntityLivingBase var1, int var2, float var3) {
+-		return this.setSpiderEyeBrightness((EntitySpider)var1, var2, var3);
+-	}
+-
+-	protected ResourceLocation getEntityTexture(Entity var1) {
+-		return this.getSpiderTextures((EntitySpider)var1);
++	protected float getDeathMaxRotation(EntityLivingBase par1EntityLivingBase) {
++		return this.setSpiderDeathMaxRotation((EntitySpider)par1EntityLivingBase);
++	}
++
++	/**
++	 * Queries whether should render the specified pass or not.
++	 */
++	protected int shouldRenderPass(EntityLivingBase par1EntityLivingBase, int par2, float par3) {
++		return this.setSpiderEyeBrightness((EntitySpider)par1EntityLivingBase, par2, par3);
++	}
++
++	/**
++	 * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
++	 */
++	protected ResourceLocation getEntityTexture(Entity par1Entity) {
++		return this.getSpiderTextures((EntitySpider)par1Entity);
+ 	}
+ }

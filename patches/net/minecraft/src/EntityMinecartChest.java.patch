@@ -1,0 +1,35 @@
+--- net/minecraft/src/EntityMinecartChest.java
++++ net/minecraft/src/EntityMinecartChest.java
+@@ -1,19 +1,22 @@
+ package net.minecraft.src;
+ 
+ public class EntityMinecartChest extends EntityMinecartContainer {
+-	public EntityMinecartChest(World var1) {
+-		super(var1);
+-	}
+-
+-	public EntityMinecartChest(World var1, double var2, double var4, double var6) {
+-		super(var1, var2, var4, var6);
+-	}
+-
+-	public void killMinecart(DamageSource var1) {
+-		super.killMinecart(var1);
++	public EntityMinecartChest(World par1World) {
++		super(par1World);
++	}
++
++	public EntityMinecartChest(World par1World, double par2, double par4, double par6) {
++		super(par1World, par2, par4, par6);
++	}
++
++	public void killMinecart(DamageSource par1DamageSource) {
++		super.killMinecart(par1DamageSource);
+ 		this.dropItemWithOffset(Block.chest.blockID, 1, 0.0F);
+ 	}
+ 
++	/**
++	 * Returns the number of slots in the inventory.
++	 */
+ 	public int getSizeInventory() {
+ 		return 27;
+ 	}

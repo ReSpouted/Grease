@@ -1,0 +1,99 @@
+--- net/minecraft/src/ThreadDownloadImageData.java
++++ net/minecraft/src/ThreadDownloadImageData.java
+@@ -3,51 +3,55 @@
+ import java.awt.image.BufferedImage;
+ import java.io.IOException;
+ 
++import org.spoutcraft.client.HDImageBufferDownload;
++
+ public class ThreadDownloadImageData extends AbstractTexture {
+-	private final String b;
++	private final String imageUrl;
+ 	private final IImageBuffer imageBuffer;
+-	private BufferedImage d;
+-	private Thread e;
++	private BufferedImage bufferedImage;
++	private Thread imageThread;
+ 	private SimpleTexture imageLocation;
+ 	private boolean textureUploaded;
+ 
+-	public ThreadDownloadImageData(String var1, ResourceLocation var2, IImageBuffer var3) {
+-		this.b = var1;
+-		this.imageBuffer = var3;
+-		this.imageLocation = var2 != null ? new SimpleTexture(var2) : null;
++	public ThreadDownloadImageData(String par1Str, ResourceLocation par2ResourceLocation, IImageBuffer par3IImageBuffer) {
++		this.imageUrl = par1Str;
++		// Spout Start
++		this.imageBuffer = new HDImageBufferDownload();
++		// Spout End
++		this.imageLocation = par2ResourceLocation != null ? new SimpleTexture(par2ResourceLocation) : null;
+ 	}
+ 
+ 	public int getGlTextureId() {
+ 		int var1 = super.getGlTextureId();
+-		if(!this.textureUploaded && this.d != null) {
+-			TextureUtil.uploadTextureImage(var1, this.d);
++
++		if (!this.textureUploaded && this.bufferedImage != null) {
++			TextureUtil.uploadTextureImage(var1, this.bufferedImage);
+ 			this.textureUploaded = true;
+ 		}
+ 
+ 		return var1;
+ 	}
+ 
+-	public void getBufferedImage(BufferedImage var1) {
+-		this.d = var1;
++	public void getBufferedImage(BufferedImage par1BufferedImage) {
++		this.bufferedImage = par1BufferedImage;
+ 	}
+ 
+-	public void loadTexture(ResourceManager var1) throws IOException {
+-		if(this.d == null) {
+-			if(this.imageLocation != null) {
+-				this.imageLocation.loadTexture(var1);
++	public void loadTexture(ResourceManager par1ResourceManager) throws IOException {
++		if (this.bufferedImage == null) {
++			if (this.imageLocation != null) {
++				this.imageLocation.loadTexture(par1ResourceManager);
+ 				this.glTextureId = this.imageLocation.getGlTextureId();
+ 			}
+ 		} else {
+-			TextureUtil.uploadTextureImage(this.getGlTextureId(), this.d);
+-		}
+-
+-		if(this.e == null) {
+-			this.e = new ThreadDownloadImageDataINNER1(this);
+-			this.e.setDaemon(true);
+-			this.e.setName("Skin downloader: " + this.b);
+-			this.e.start();
+-		}
+-
++			TextureUtil.uploadTextureImage(this.getGlTextureId(), this.bufferedImage);
++		}
++
++		if (this.imageThread == null) {
++			this.imageThread = new ThreadDownloadImageDataINNER1(this);
++			this.imageThread.setDaemon(true);
++			this.imageThread.setName("Skin downloader: " + this.imageUrl);
++			this.imageThread.start();
++		}
+ 	}
+ 
+ 	public boolean isTextureUploaded() {
+@@ -55,11 +59,11 @@
+ 		return this.textureUploaded;
+ 	}
+ 
+-	static String getImageUrl(ThreadDownloadImageData var0) {
+-		return var0.b;
++	static String getImageUrl(ThreadDownloadImageData par0ThreadDownloadImageData) {
++		return par0ThreadDownloadImageData.imageUrl;
+ 	}
+ 
+-	static IImageBuffer getImageBuffer(ThreadDownloadImageData var0) {
+-		return var0.imageBuffer;
++	static IImageBuffer getImageBuffer(ThreadDownloadImageData par0ThreadDownloadImageData) {
++		return par0ThreadDownloadImageData.imageBuffer;
+ 	}
+ }

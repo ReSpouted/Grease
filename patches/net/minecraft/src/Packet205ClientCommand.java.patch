@@ -1,0 +1,64 @@
+--- net/minecraft/src/Packet205ClientCommand.java
++++ net/minecraft/src/Packet205ClientCommand.java
+@@ -5,27 +5,42 @@
+ import java.io.IOException;
+ 
+ public class Packet205ClientCommand extends Packet {
++
++	/**
++	 * 0 sent to a netLoginHandler starts the server, 1 sent to NetServerHandler forces a respawn
++	 */
+ 	public int forceRespawn;
+ 
+-	public Packet205ClientCommand() {
+-	}
+-
+-	public Packet205ClientCommand(int var1) {
+-		this.forceRespawn = var1;
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.forceRespawn = var1.readByte();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeByte(this.forceRespawn & 255);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleClientCommand(this);
+-	}
+-
++	public Packet205ClientCommand() {}
++
++	public Packet205ClientCommand(int par1) {
++		this.forceRespawn = par1;
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.forceRespawn = par1DataInput.readByte();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeByte(this.forceRespawn & 255);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleClientCommand(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 1;
+ 	}

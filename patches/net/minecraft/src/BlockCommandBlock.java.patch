@@ -1,0 +1,137 @@
+--- net/minecraft/src/BlockCommandBlock.java
++++ net/minecraft/src/BlockCommandBlock.java
+@@ -3,70 +3,101 @@
+ import java.util.Random;
+ 
+ public class BlockCommandBlock extends BlockContainer {
+-	public BlockCommandBlock(int var1) {
+-		super(var1, Material.iron);
++	public BlockCommandBlock(int par1) {
++		super(par1, Material.iron);
+ 	}
+ 
+-	public TileEntity createNewTileEntity(World var1) {
++	/**
++	 * Returns a new instance of a block's tile entity class. Called on placing the block.
++	 */
++	public TileEntity createNewTileEntity(World par1World) {
+ 		return new TileEntityCommandBlock();
+ 	}
+ 
+-	public void onNeighborBlockChange(World var1, int var2, int var3, int var4, int var5) {
+-		if(!var1.isRemote) {
+-			boolean var6 = var1.isBlockIndirectlyGettingPowered(var2, var3, var4);
+-			int var7 = var1.getBlockMetadata(var2, var3, var4);
++	/**
++	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
++	 * their own) Args: x, y, z, neighbor blockID
++	 */
++	public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5) {
++		if (!par1World.isRemote) {
++			boolean var6 = par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
++			int var7 = par1World.getBlockMetadata(par2, par3, par4);
+ 			boolean var8 = (var7 & 1) != 0;
+-			if(var6 && !var8) {
+-				var1.setBlockMetadata(var2, var3, var4, var7 | 1, 4);
+-				var1.scheduleBlockUpdate(var2, var3, var4, this.blockID, this.tickRate(var1));
+-			} else if(!var6 && var8) {
+-				var1.setBlockMetadata(var2, var3, var4, var7 & -2, 4);
++
++			if (var6 && !var8) {
++				par1World.setBlockMetadataWithNotify(par2, par3, par4, var7 | 1, 4);
++				par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World));
++			} else if (!var6 && var8) {
++				par1World.setBlockMetadataWithNotify(par2, par3, par4, var7 & -2, 4);
+ 			}
+ 		}
+-
+ 	}
+ 
+-	public void updateTick(World var1, int var2, int var3, int var4, Random var5) {
+-		TileEntity var6 = var1.getBlockTileEntity(var2, var3, var4);
+-		if(var6 != null && var6 instanceof TileEntityCommandBlock) {
++	/**
++	 * Ticks the block if it's been scheduled
++	 */
++	public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
++		TileEntity var6 = par1World.getBlockTileEntity(par2, par3, par4);
++
++		if (var6 != null && var6 instanceof TileEntityCommandBlock) {
+ 			TileEntityCommandBlock var7 = (TileEntityCommandBlock)var6;
+-			var7.setSignalStrength(var7.executeCommandOnPowered(var1));
+-			var1.func_96440_m(var2, var3, var4, this.blockID);
++			var7.func_96102_a(var7.executeCommandOnPowered(par1World));
++			par1World.func_96440_m(par2, par3, par4, this.blockID);
+ 		}
+-
+ 	}
+ 
+-	public int tickRate(World var1) {
++	/**
++	 * How many world ticks before ticking
++	 */
++	public int tickRate(World par1World) {
+ 		return 1;
+ 	}
+ 
+-	public boolean onBlockActivated(World var1, int var2, int var3, int var4, EntityPlayer var5, int var6, float var7, float var8, float var9) {
+-		TileEntityCommandBlock var10 = (TileEntityCommandBlock)var1.getBlockTileEntity(var2, var3, var4);
+-		if(var10 != null) {
+-			var5.displayGUIEditSign(var10);
++	/**
++	 * Called upon block activation (right click on the block.)
++	 */
++	public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9) {
++		TileEntityCommandBlock var10 = (TileEntityCommandBlock)par1World.getBlockTileEntity(par2, par3, par4);
++
++		if (var10 != null) {
++			par5EntityPlayer.displayGUIEditSign(var10);
+ 		}
+ 
+ 		return true;
+ 	}
+ 
++	/**
++	 * If this returns true, then comparators facing away from this block will use the value from
++	 * getComparatorInputOverride instead of the actual redstone signal strength.
++	 */
+ 	public boolean hasComparatorInputOverride() {
+ 		return true;
+ 	}
+ 
+-	public int getComparatorInputOverride(World var1, int var2, int var3, int var4, int var5) {
+-		TileEntity var6 = var1.getBlockTileEntity(var2, var3, var4);
+-		return var6 != null && var6 instanceof TileEntityCommandBlock ? ((TileEntityCommandBlock)var6).getSignalStrength() : 0;
++	/**
++	 * If hasComparatorInputOverride returns true, the return value from this is used instead of the redstone signal
++	 * strength when this block inputs to a comparator.
++	 */
++	public int getComparatorInputOverride(World par1World, int par2, int par3, int par4, int par5) {
++		TileEntity var6 = par1World.getBlockTileEntity(par2, par3, par4);
++		return var6 != null && var6 instanceof TileEntityCommandBlock ? ((TileEntityCommandBlock)var6).func_96103_d() : 0;
+ 	}
+ 
+-	public void onBlockPlacedBy(World var1, int var2, int var3, int var4, EntityLivingBase var5, ItemStack var6) {
+-		TileEntityCommandBlock var7 = (TileEntityCommandBlock)var1.getBlockTileEntity(var2, var3, var4);
+-		if(var6.hasDisplayName()) {
+-			var7.setCommandSenderName(var6.getDisplayName());
++	/**
++	 * Called when the block is placed in the world.
++	 */
++	public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
++		TileEntityCommandBlock var7 = (TileEntityCommandBlock)par1World.getBlockTileEntity(par2, par3, par4);
++
++		if (par6ItemStack.hasDisplayName()) {
++			var7.setCommandSenderName(par6ItemStack.getDisplayName());
+ 		}
+-
+ 	}
+ 
+-	public int quantityDropped(Random var1) {
++	/**
++	 * Returns the quantity of items to drop on block destruction.
++	 */
++	public int quantityDropped(Random par1Random) {
+ 		return 0;
+ 	}
+ }

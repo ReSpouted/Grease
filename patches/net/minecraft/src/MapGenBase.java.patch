@@ -1,0 +1,53 @@
+--- net/minecraft/src/MapGenBase.java
++++ net/minecraft/src/MapGenBase.java
+@@ -3,28 +3,35 @@
+ import java.util.Random;
+ 
+ public class MapGenBase {
++
++	/** The number of Chunks to gen-check in any given direction. */
+ 	protected int range = 8;
+-	protected Random b = new Random();
++
++	/** The RNG used by the MapGen classes. */
++	protected Random rand = new Random();
++
++	/** This world object. */
+ 	protected World worldObj;
+ 
+-	public void generate(IChunkProvider var1, World var2, int var3, int var4, byte[] var5) {
++	public void generate(IChunkProvider par1IChunkProvider, World par2World, int par3, int par4, byte[] par5ArrayOfByte) {
+ 		int var6 = this.range;
+-		this.worldObj = var2;
+-		this.b.setSeed(var2.getSeed());
+-		long var7 = this.b.nextLong();
+-		long var9 = this.b.nextLong();
++		this.worldObj = par2World;
++		this.rand.setSeed(par2World.getSeed());
++		long var7 = this.rand.nextLong();
++		long var9 = this.rand.nextLong();
+ 
+-		for(int var11 = var3 - var6; var11 <= var3 + var6; ++var11) {
+-			for(int var12 = var4 - var6; var12 <= var4 + var6; ++var12) {
++		for (int var11 = par3 - var6; var11 <= par3 + var6; ++var11) {
++			for (int var12 = par4 - var6; var12 <= par4 + var6; ++var12) {
+ 				long var13 = (long)var11 * var7;
+ 				long var15 = (long)var12 * var9;
+-				this.b.setSeed(var13 ^ var15 ^ var2.getSeed());
+-				this.recursiveGenerate(var2, var11, var12, var3, var4, var5);
++				this.rand.setSeed(var13 ^ var15 ^ par2World.getSeed());
++				this.recursiveGenerate(par2World, var11, var12, par3, par4, par5ArrayOfByte);
+ 			}
+ 		}
+-
+-	}
+-
+-	protected void recursiveGenerate(World var1, int var2, int var3, int var4, int var5, byte[] var6) {
+-	}
++	}
++
++	/**
++	 * Recursively called by generate() (generate) and optionally by itself.
++	 */
++	protected void recursiveGenerate(World par1World, int par2, int par3, int par4, int par5, byte[] par6ArrayOfByte) {}
+ }

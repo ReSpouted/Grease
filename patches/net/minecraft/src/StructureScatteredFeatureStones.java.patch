@@ -1,0 +1,29 @@
+--- net/minecraft/src/StructureScatteredFeatureStones.java
++++ net/minecraft/src/StructureScatteredFeatureStones.java
+@@ -3,19 +3,20 @@
+ import java.util.Random;
+ 
+ class StructureScatteredFeatureStones extends StructurePieceBlockSelector {
+-	private StructureScatteredFeatureStones() {
+-	}
++	private StructureScatteredFeatureStones() {}
+ 
+-	public void selectBlocks(Random var1, int var2, int var3, int var4, boolean var5) {
+-		if(var1.nextFloat() < 0.4F) {
++	/**
++	 * picks Block Ids and Metadata (Silverfish)
++	 */
++	public void selectBlocks(Random par1Random, int par2, int par3, int par4, boolean par5) {
++		if (par1Random.nextFloat() < 0.4F) {
+ 			this.selectedBlockId = Block.cobblestone.blockID;
+ 		} else {
+ 			this.selectedBlockId = Block.cobblestoneMossy.blockID;
+ 		}
+-
+ 	}
+ 
+-	StructureScatteredFeatureStones(ComponentScatteredFeaturePieces2 var1) {
++	StructureScatteredFeatureStones(ComponentScatteredFeaturePieces2 par1ComponentScatteredFeaturePieces2) {
+ 		this();
+ 	}
+ }

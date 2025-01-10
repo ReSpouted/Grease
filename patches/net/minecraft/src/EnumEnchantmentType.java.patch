@@ -1,0 +1,30 @@
+--- net/minecraft/src/EnumEnchantmentType.java
++++ net/minecraft/src/EnumEnchantmentType.java
+@@ -11,18 +11,21 @@
+ 	digger,
+ 	bow;
+ 
+-	public boolean canEnchantItem(Item var1) {
+-		if(this == all) {
++	/**
++	 * Return true if the item passed can be enchanted by a enchantment of this type.
++	 */
++	public boolean canEnchantItem(Item par1Item) {
++		if (this == all) {
+ 			return true;
+-		} else if(var1 instanceof ItemArmor) {
+-			if(this == armor) {
++		} else if (par1Item instanceof ItemArmor) {
++			if (this == armor) {
+ 				return true;
+ 			} else {
+-				ItemArmor var2 = (ItemArmor)var1;
++				ItemArmor var2 = (ItemArmor)par1Item;
+ 				return var2.armorType == 0 ? this == armor_head : (var2.armorType == 2 ? this == armor_legs : (var2.armorType == 1 ? this == armor_torso : (var2.armorType == 3 ? this == armor_feet : false)));
+ 			}
+ 		} else {
+-			return var1 instanceof ItemSword ? this == weapon : (var1 instanceof ItemTool ? this == digger : (var1 instanceof ItemBow ? this == bow : false));
++			return par1Item instanceof ItemSword ? this == weapon : (par1Item instanceof ItemTool ? this == digger : (par1Item instanceof ItemBow ? this == bow : false));
+ 		}
+ 	}
+ }

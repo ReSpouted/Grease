@@ -1,0 +1,209 @@
+--- net/minecraft/src/SelectionListBase.java
++++ net/minecraft/src/SelectionListBase.java
+@@ -18,13 +18,13 @@
+ 	private int field_96623_l = -1;
+ 	private long field_96624_m;
+ 
+-	public SelectionListBase(Minecraft var1, int var2, int var3, int var4, int var5, int var6) {
+-		this.mc = var1;
+-		this.field_96616_f = var3;
+-		this.field_96627_h = var3 + var5;
+-		this.field_96620_b = var6;
+-		this.field_96619_e = var2;
+-		this.field_96617_g = var2 + var4;
++	public SelectionListBase(Minecraft par1Minecraft, int par2, int par3, int par4, int par5, int par6) {
++		this.mc = par1Minecraft;
++		this.field_96616_f = par3;
++		this.field_96627_h = par3 + par5;
++		this.field_96620_b = par6;
++		this.field_96619_e = par2;
++		this.field_96617_g = par2 + par4;
+ 	}
+ 
+ 	protected abstract int func_96608_a();
+@@ -43,27 +43,27 @@
+ 
+ 	private void func_96614_f() {
+ 		int var1 = this.func_96607_d();
+-		if(var1 < 0) {
++
++		if (var1 < 0) {
+ 			var1 = 0;
+ 		}
+ 
+-		if(this.field_96626_k < 0.0F) {
++		if (this.field_96626_k < 0.0F) {
+ 			this.field_96626_k = 0.0F;
+ 		}
+ 
+-		if(this.field_96626_k > (float)var1) {
++		if (this.field_96626_k > (float)var1) {
+ 			this.field_96626_k = (float)var1;
+ 		}
+-
+ 	}
+ 
+ 	public int func_96607_d() {
+ 		return this.func_96613_b() - (this.field_96627_h - this.field_96616_f - 4);
+ 	}
+ 
+-	public void func_96612_a(int var1, int var2, float var3) {
+-		this.field_96621_c = var1;
+-		this.field_96618_d = var2;
++	public void func_96612_a(int par1, int par2, float par3) {
++		this.field_96621_c = par1;
++		this.field_96618_d = par2;
+ 		this.func_96611_c();
+ 		int var4 = this.func_96608_a();
+ 		int var5 = this.func_96606_e();
+@@ -73,36 +73,41 @@
+ 		int var11;
+ 		int var13;
+ 		int var20;
+-		if(Mouse.isButtonDown(0)) {
+-			if(this.field_96628_i == -1.0F) {
+-				boolean var16 = true;
+-				if(var2 >= this.field_96616_f && var2 <= this.field_96627_h) {
++
++		if (Mouse.isButtonDown(0)) {
++			if (this.field_96628_i == -1.0F) {
++				boolean var7 = true;
++
++				if (par2 >= this.field_96616_f && par2 <= this.field_96627_h) {
+ 					int var8 = this.field_96619_e + 2;
+ 					var9 = this.field_96617_g - 2;
+-					var10 = var2 - this.field_96616_f + (int)this.field_96626_k - 4;
++					var10 = par2 - this.field_96616_f + (int)this.field_96626_k - 4;
+ 					var11 = var10 / this.field_96620_b;
+-					if(var1 >= var8 && var1 <= var9 && var11 >= 0 && var10 >= 0 && var11 < var4) {
++
++					if (par1 >= var8 && par1 <= var9 && var11 >= 0 && var10 >= 0 && var11 < var4) {
+ 						boolean var12 = var11 == this.field_96623_l && Minecraft.getSystemTime() - this.field_96624_m < 250L;
+ 						this.func_96615_a(var11, var12);
+ 						this.field_96623_l = var11;
+ 						this.field_96624_m = Minecraft.getSystemTime();
+-					} else if(var1 >= var8 && var1 <= var9 && var10 < 0) {
+-						var16 = false;
++					} else if (par1 >= var8 && par1 <= var9 && var10 < 0) {
++						var7 = false;
+ 					}
+ 
+-					if(var1 >= var5 && var1 <= var6) {
++					if (par1 >= var5 && par1 <= var6) {
+ 						this.field_96625_j = -1.0F;
+ 						var20 = this.func_96607_d();
+-						if(var20 < 1) {
++
++						if (var20 < 1) {
+ 							var20 = 1;
+ 						}
+ 
+ 						var13 = (int)((float)((this.field_96627_h - this.field_96616_f) * (this.field_96627_h - this.field_96616_f)) / (float)this.func_96613_b());
+-						if(var13 < 32) {
++
++						if (var13 < 32) {
+ 							var13 = 32;
+ 						}
+ 
+-						if(var13 > this.field_96627_h - this.field_96616_f - 8) {
++						if (var13 > this.field_96627_h - this.field_96616_f - 8) {
+ 							var13 = this.field_96627_h - this.field_96616_f - 8;
+ 						}
+ 
+@@ -111,36 +116,34 @@
+ 						this.field_96625_j = 1.0F;
+ 					}
+ 
+-					if(var16) {
+-						this.field_96628_i = (float)var2;
++					if (var7) {
++						this.field_96628_i = (float)par2;
+ 					} else {
+ 						this.field_96628_i = -2.0F;
+ 					}
+ 				} else {
+ 					this.field_96628_i = -2.0F;
+ 				}
+-			} else if(this.field_96628_i >= 0.0F) {
+-				this.field_96626_k -= ((float)var2 - this.field_96628_i) * this.field_96625_j;
+-				this.field_96628_i = (float)var2;
++			} else if (this.field_96628_i >= 0.0F) {
++				this.field_96626_k -= ((float)par2 - this.field_96628_i) * this.field_96625_j;
++				this.field_96628_i = (float)par2;
+ 			}
+ 		} else {
+-			while(true) {
+-				if(this.mc.gameSettings.touchscreen || !Mouse.next()) {
+-					this.field_96628_i = -1.0F;
+-					break;
+-				}
++			while (!this.mc.gameSettings.touchscreen && Mouse.next()) {
++				int var16 = Mouse.getEventDWheel();
+ 
+-				int var7 = Mouse.getEventDWheel();
+-				if(var7 != 0) {
+-					if(var7 > 0) {
+-						var7 = -1;
+-					} else if(var7 < 0) {
+-						var7 = 1;
++				if (var16 != 0) {
++					if (var16 > 0) {
++						var16 = -1;
++					} else if (var16 < 0) {
++						var16 = 1;
+ 					}
+ 
+-					this.field_96626_k += (float)(var7 * this.field_96620_b / 2);
++					this.field_96626_k += (float)(var16 * this.field_96620_b / 2);
+ 				}
+ 			}
++
++			this.field_96628_i = -1.0F;
+ 		}
+ 
+ 		this.func_96614_f();
+@@ -159,13 +162,14 @@
+ 		var18.draw();
+ 		var9 = this.field_96619_e + 2;
+ 		var10 = this.field_96616_f + 4 - (int)this.field_96626_k;
+-
+ 		int var14;
+-		for(var11 = 0; var11 < var4; ++var11) {
++
++		for (var11 = 0; var11 < var4; ++var11) {
+ 			var20 = var10 + var11 * this.field_96620_b;
+ 			var13 = this.field_96620_b - 4;
+-			if(var20 + this.field_96620_b <= this.field_96627_h && var20 - 4 >= this.field_96616_f) {
+-				if(this.func_96609_a(var11)) {
++
++			if (var20 + this.field_96620_b <= this.field_96627_h && var20 - 4 >= this.field_96616_f) {
++				if (this.func_96609_a(var11)) {
+ 					var14 = this.field_96619_e + 2;
+ 					int var15 = this.field_96617_g - 2;
+ 					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+@@ -213,18 +217,21 @@
+ 		var18.addVertexWithUV((double)this.field_96619_e, (double)(this.field_96627_h - var19), 0.0D, 0.0D, 0.0D);
+ 		var18.draw();
+ 		var20 = this.func_96607_d();
+-		if(var20 > 0) {
++
++		if (var20 > 0) {
+ 			var13 = (this.field_96627_h - this.field_96616_f) * (this.field_96627_h - this.field_96616_f) / this.func_96613_b();
+-			if(var13 < 32) {
++
++			if (var13 < 32) {
+ 				var13 = 32;
+ 			}
+ 
+-			if(var13 > this.field_96627_h - this.field_96616_f - 8) {
++			if (var13 > this.field_96627_h - this.field_96616_f - 8) {
+ 				var13 = this.field_96627_h - this.field_96616_f - 8;
+ 			}
+ 
+ 			var14 = (int)this.field_96626_k * (this.field_96627_h - this.field_96616_f - var13) / var20 + this.field_96616_f;
+-			if(var14 < this.field_96616_f) {
++
++			if (var14 < this.field_96616_f) {
+ 				var14 = this.field_96616_f;
+ 			}
+ 

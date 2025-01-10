@@ -1,0 +1,28 @@
+--- net/minecraft/src/RecipeSorter.java
++++ net/minecraft/src/RecipeSorter.java
+@@ -5,15 +5,15 @@
+ class RecipeSorter implements Comparator {
+ 	final CraftingManager craftingManager;
+ 
+-	RecipeSorter(CraftingManager var1) {
+-		this.craftingManager = var1;
+-	}
+-
+-	public int compareRecipes(IRecipe var1, IRecipe var2) {
+-		return var1 instanceof ShapelessRecipes && var2 instanceof ShapedRecipes ? 1 : (var2 instanceof ShapelessRecipes && var1 instanceof ShapedRecipes ? -1 : (var2.getRecipeSize() < var1.getRecipeSize() ? -1 : (var2.getRecipeSize() > var1.getRecipeSize() ? 1 : 0)));
+-	}
+-
+-	public int compare(Object var1, Object var2) {
+-		return this.compareRecipes((IRecipe)var1, (IRecipe)var2);
++	RecipeSorter(CraftingManager par1CraftingManager) {
++		this.craftingManager = par1CraftingManager;
++	}
++
++	public int compareRecipes(IRecipe par1IRecipe, IRecipe par2IRecipe) {
++		return par1IRecipe instanceof ShapelessRecipes && par2IRecipe instanceof ShapedRecipes ? 1 : (par2IRecipe instanceof ShapelessRecipes && par1IRecipe instanceof ShapedRecipes ? -1 : (par2IRecipe.getRecipeSize() < par1IRecipe.getRecipeSize() ? -1 : (par2IRecipe.getRecipeSize() > par1IRecipe.getRecipeSize() ? 1 : 0)));
++	}
++
++	public int compare(Object par1Obj, Object par2Obj) {
++		return this.compareRecipes((IRecipe)par1Obj, (IRecipe)par2Obj);
+ 	}
+ }

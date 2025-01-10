@@ -1,0 +1,13 @@
+--- net/minecraft/src/SoundManagerINNER1.java
++++ net/minecraft/src/SoundManagerINNER1.java
+@@ -5,8 +5,8 @@
+ class SoundManagerINNER1 implements Runnable {
+ 	final SoundManager theSoundManager;
+ 
+-	SoundManagerINNER1(SoundManager var1) {
+-		this.theSoundManager = var1;
++	SoundManagerINNER1(SoundManager par1SoundManager) {
++		this.theSoundManager = par1SoundManager;
+ 	}
+ 
+ 	public void run() {

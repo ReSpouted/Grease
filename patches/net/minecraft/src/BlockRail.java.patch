@@ -1,0 +1,49 @@
+--- net/minecraft/src/BlockRail.java
++++ net/minecraft/src/BlockRail.java
+@@ -3,23 +3,29 @@
+ public class BlockRail extends BlockRailBase {
+ 	private Icon theIcon;
+ 
+-	protected BlockRail(int var1) {
+-		super(var1, false);
+-	}
+-
+-	public Icon getIcon(int var1, int var2) {
+-		return var2 >= 6 ? this.theIcon : this.blockIcon;
+-	}
+-
+-	public void registerIcons(IconRegister var1) {
+-		super.registerIcons(var1);
+-		this.theIcon = var1.registerIcon(this.getTextureName() + "_turned");
+-	}
+-
+-	protected void func_94358_a(World var1, int var2, int var3, int var4, int var5, int var6, int var7) {
+-		if(var7 > 0 && Block.blocksList[var7].canProvidePower() && (new BlockBaseRailLogic(this, var1, var2, var3, var4)).getNumberOfAdjacentTracks() == 3) {
+-			this.refreshTrackShape(var1, var2, var3, var4, false);
++	protected BlockRail(int par1) {
++		super(par1, false);
++	}
++
++	/**
++	 * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
++	 */
++	public Icon getIcon(int par1, int par2) {
++		return par2 >= 6 ? this.theIcon : this.blockIcon;
++	}
++
++	/**
++	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This is
++	 * the only chance you get to register icons.
++	 */
++	public void registerIcons(IconRegister par1IconRegister) {
++		super.registerIcons(par1IconRegister);
++		this.theIcon = par1IconRegister.registerIcon(this.getTextureName() + "_turned");
++	}
++
++	protected void func_94358_a(World par1World, int par2, int par3, int par4, int par5, int par6, int par7) {
++		if (par7 > 0 && Block.blocksList[par7].canProvidePower() && (new BlockBaseRailLogic(this, par1World, par2, par3, par4)).getNumberOfAdjacentTracks() == 3) {
++			this.refreshTrackShape(par1World, par2, par3, par4, false);
+ 		}
+-
+ 	}
+ }

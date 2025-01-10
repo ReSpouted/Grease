@@ -1,0 +1,11 @@
+--- net/minecraft/src/IRegistry.java
++++ net/minecraft/src/IRegistry.java
+@@ -3,5 +3,8 @@
+ public interface IRegistry {
+ 	Object getObject(Object var1);
+ 
++	/**
++	 * Register an object on this registry.
++	 */
+ 	void putObject(Object var1, Object var2);
+ }

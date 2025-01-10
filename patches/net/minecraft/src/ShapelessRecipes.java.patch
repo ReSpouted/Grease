@@ -1,0 +1,85 @@
+--- net/minecraft/src/ShapelessRecipes.java
++++ net/minecraft/src/ShapelessRecipes.java
+@@ -5,38 +5,47 @@
+ import java.util.List;
+ 
+ public class ShapelessRecipes implements IRecipe {
++
++	/** Is the ItemStack that you get when craft the recipe. */
+ 	private final ItemStack recipeOutput;
+-	private final List b;
+-
+-	public ShapelessRecipes(ItemStack var1, List var2) {
+-		this.recipeOutput = var1;
+-		this.b = var2;
++
++	/** Is a List of ItemStack that composes the recipe. */
++	private final List recipeItems;
++
++	public ShapelessRecipes(ItemStack par1ItemStack, List par2List) {
++		this.recipeOutput = par1ItemStack;
++		this.recipeItems = par2List;
+ 	}
+ 
+ 	public ItemStack getRecipeOutput() {
+ 		return this.recipeOutput;
+ 	}
+ 
+-	public boolean matches(InventoryCrafting var1, World var2) {
+-		ArrayList var3 = new ArrayList(this.b);
+-
+-		for(int var4 = 0; var4 < 3; ++var4) {
+-			for(int var5 = 0; var5 < 3; ++var5) {
+-				ItemStack var6 = var1.getStackInRowAndColumn(var5, var4);
+-				if(var6 != null) {
++	/**
++	 * Used to check if a recipe matches current crafting inventory
++	 */
++	public boolean matches(InventoryCrafting par1InventoryCrafting, World par2World) {
++		ArrayList var3 = new ArrayList(this.recipeItems);
++
++		for (int var4 = 0; var4 < 3; ++var4) {
++			for (int var5 = 0; var5 < 3; ++var5) {
++				ItemStack var6 = par1InventoryCrafting.getStackInRowAndColumn(var5, var4);
++
++				if (var6 != null) {
+ 					boolean var7 = false;
+ 					Iterator var8 = var3.iterator();
+ 
+-					while(var8.hasNext()) {
++					while (var8.hasNext()) {
+ 						ItemStack var9 = (ItemStack)var8.next();
+-						if(var6.itemID == var9.itemID && (var9.getItemDamage() == Short.MAX_VALUE || var6.getItemDamage() == var9.getItemDamage())) {
++
++						if (var6.itemID == var9.itemID && (var9.getItemDamage() == 32767 || var6.getItemDamage() == var9.getItemDamage())) {
+ 							var7 = true;
+ 							var3.remove(var9);
+ 							break;
+ 						}
+ 					}
+ 
+-					if(!var7) {
++					if (!var7) {
+ 						return false;
+ 					}
+ 				}
+@@ -46,11 +55,17 @@
+ 		return var3.isEmpty();
+ 	}
+ 
+-	public ItemStack getCraftingResult(InventoryCrafting var1) {
++	/**
++	 * Returns an Item that is the result of this recipe
++	 */
++	public ItemStack getCraftingResult(InventoryCrafting par1InventoryCrafting) {
+ 		return this.recipeOutput.copy();
+ 	}
+ 
++	/**
++	 * Returns the size of the recipe area
++	 */
+ 	public int getRecipeSize() {
+-		return this.b.size();
++		return this.recipeItems.size();
+ 	}
+ }

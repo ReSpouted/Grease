@@ -1,0 +1,63 @@
+--- net/minecraft/src/RConConsoleSource.java
++++ net/minecraft/src/RConConsoleSource.java
+@@ -3,30 +3,46 @@
+ import net.minecraft.server.MinecraftServer;
+ 
+ public class RConConsoleSource implements ICommandSender {
+-	public static final RConConsoleSource instance = new RConConsoleSource();
+-	private StringBuffer b = new StringBuffer();
+-
++
++	/** only ever used by MinecraftServer.executeCommand */
++	public static final RConConsoleSource consoleBuffer = new RConConsoleSource();
++
++	/** RCon string buffer for log. */
++	private StringBuffer buffer = new StringBuffer();
++
++	/**
++	 * Clears the RCon log
++	 */
+ 	public void resetLog() {
+-		this.b.setLength(0);
+-	}
+-
+-	public String getLogContents() {
+-		return this.b.toString();
+-	}
+-
++		this.buffer.setLength(0);
++	}
++
++	public String getChatBuffer() {
++		return this.buffer.toString();
++	}
++
++	/**
++	 * Gets the name of this command sender (usually username, but possibly "Rcon")
++	 */
+ 	public String getCommandSenderName() {
+ 		return "Rcon";
+ 	}
+ 
+-	public void sendChatToPlayer(ChatMessageComponent var1) {
+-		this.b.append(var1.toString());
++	public void sendChatToPlayer(ChatMessageComponent par1ChatMessageComponent) {
++		this.buffer.append(par1ChatMessageComponent.toString());
+ 	}
+ 
+-	public boolean canCommandSenderUseCommand(int var1, String var2) {
++	/**
++	 * Returns true if the command sender is allowed to use the given command.
++	 */
++	public boolean canCommandSenderUseCommand(int par1, String par2Str) {
+ 		return true;
+ 	}
+ 
+-	public ChunkCoordinates getCommandSenderPosition() {
++	/**
++	 * Return the position for this command sender.
++	 */
++	public ChunkCoordinates getPlayerCoordinates() {
+ 		return new ChunkCoordinates(0, 0, 0);
+ 	}
+ 

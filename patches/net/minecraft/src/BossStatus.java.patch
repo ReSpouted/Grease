@@ -1,0 +1,21 @@
+--- net/minecraft/src/BossStatus.java
++++ net/minecraft/src/BossStatus.java
+@@ -3,13 +3,13 @@
+ public final class BossStatus {
+ 	public static float healthScale;
+ 	public static int statusBarLength;
+-	public static String c;
++	public static String bossName;
+ 	public static boolean field_82825_d;
+ 
+-	public static void setBossStatus(IBossDisplayData var0, boolean var1) {
+-		healthScale = var0.getHealth() / var0.getMaxHealth();
++	public static void setBossStatus(IBossDisplayData par0IBossDisplayData, boolean par1) {
++		healthScale = par0IBossDisplayData.getHealth() / par0IBossDisplayData.getMaxHealth();
+ 		statusBarLength = 100;
+-		c = var0.getEntityName();
+-		field_82825_d = var1;
++		bossName = par0IBossDisplayData.getEntityName();
++		field_82825_d = par1;
+ 	}
+ }

@@ -1,0 +1,46 @@
+--- net/minecraft/src/TaskResetWorld.java
++++ net/minecraft/src/TaskResetWorld.java
+@@ -2,15 +2,16 @@
+ 
+ class TaskResetWorld extends TaskLongRunning {
+ 	private final long field_96591_c;
+-	private final String d;
++	private final String field_104066_d;
+ 	private final WorldTemplate field_111252_e;
++
+ 	final GuiScreenResetWorld field_96592_a;
+ 
+-	public TaskResetWorld(GuiScreenResetWorld var1, long var2, String var4, WorldTemplate var5) {
+-		this.field_96592_a = var1;
+-		this.field_96591_c = var2;
+-		this.d = var4;
+-		this.field_111252_e = var5;
++	public TaskResetWorld(GuiScreenResetWorld par1GuiScreenResetWorld, long par2, String par4Str, WorldTemplate par5WorldTemplate) {
++		this.field_96592_a = par1GuiScreenResetWorld;
++		this.field_96591_c = par2;
++		this.field_104066_d = par4Str;
++		this.field_111252_e = par5WorldTemplate;
+ 	}
+ 
+ 	public void run() {
+@@ -19,10 +20,10 @@
+ 		this.setMessage(var2);
+ 
+ 		try {
+-			if(this.field_111252_e != null) {
+-				var1.func_111233_e(this.field_96591_c, this.field_111252_e.a);
++			if (this.field_111252_e != null) {
++				var1.func_111233_e(this.field_96591_c, this.field_111252_e.field_110734_a);
+ 			} else {
+-				var1.func_96376_d(this.field_96591_c, this.d);
++				var1.func_96376_d(this.field_96591_c, this.field_104066_d);
+ 			}
+ 
+ 			GuiScreenResetWorld.func_96147_b(this.field_96592_a).displayGuiScreen(GuiScreenResetWorld.func_96148_a(this.field_96592_a));
+@@ -33,6 +34,5 @@
+ 			GuiScreenResetWorld.func_130024_d(this.field_96592_a).getLogAgent().logWarning("Realms: ");
+ 			this.setFailedMessage(var5.toString());
+ 		}
+-
+ 	}
+ }

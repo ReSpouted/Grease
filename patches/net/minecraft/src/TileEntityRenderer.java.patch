@@ -1,0 +1,221 @@
+--- net/minecraft/src/TileEntityRenderer.java
++++ net/minecraft/src/TileEntityRenderer.java
+@@ -3,114 +3,159 @@
+ import java.util.HashMap;
+ import java.util.Iterator;
+ import java.util.Map;
++
+ import org.lwjgl.opengl.GL11;
+ 
+ public class TileEntityRenderer {
+-	private Map m = new HashMap();
++
++	/**
++	 * A mapping of TileEntitySpecialRenderers used for each TileEntity that has one
++	 */
++	private Map specialRendererMap = new HashMap();
++
++	/** The static instance of TileEntityRenderer */
+ 	public static TileEntityRenderer instance = new TileEntityRenderer();
++
++	/** The FontRenderer instance used by the TileEntityRenderer */
+ 	private FontRenderer fontRenderer;
++
++	/** The player's current X position (same as playerX) */
+ 	public static double staticPlayerX;
++
++	/** The player's current Y position (same as playerY) */
+ 	public static double staticPlayerY;
++
++	/** The player's current Z position (same as playerZ) */
+ 	public static double staticPlayerZ;
++
++	/** The RenderEngine instance used by the TileEntityRenderer */
+ 	public TextureManager renderEngine;
++
++	/** Reference to the World object. */
+ 	public World worldObj;
+ 	public EntityLivingBase entityLivingPlayer;
+ 	public float playerYaw;
+ 	public float playerPitch;
++
++	/** The player's X position in this rendering context */
+ 	public double playerX;
++
++	/** The player's Y position in this rendering context */
+ 	public double playerY;
++
++	/** The player's Z position in this rendering context */
+ 	public double playerZ;
+ 
+ 	private TileEntityRenderer() {
+-		this.m.put(TileEntitySign.class, new TileEntitySignRenderer());
+-		this.m.put(TileEntityMobSpawner.class, new TileEntityMobSpawnerRenderer());
+-		this.m.put(TileEntityPiston.class, new TileEntityRendererPiston());
+-		this.m.put(TileEntityChest.class, new TileEntityChestRenderer());
+-		this.m.put(TileEntityEnderChest.class, new TileEntityEnderChestRenderer());
+-		this.m.put(TileEntityEnchantmentTable.class, new RenderEnchantmentTable());
+-		this.m.put(TileEntityEndPortal.class, new RenderEndPortal());
+-		this.m.put(TileEntityBeacon.class, new TileEntityBeaconRenderer());
+-		this.m.put(TileEntitySkull.class, new TileEntitySkullRenderer());
+-		Iterator var1 = this.m.values().iterator();
++		this.specialRendererMap.put(TileEntitySign.class, new TileEntitySignRenderer());
++		this.specialRendererMap.put(TileEntityMobSpawner.class, new TileEntityMobSpawnerRenderer());
++		this.specialRendererMap.put(TileEntityPiston.class, new TileEntityRendererPiston());
++		this.specialRendererMap.put(TileEntityChest.class, new TileEntityChestRenderer());
++		this.specialRendererMap.put(TileEntityEnderChest.class, new TileEntityEnderChestRenderer());
++		this.specialRendererMap.put(TileEntityEnchantmentTable.class, new RenderEnchantmentTable());
++		this.specialRendererMap.put(TileEntityEndPortal.class, new RenderEndPortal());
++		this.specialRendererMap.put(TileEntityBeacon.class, new TileEntityBeaconRenderer());
++		this.specialRendererMap.put(TileEntitySkull.class, new TileEntitySkullRenderer());
++		Iterator var1 = this.specialRendererMap.values().iterator();
+ 
+-		while(var1.hasNext()) {
++		while (var1.hasNext()) {
+ 			TileEntitySpecialRenderer var2 = (TileEntitySpecialRenderer)var1.next();
+ 			var2.setTileEntityRenderer(this);
+ 		}
+-
+ 	}
+ 
+-	public TileEntitySpecialRenderer getSpecialRendererForClass(Class var1) {
+-		TileEntitySpecialRenderer var2 = (TileEntitySpecialRenderer)this.m.get(var1);
+-		if(var2 == null && var1 != TileEntity.class) {
+-			var2 = this.getSpecialRendererForClass(var1.getSuperclass());
+-			this.m.put(var1, var2);
++	/**
++	 * Returns the TileEntitySpecialRenderer used to render this TileEntity class, or null if it has no special renderer
++	 */
++	public TileEntitySpecialRenderer getSpecialRendererForClass(Class par1Class) {
++		TileEntitySpecialRenderer var2 = (TileEntitySpecialRenderer)this.specialRendererMap.get(par1Class);
++
++		if (var2 == null && par1Class != TileEntity.class) {
++			var2 = this.getSpecialRendererForClass(par1Class.getSuperclass());
++			this.specialRendererMap.put(par1Class, var2);
+ 		}
+ 
+ 		return var2;
+ 	}
+ 
+-	public boolean hasSpecialRenderer(TileEntity var1) {
+-		return this.getSpecialRendererForEntity(var1) != null;
+-	}
+-
+-	public TileEntitySpecialRenderer getSpecialRendererForEntity(TileEntity var1) {
+-		return var1 == null ? null : this.getSpecialRendererForClass(var1.getClass());
+-	}
+-
+-	public void cacheActiveRenderInfo(World var1, TextureManager var2, FontRenderer var3, EntityLivingBase var4, float var5) {
+-		if(this.worldObj != var1) {
+-			this.setWorld(var1);
++	/**
++	 * Returns true if this TileEntity instance has a TileEntitySpecialRenderer associated with it, false otherwise.
++	 */
++	public boolean hasSpecialRenderer(TileEntity par1TileEntity) {
++		return this.getSpecialRendererForEntity(par1TileEntity) != null;
++	}
++
++	/**
++	 * Returns the TileEntitySpecialRenderer used to render this TileEntity instance, or null if it has no special renderer
++	 */
++	public TileEntitySpecialRenderer getSpecialRendererForEntity(TileEntity par1TileEntity) {
++		return par1TileEntity == null ? null : this.getSpecialRendererForClass(par1TileEntity.getClass());
++	}
++
++	/**
++	 * Caches several render-related references, including the active World, RenderEngine, FontRenderer, and the camera-
++	 * bound EntityLiving's interpolated pitch, yaw and position. Args: world, renderengine, fontrenderer, entityliving,
++	 * partialTickTime
++	 */
++	public void cacheActiveRenderInfo(World par1World, TextureManager par2TextureManager, FontRenderer par3FontRenderer, EntityLivingBase par4EntityLivingBase, float par5) {
++		if (this.worldObj != par1World) {
++			this.setWorld(par1World);
+ 		}
+ 
+-		this.renderEngine = var2;
+-		this.entityLivingPlayer = var4;
+-		this.fontRenderer = var3;
+-		this.playerYaw = var4.prevRotationYaw + (var4.rotationYaw - var4.prevRotationYaw) * var5;
+-		this.playerPitch = var4.prevRotationPitch + (var4.rotationPitch - var4.prevRotationPitch) * var5;
+-		this.playerX = var4.lastTickPosX + (var4.posX - var4.lastTickPosX) * (double)var5;
+-		this.playerY = var4.lastTickPosY + (var4.posY - var4.lastTickPosY) * (double)var5;
+-		this.playerZ = var4.lastTickPosZ + (var4.posZ - var4.lastTickPosZ) * (double)var5;
++		this.renderEngine = par2TextureManager;
++		this.entityLivingPlayer = par4EntityLivingBase;
++		this.fontRenderer = par3FontRenderer;
++		this.playerYaw = par4EntityLivingBase.prevRotationYaw + (par4EntityLivingBase.rotationYaw - par4EntityLivingBase.prevRotationYaw) * par5;
++		this.playerPitch = par4EntityLivingBase.prevRotationPitch + (par4EntityLivingBase.rotationPitch - par4EntityLivingBase.prevRotationPitch) * par5;
++		this.playerX = par4EntityLivingBase.lastTickPosX + (par4EntityLivingBase.posX - par4EntityLivingBase.lastTickPosX) * (double)par5;
++		this.playerY = par4EntityLivingBase.lastTickPosY + (par4EntityLivingBase.posY - par4EntityLivingBase.lastTickPosY) * (double)par5;
++		this.playerZ = par4EntityLivingBase.lastTickPosZ + (par4EntityLivingBase.posZ - par4EntityLivingBase.lastTickPosZ) * (double)par5;
+ 	}
+ 
+-	public void renderTileEntity(TileEntity var1, float var2) {
+-		if(var1.getDistanceFrom(this.playerX, this.playerY, this.playerZ) < var1.getMaxRenderDistanceSquared()) {
+-			int var3 = this.worldObj.getLightBrightnessForSkyBlocks(var1.xCoord, var1.yCoord, var1.zCoord, 0);
++	/**
++	 * Render this TileEntity at its current position from the player
++	 */
++	public void renderTileEntity(TileEntity par1TileEntity, float par2) {
++		if (par1TileEntity.getDistanceFrom(this.playerX, this.playerY, this.playerZ) < par1TileEntity.getMaxRenderDistanceSquared()) {
++			int var3 = this.worldObj.getLightBrightnessForSkyBlocks(par1TileEntity.xCoord, par1TileEntity.yCoord, par1TileEntity.zCoord, 0);
+ 			int var4 = var3 % 65536;
+ 			int var5 = var3 / 65536;
+ 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)var4 / 1.0F, (float)var5 / 1.0F);
+ 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+-			this.renderTileEntityAt(var1, (double)var1.xCoord - staticPlayerX, (double)var1.yCoord - staticPlayerY, (double)var1.zCoord - staticPlayerZ, var2);
++			this.renderTileEntityAt(par1TileEntity, (double)par1TileEntity.xCoord - staticPlayerX, (double)par1TileEntity.yCoord - staticPlayerY, (double)par1TileEntity.zCoord - staticPlayerZ, par2);
+ 		}
+-
+ 	}
+ 
+-	public void renderTileEntityAt(TileEntity var1, double var2, double var4, double var6, float var8) {
+-		TileEntitySpecialRenderer var9 = this.getSpecialRendererForEntity(var1);
+-		if(var9 != null) {
++	/**
++	 * Render this TileEntity at a given set of coordinates
++	 */
++	public void renderTileEntityAt(TileEntity par1TileEntity, double par2, double par4, double par6, float par8) {
++		TileEntitySpecialRenderer var9 = this.getSpecialRendererForEntity(par1TileEntity);
++
++		if (var9 != null) {
+ 			try {
+-				var9.renderTileEntityAt(var1, var2, var4, var6, var8);
+-			} catch (Throwable var13) {
+-				CrashReport var11 = CrashReport.makeCrashReport(var13, "Rendering Tile Entity");
+-				CrashReportCategory var12 = var11.makeCategory("Tile Entity Details");
+-				var1.func_85027_a(var12);
+-				throw new ReportedException(var11);
++				var9.renderTileEntityAt(par1TileEntity, par2, par4, par6, par8);
++			// Spout Start
++			} catch (ClassCastException ignore) {
+ 			}
++			// Spout End
+ 		}
+-
+ 	}
+ 
+-	public void setWorld(World var1) {
+-		this.worldObj = var1;
+-		Iterator var2 = this.m.values().iterator();
++	/**
++	 * Sets the world used by all TileEntitySpecialRender instances and notifies them of this change.
++	 */
++	public void setWorld(World par1World) {
++		this.worldObj = par1World;
++		Iterator var2 = this.specialRendererMap.values().iterator();
+ 
+-		while(var2.hasNext()) {
++		while (var2.hasNext()) {
+ 			TileEntitySpecialRenderer var3 = (TileEntitySpecialRenderer)var2.next();
+-			if(var3 != null) {
+-				var3.onWorldChange(var1);
++
++			if (var3 != null) {
++				var3.onWorldChange(par1World);
+ 			}
+ 		}
+-
+ 	}
+ 
+ 	public FontRenderer getFontRenderer() {

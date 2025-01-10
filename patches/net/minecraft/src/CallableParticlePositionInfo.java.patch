@@ -1,0 +1,26 @@
+--- net/minecraft/src/CallableParticlePositionInfo.java
++++ net/minecraft/src/CallableParticlePositionInfo.java
+@@ -4,15 +4,18 @@
+ 
+ class CallableParticlePositionInfo implements Callable {
+ 	final double posX;
++
+ 	final double posY;
++
+ 	final double posZ;
++
+ 	final RenderGlobal globalRenderer;
+ 
+-	CallableParticlePositionInfo(RenderGlobal var1, double var2, double var4, double var6) {
+-		this.globalRenderer = var1;
+-		this.posX = var2;
+-		this.posY = var4;
+-		this.posZ = var6;
++	CallableParticlePositionInfo(RenderGlobal par1RenderGlobal, double par2, double par4, double par6) {
++		this.globalRenderer = par1RenderGlobal;
++		this.posX = par2;
++		this.posY = par4;
++		this.posZ = par6;
+ 	}
+ 
+ 	public String callParticlePositionInfo() {

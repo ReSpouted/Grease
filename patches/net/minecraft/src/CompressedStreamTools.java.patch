@@ -1,0 +1,161 @@
+--- net/minecraft/src/CompressedStreamTools.java
++++ net/minecraft/src/CompressedStreamTools.java
+@@ -17,12 +17,16 @@
+ import java.util.zip.GZIPOutputStream;
+ 
+ public class CompressedStreamTools {
+-	public static NBTTagCompound readCompressed(InputStream var0) throws IOException {
+-		DataInputStream var1 = new DataInputStream(new BufferedInputStream(new GZIPInputStream(var0)));
+ 
++	/**
++	 * Load the gzipped compound from the inputstream.
++	 */
++	public static NBTTagCompound readCompressed(InputStream par0InputStream) throws IOException {
++		DataInputStream var1 = new DataInputStream(new BufferedInputStream(new GZIPInputStream(par0InputStream)));
+ 		NBTTagCompound var2;
++
+ 		try {
+-			var2 = read((DataInput)var1);
++			var2 = read(var1);
+ 		} finally {
+ 			var1.close();
+ 		}
+@@ -30,23 +34,25 @@
+ 		return var2;
+ 	}
+ 
+-	public static void writeCompressed(NBTTagCompound var0, OutputStream var1) throws IOException {
+-		DataOutputStream var2 = new DataOutputStream(new GZIPOutputStream(var1));
++	/**
++	 * Write the compound, gzipped, to the outputstream.
++	 */
++	public static void writeCompressed(NBTTagCompound par0NBTTagCompound, OutputStream par1OutputStream) throws IOException {
++		DataOutputStream var2 = new DataOutputStream(new GZIPOutputStream(par1OutputStream));
+ 
+ 		try {
+-			write(var0, (DataOutput)var2);
++			write(par0NBTTagCompound, var2);
+ 		} finally {
+ 			var2.close();
+ 		}
+-
+ 	}
+ 
+-	public static NBTTagCompound decompress(byte[] var0) throws IOException {
+-		DataInputStream var1 = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(var0))));
+-
++	public static NBTTagCompound decompress(byte[] par0ArrayOfByte) throws IOException {
++		DataInputStream var1 = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(par0ArrayOfByte))));
+ 		NBTTagCompound var2;
++
+ 		try {
+-			var2 = read((DataInput)var1);
++			var2 = read(var1);
+ 		} finally {
+ 			var1.close();
+ 		}
+@@ -54,12 +60,12 @@
+ 		return var2;
+ 	}
+ 
+-	public static byte[] compress(NBTTagCompound var0) throws IOException {
++	public static byte[] compress(NBTTagCompound par0NBTTagCompound) throws IOException {
+ 		ByteArrayOutputStream var1 = new ByteArrayOutputStream();
+ 		DataOutputStream var2 = new DataOutputStream(new GZIPOutputStream(var1));
+ 
+ 		try {
+-			write(var0, (DataOutput)var2);
++			write(par0NBTTagCompound, var2);
+ 		} finally {
+ 			var2.close();
+ 		}
+@@ -67,44 +73,45 @@
+ 		return var1.toByteArray();
+ 	}
+ 
+-	public static void safeWrite(NBTTagCompound var0, File var1) throws IOException {
+-		File var2 = new File(var1.getAbsolutePath() + "_tmp");
+-		if(var2.exists()) {
++	public static void safeWrite(NBTTagCompound par0NBTTagCompound, File par1File) throws IOException {
++		File var2 = new File(par1File.getAbsolutePath() + "_tmp");
++
++		if (var2.exists()) {
+ 			var2.delete();
+ 		}
+ 
+-		write(var0, var2);
+-		if(var1.exists()) {
+-			var1.delete();
++		write(par0NBTTagCompound, var2);
++
++		if (par1File.exists()) {
++			par1File.delete();
+ 		}
+ 
+-		if(var1.exists()) {
+-			throw new IOException("Failed to delete " + var1);
++		if (par1File.exists()) {
++			throw new IOException("Failed to delete " + par1File);
+ 		} else {
+-			var2.renameTo(var1);
++			var2.renameTo(par1File);
+ 		}
+ 	}
+ 
+-	public static void write(NBTTagCompound var0, File var1) throws IOException {
+-		DataOutputStream var2 = new DataOutputStream(new FileOutputStream(var1));
++	public static void write(NBTTagCompound par0NBTTagCompound, File par1File) throws IOException {
++		DataOutputStream var2 = new DataOutputStream(new FileOutputStream(par1File));
+ 
+ 		try {
+-			write(var0, (DataOutput)var2);
++			write(par0NBTTagCompound, var2);
+ 		} finally {
+ 			var2.close();
+ 		}
+-
+ 	}
+ 
+-	public static NBTTagCompound read(File var0) throws IOException {
+-		if(!var0.exists()) {
++	public static NBTTagCompound read(File par0File) throws IOException {
++		if (!par0File.exists()) {
+ 			return null;
+ 		} else {
+-			DataInputStream var1 = new DataInputStream(new FileInputStream(var0));
+-
++			DataInputStream var1 = new DataInputStream(new FileInputStream(par0File));
+ 			NBTTagCompound var2;
++
+ 			try {
+-				var2 = read((DataInput)var1);
++				var2 = read(var1);
+ 			} finally {
+ 				var1.close();
+ 			}
+@@ -113,16 +120,20 @@
+ 		}
+ 	}
+ 
+-	public static NBTTagCompound read(DataInput var0) throws IOException {
+-		NBTBase var1 = NBTBase.readNamedTag(var0);
+-		if(var1 instanceof NBTTagCompound) {
++	/**
++	 * Reads from a CompressedStream.
++	 */
++	public static NBTTagCompound read(DataInput par0DataInput) throws IOException {
++		NBTBase var1 = NBTBase.readNamedTag(par0DataInput);
++
++		if (var1 instanceof NBTTagCompound) {
+ 			return (NBTTagCompound)var1;
+ 		} else {
+ 			throw new IOException("Root tag must be a named compound tag");
+ 		}
+ 	}
+ 
+-	public static void write(NBTTagCompound var0, DataOutput var1) throws IOException {
+-		NBTBase.writeNamedTag(var0, var1);
++	public static void write(NBTTagCompound par0NBTTagCompound, DataOutput par1DataOutput) throws IOException {
++		NBTBase.writeNamedTag(par0NBTTagCompound, par1DataOutput);
+ 	}
+ }

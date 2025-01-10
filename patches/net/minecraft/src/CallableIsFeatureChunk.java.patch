@@ -1,0 +1,22 @@
+--- net/minecraft/src/CallableIsFeatureChunk.java
++++ net/minecraft/src/CallableIsFeatureChunk.java
+@@ -4,13 +4,15 @@
+ 
+ class CallableIsFeatureChunk implements Callable {
+ 	final int field_85169_a;
++
+ 	final int field_85167_b;
++
+ 	final MapGenStructure theMapStructureGenerator;
+ 
+-	CallableIsFeatureChunk(MapGenStructure var1, int var2, int var3) {
+-		this.theMapStructureGenerator = var1;
+-		this.field_85169_a = var2;
+-		this.field_85167_b = var3;
++	CallableIsFeatureChunk(MapGenStructure par1MapGenStructure, int par2, int par3) {
++		this.theMapStructureGenerator = par1MapGenStructure;
++		this.field_85169_a = par2;
++		this.field_85167_b = par3;
+ 	}
+ 
+ 	public String func_85166_a() {

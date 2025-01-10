@@ -1,0 +1,13 @@
+--- net/minecraft/src/BlockOreStorage.java
++++ net/minecraft/src/BlockOreStorage.java
+@@ -1,8 +1,8 @@
+ package net.minecraft.src;
+ 
+ public class BlockOreStorage extends Block {
+-	public BlockOreStorage(int var1) {
+-		super(var1, Material.iron);
++	public BlockOreStorage(int par1) {
++		super(par1, Material.iron);
+ 		this.setCreativeTab(CreativeTabs.tabBlock);
+ 	}
+ }

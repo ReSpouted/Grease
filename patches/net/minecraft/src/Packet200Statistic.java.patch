@@ -1,0 +1,72 @@
+--- net/minecraft/src/Packet200Statistic.java
++++ net/minecraft/src/Packet200Statistic.java
+@@ -8,32 +8,47 @@
+ 	public int statisticId;
+ 	public int amount;
+ 
+-	public Packet200Statistic() {
+-	}
+-
+-	public Packet200Statistic(int var1, int var2) {
+-		this.statisticId = var1;
+-		this.amount = var2;
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleStatistic(this);
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.statisticId = var1.readInt();
+-		this.amount = var1.readInt();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeInt(this.statisticId);
+-		var1.writeInt(this.amount);
+-	}
+-
++	public Packet200Statistic() {}
++
++	public Packet200Statistic(int par1, int par2) {
++		this.statisticId = par1;
++		this.amount = par2;
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleStatistic(this);
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.statisticId = par1DataInput.readInt();
++		this.amount = par1DataInput.readInt();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeInt(this.statisticId);
++		par1DataOutput.writeInt(this.amount);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 6;
+ 	}
+ 
++	/**
++	 * If this returns true, the packet may be processed on any thread; otherwise it is queued for the main thread to
++	 * handle.
++	 */
+ 	public boolean canProcessAsync() {
+ 		return true;
+ 	}

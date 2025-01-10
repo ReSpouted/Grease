@@ -1,0 +1,25 @@
+--- net/minecraft/src/CallableLvl2.java
++++ net/minecraft/src/CallableLvl2.java
+@@ -3,14 +3,19 @@
+ import java.util.concurrent.Callable;
+ 
+ class CallableLvl2 implements Callable {
++
++	/** Reference to the World object. */
+ 	final World theWorld;
+ 
+-	CallableLvl2(World var1) {
+-		this.theWorld = var1;
++	CallableLvl2(World par1World) {
++		this.theWorld = par1World;
+ 	}
+ 
++	/**
++	 * Returns the size and contents of the player entity list.
++	 */
+ 	public String getPlayerEntities() {
+-		return this.theWorld.h.size() + " total; " + this.theWorld.h.toString();
++		return this.theWorld.playerEntities.size() + " total; " + this.theWorld.playerEntities.toString();
+ 	}
+ 
+ 	public Object call() {

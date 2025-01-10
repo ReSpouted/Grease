@@ -1,0 +1,29 @@
+--- net/minecraft/src/GuiFlatPresetsItem.java
++++ net/minecraft/src/GuiFlatPresetsItem.java
+@@ -1,13 +1,19 @@
+ package net.minecraft.src;
+ 
+ class GuiFlatPresetsItem {
++
++	/** ID for the item used as icon for this preset. */
+ 	public int iconId;
+-	public String b;
+-	public String c;
+-
+-	public GuiFlatPresetsItem(int var1, String var2, String var3) {
+-		this.iconId = var1;
+-		this.b = var2;
+-		this.c = var3;
++
++	/** Name for this preset. */
++	public String presetName;
++
++	/** Data for this preset. */
++	public String presetData;
++
++	public GuiFlatPresetsItem(int par1, String par2Str, String par3Str) {
++		this.iconId = par1;
++		this.presetName = par2Str;
++		this.presetData = par3Str;
+ 	}
+ }

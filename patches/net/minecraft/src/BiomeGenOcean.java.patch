@@ -1,0 +1,14 @@
+--- net/minecraft/src/BiomeGenOcean.java
++++ net/minecraft/src/BiomeGenOcean.java
+@@ -1,8 +1,8 @@
+ package net.minecraft.src;
+ 
+ public class BiomeGenOcean extends BiomeGenBase {
+-	public BiomeGenOcean(int var1) {
+-		super(var1);
+-		this.K.clear();
++	public BiomeGenOcean(int par1) {
++		super(par1);
++		this.spawnableCreatureList.clear();
+ 	}
+ }

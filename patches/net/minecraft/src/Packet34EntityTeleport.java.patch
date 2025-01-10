@@ -1,0 +1,144 @@
+--- net/minecraft/src/Packet34EntityTeleport.java
++++ net/minecraft/src/Packet34EntityTeleport.java
+@@ -5,66 +5,96 @@
+ import java.io.IOException;
+ 
+ public class Packet34EntityTeleport extends Packet {
++
++	/** ID of the entity. */
+ 	public int entityId;
++
++	/** X position of the entity. */
+ 	public int xPosition;
++
++	/** Y position of the entity. */
+ 	public int yPosition;
++
++	/** Z position of the entity. */
+ 	public int zPosition;
++
++	/** Yaw of the entity. */
+ 	public byte yaw;
++
++	/** Pitch of the entity. */
+ 	public byte pitch;
+ 
+-	public Packet34EntityTeleport() {
+-	}
+-
+-	public Packet34EntityTeleport(Entity var1) {
+-		this.entityId = var1.entityId;
+-		this.xPosition = MathHelper.floor_double(var1.posX * 32.0D);
+-		this.yPosition = MathHelper.floor_double(var1.posY * 32.0D);
+-		this.zPosition = MathHelper.floor_double(var1.posZ * 32.0D);
+-		this.yaw = (byte)((int)(var1.rotationYaw * 256.0F / 360.0F));
+-		this.pitch = (byte)((int)(var1.rotationPitch * 256.0F / 360.0F));
+-	}
+-
+-	public Packet34EntityTeleport(int var1, int var2, int var3, int var4, byte var5, byte var6) {
+-		this.entityId = var1;
+-		this.xPosition = var2;
+-		this.yPosition = var3;
+-		this.zPosition = var4;
+-		this.yaw = var5;
+-		this.pitch = var6;
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.entityId = var1.readInt();
+-		this.xPosition = var1.readInt();
+-		this.yPosition = var1.readInt();
+-		this.zPosition = var1.readInt();
+-		this.yaw = var1.readByte();
+-		this.pitch = var1.readByte();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeInt(this.entityId);
+-		var1.writeInt(this.xPosition);
+-		var1.writeInt(this.yPosition);
+-		var1.writeInt(this.zPosition);
+-		var1.write(this.yaw);
+-		var1.write(this.pitch);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleEntityTeleport(this);
+-	}
+-
++	public Packet34EntityTeleport() {}
++
++	public Packet34EntityTeleport(Entity par1Entity) {
++		this.entityId = par1Entity.entityId;
++		this.xPosition = MathHelper.floor_double(par1Entity.posX * 32.0D);
++		this.yPosition = MathHelper.floor_double(par1Entity.posY * 32.0D);
++		this.zPosition = MathHelper.floor_double(par1Entity.posZ * 32.0D);
++		this.yaw = (byte)((int)(par1Entity.rotationYaw * 256.0F / 360.0F));
++		this.pitch = (byte)((int)(par1Entity.rotationPitch * 256.0F / 360.0F));
++	}
++
++	public Packet34EntityTeleport(int par1, int par2, int par3, int par4, byte par5, byte par6) {
++		this.entityId = par1;
++		this.xPosition = par2;
++		this.yPosition = par3;
++		this.zPosition = par4;
++		this.yaw = par5;
++		this.pitch = par6;
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.entityId = par1DataInput.readInt();
++		this.xPosition = par1DataInput.readInt();
++		this.yPosition = par1DataInput.readInt();
++		this.zPosition = par1DataInput.readInt();
++		this.yaw = par1DataInput.readByte();
++		this.pitch = par1DataInput.readByte();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeInt(this.entityId);
++		par1DataOutput.writeInt(this.xPosition);
++		par1DataOutput.writeInt(this.yPosition);
++		par1DataOutput.writeInt(this.zPosition);
++		par1DataOutput.write(this.yaw);
++		par1DataOutput.write(this.pitch);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleEntityTeleport(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 34;
+ 	}
+ 
++	/**
++	 * only false for the abstract Packet class, all real packets return true
++	 */
+ 	public boolean isRealPacket() {
+ 		return true;
+ 	}
+ 
+-	public boolean containsSameEntityIDAs(Packet var1) {
+-		Packet34EntityTeleport var2 = (Packet34EntityTeleport)var1;
++	/**
++	 * eg return packet30entity.entityId == entityId; WARNING : will throw if you compare a packet to a different packet
++	 * class
++	 */
++	public boolean containsSameEntityIDAs(Packet par1Packet) {
++		Packet34EntityTeleport var2 = (Packet34EntityTeleport)par1Packet;
+ 		return var2.entityId == this.entityId;
+ 	}
+ }

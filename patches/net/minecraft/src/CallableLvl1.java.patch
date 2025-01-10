@@ -1,0 +1,25 @@
+--- net/minecraft/src/CallableLvl1.java
++++ net/minecraft/src/CallableLvl1.java
+@@ -4,16 +4,18 @@
+ 
+ class CallableLvl1 implements Callable {
+ 	final int field_85179_a;
++
++	/** Reference to the World object. */
+ 	final World theWorld;
+ 
+-	CallableLvl1(World var1, int var2) {
+-		this.theWorld = var1;
+-		this.field_85179_a = var2;
++	CallableLvl1(World par1World, int par2) {
++		this.theWorld = par1World;
++		this.field_85179_a = par2;
+ 	}
+ 
+ 	public String getWorldEntitiesAsString() {
+ 		try {
+-			return String.format("ID #%d (%s // %s)", new Object[]{Integer.valueOf(this.field_85179_a), Block.blocksList[this.field_85179_a].getUnlocalizedName(), Block.blocksList[this.field_85179_a].getClass().getCanonicalName()});
++			return String.format("ID #%d (%s // %s)", new Object[] {Integer.valueOf(this.field_85179_a), Block.blocksList[this.field_85179_a].getUnlocalizedName(), Block.blocksList[this.field_85179_a].getClass().getCanonicalName()});
+ 		} catch (Throwable var2) {
+ 			return "ID #" + this.field_85179_a;
+ 		}

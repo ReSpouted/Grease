@@ -1,0 +1,27 @@
+--- net/minecraft/src/SpiderEffectsGroupData.java
++++ net/minecraft/src/SpiderEffectsGroupData.java
+@@ -5,17 +5,17 @@
+ public class SpiderEffectsGroupData implements EntityLivingData {
+ 	public int field_111105_a;
+ 
+-	public void func_111104_a(Random var1) {
+-		int var2 = var1.nextInt(5);
+-		if(var2 <= 1) {
++	public void func_111104_a(Random par1Random) {
++		int var2 = par1Random.nextInt(5);
++
++		if (var2 <= 1) {
+ 			this.field_111105_a = Potion.moveSpeed.id;
+-		} else if(var2 <= 2) {
++		} else if (var2 <= 2) {
+ 			this.field_111105_a = Potion.damageBoost.id;
+-		} else if(var2 <= 3) {
++		} else if (var2 <= 3) {
+ 			this.field_111105_a = Potion.regeneration.id;
+-		} else if(var2 <= 4) {
++		} else if (var2 <= 4) {
+ 			this.field_111105_a = Potion.invisibility.id;
+ 		}
+-
+ 	}
+ }

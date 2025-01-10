@@ -1,0 +1,29 @@
+--- net/minecraft/src/StructureVillagePieceWeight.java
++++ net/minecraft/src/StructureVillagePieceWeight.java
+@@ -1,18 +1,20 @@
+ package net.minecraft.src;
+ 
+ public class StructureVillagePieceWeight {
+-	public Class a;
++
++	/** The Class object for the represantation of this village piece. */
++	public Class villagePieceClass;
+ 	public final int villagePieceWeight;
+ 	public int villagePiecesSpawned;
+ 	public int villagePiecesLimit;
+ 
+-	public StructureVillagePieceWeight(Class var1, int var2, int var3) {
+-		this.a = var1;
+-		this.villagePieceWeight = var2;
+-		this.villagePiecesLimit = var3;
++	public StructureVillagePieceWeight(Class par1Class, int par2, int par3) {
++		this.villagePieceClass = par1Class;
++		this.villagePieceWeight = par2;
++		this.villagePiecesLimit = par3;
+ 	}
+ 
+-	public boolean canSpawnMoreVillagePiecesOfType(int var1) {
++	public boolean canSpawnMoreVillagePiecesOfType(int par1) {
+ 		return this.villagePiecesLimit == 0 || this.villagePiecesSpawned < this.villagePiecesLimit;
+ 	}
+ 

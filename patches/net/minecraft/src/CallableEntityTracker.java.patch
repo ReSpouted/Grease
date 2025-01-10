@@ -1,0 +1,25 @@
+--- net/minecraft/src/CallableEntityTracker.java
++++ net/minecraft/src/CallableEntityTracker.java
+@@ -4,16 +4,18 @@
+ 
+ class CallableEntityTracker implements Callable {
+ 	final int field_96570_a;
++
+ 	final EntityTracker theEntityTracker;
+ 
+-	CallableEntityTracker(EntityTracker var1, int var2) {
+-		this.theEntityTracker = var1;
+-		this.field_96570_a = var2;
++	CallableEntityTracker(EntityTracker par1EntityTracker, int par2) {
++		this.theEntityTracker = par1EntityTracker;
++		this.field_96570_a = par2;
+ 	}
+ 
+ 	public String func_96568_a() {
+ 		String var1 = "Once per " + this.field_96570_a + " ticks";
+-		if(this.field_96570_a == Integer.MAX_VALUE) {
++
++		if (this.field_96570_a == Integer.MAX_VALUE) {
+ 			var1 = "Maximum (" + var1 + ")";
+ 		}
+ 

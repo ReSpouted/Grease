@@ -1,0 +1,83 @@
+--- net/minecraft/src/Packet208SetDisplayObjective.java
++++ net/minecraft/src/Packet208SetDisplayObjective.java
+@@ -5,37 +5,52 @@
+ import java.io.IOException;
+ 
+ public class Packet208SetDisplayObjective extends Packet {
++
++	/** The position of the scoreboard. 0 = list, 1 = sidebar, 2 = belowName. */
+ 	public int scoreboardPosition;
+-	public String b;
+-
+-	public Packet208SetDisplayObjective() {
+-	}
+-
+-	public Packet208SetDisplayObjective(int var1, ScoreObjective var2) {
+-		this.scoreboardPosition = var1;
+-		if(var2 == null) {
+-			this.b = "";
++
++	/** The unique name for the scoreboard to be displayed. */
++	public String scoreName;
++
++	public Packet208SetDisplayObjective() {}
++
++	public Packet208SetDisplayObjective(int par1, ScoreObjective par2ScoreObjective) {
++		this.scoreboardPosition = par1;
++
++		if (par2ScoreObjective == null) {
++			this.scoreName = "";
+ 		} else {
+-			this.b = var2.getName();
++			this.scoreName = par2ScoreObjective.getName();
+ 		}
+-
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.scoreboardPosition = var1.readByte();
+-		this.b = readString(var1, 16);
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeByte(this.scoreboardPosition);
+-		writeString(this.b, var1);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleSetDisplayObjective(this);
+-	}
+-
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.scoreboardPosition = par1DataInput.readByte();
++		this.scoreName = readString(par1DataInput, 16);
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeByte(this.scoreboardPosition);
++		writeString(this.scoreName, par1DataOutput);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleSetDisplayObjective(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+-		return 3 + this.b.length();
++		return 3 + this.scoreName.length();
+ 	}
+ }

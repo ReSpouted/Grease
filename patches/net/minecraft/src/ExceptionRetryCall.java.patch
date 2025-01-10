@@ -1,0 +1,13 @@
+--- net/minecraft/src/ExceptionRetryCall.java
++++ net/minecraft/src/ExceptionRetryCall.java
+@@ -3,8 +3,8 @@
+ public class ExceptionRetryCall extends ExceptionMcoService {
+ 	public final int field_96393_c;
+ 
+-	public ExceptionRetryCall(int var1) {
++	public ExceptionRetryCall(int par1) {
+ 		super(503, "Retry operation", -1);
+-		this.field_96393_c = var1;
++		this.field_96393_c = par1;
+ 	}
+ }

@@ -1,0 +1,18 @@
+--- net/minecraft/src/SoundPoolProtocolHandler.java
++++ net/minecraft/src/SoundPoolProtocolHandler.java
+@@ -7,11 +7,11 @@
+ class SoundPoolProtocolHandler extends URLStreamHandler {
+ 	final SoundPool theSoundPool;
+ 
+-	SoundPoolProtocolHandler(SoundPool var1) {
+-		this.theSoundPool = var1;
++	SoundPoolProtocolHandler(SoundPool par1SoundPool) {
++		this.theSoundPool = par1SoundPool;
+ 	}
+ 
+-	protected URLConnection openConnection(URL var1) {
+-		return new SoundPoolURLConnection(this.theSoundPool, var1, (SoundPoolProtocolHandler)null);
++	protected URLConnection openConnection(URL par1URL) {
++		return new SoundPoolURLConnection(this.theSoundPool, par1URL, (SoundPoolProtocolHandler)null);
+ 	}
+ }

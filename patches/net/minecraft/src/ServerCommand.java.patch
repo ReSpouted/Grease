@@ -1,0 +1,20 @@
+--- net/minecraft/src/ServerCommand.java
++++ net/minecraft/src/ServerCommand.java
+@@ -1,11 +1,13 @@
+ package net.minecraft.src;
+ 
+ public class ServerCommand {
+-	public final String a;
++
++	/** The command string. */
++	public final String command;
+ 	public final ICommandSender sender;
+ 
+-	public ServerCommand(String var1, ICommandSender var2) {
+-		this.a = var1;
+-		this.sender = var2;
++	public ServerCommand(String par1Str, ICommandSender par2ICommandSender) {
++		this.command = par1Str;
++		this.sender = par2ICommandSender;
+ 	}
+ }

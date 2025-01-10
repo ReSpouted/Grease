@@ -1,0 +1,81 @@
+--- net/minecraft/src/CommandGameRule.java
++++ net/minecraft/src/CommandGameRule.java
+@@ -8,49 +8,59 @@
+ 		return "gamerule";
+ 	}
+ 
++	/**
++	 * Return the required permission level for this command.
++	 */
+ 	public int getRequiredPermissionLevel() {
+ 		return 2;
+ 	}
+ 
+-	public String getCommandUsage(ICommandSender var1) {
++	public String getCommandUsage(ICommandSender par1ICommandSender) {
+ 		return "commands.gamerule.usage";
+ 	}
+ 
+-	public void processCommand(ICommandSender var1, String[] var2) {
++	public void processCommand(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
+ 		String var6;
+-		if(var2.length == 2) {
+-			var6 = var2[0];
+-			String var7 = var2[1];
++
++		if (par2ArrayOfStr.length == 2) {
++			var6 = par2ArrayOfStr[0];
++			String var7 = par2ArrayOfStr[1];
+ 			GameRules var8 = this.getGameRules();
+-			if(var8.hasRule(var6)) {
++
++			if (var8.hasRule(var6)) {
+ 				var8.setOrCreateGameRule(var6, var7);
+-				notifyAdmins(var1, "commands.gamerule.success", new Object[0]);
++				notifyAdmins(par1ICommandSender, "commands.gamerule.success", new Object[0]);
+ 			} else {
+-				notifyAdmins(var1, "commands.gamerule.norule", new Object[]{var6});
++				notifyAdmins(par1ICommandSender, "commands.gamerule.norule", new Object[] {var6});
+ 			}
+-
+-		} else if(var2.length == 1) {
+-			var6 = var2[0];
++		} else if (par2ArrayOfStr.length == 1) {
++			var6 = par2ArrayOfStr[0];
+ 			GameRules var4 = this.getGameRules();
+-			if(var4.hasRule(var6)) {
++
++			if (var4.hasRule(var6)) {
+ 				String var5 = var4.getGameRuleStringValue(var6);
+-				var1.sendChatToPlayer(ChatMessageComponent.createFromText(var6).addText(" = ").addText(var5));
++				par1ICommandSender.sendChatToPlayer(ChatMessageComponent.createFromText(var6).addText(" = ").addText(var5));
+ 			} else {
+-				notifyAdmins(var1, "commands.gamerule.norule", new Object[]{var6});
++				notifyAdmins(par1ICommandSender, "commands.gamerule.norule", new Object[] {var6});
+ 			}
+-
+-		} else if(var2.length == 0) {
++		} else if (par2ArrayOfStr.length == 0) {
+ 			GameRules var3 = this.getGameRules();
+-			var1.sendChatToPlayer(ChatMessageComponent.createFromText(joinNiceString(var3.getRules())));
++			par1ICommandSender.sendChatToPlayer(ChatMessageComponent.createFromText(joinNiceString(var3.getRules())));
+ 		} else {
+ 			throw new WrongUsageException("commands.gamerule.usage", new Object[0]);
+ 		}
+ 	}
+ 
+-	public List addTabCompletionOptions(ICommandSender var1, String[] var2) {
+-		return var2.length == 1 ? getListOfStringsMatchingLastWord(var2, this.getGameRules().getRules()) : (var2.length == 2 ? getListOfStringsMatchingLastWord(var2, new String[]{"true", "false"}) : null);
++	/**
++	 * Adds the strings available in this command to the given list of tab completion options.
++	 */
++	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
++		return par2ArrayOfStr.length == 1 ? getListOfStringsMatchingLastWord(par2ArrayOfStr, this.getGameRules().getRules()) : (par2ArrayOfStr.length == 2 ? getListOfStringsMatchingLastWord(par2ArrayOfStr, new String[] {"true", "false"}): null);
+ 	}
+ 
++	/**
++	 * Return the game rule set this command should be able to manipulate.
++	 */
+ 	private GameRules getGameRules() {
+ 		return MinecraftServer.getServer().worldServerForDimension(0).getGameRules();
+ 	}

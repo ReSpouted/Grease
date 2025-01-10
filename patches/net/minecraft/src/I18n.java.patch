@@ -1,0 +1,28 @@
+--- net/minecraft/src/I18n.java
++++ net/minecraft/src/I18n.java
+@@ -3,15 +3,15 @@
+ public class I18n {
+ 	private static Locale i18nLocale;
+ 
+-	static void setLocale(Locale var0) {
+-		i18nLocale = var0;
+-	}
+-
+-	public static String getString(String var0) {
+-		return i18nLocale.translateKey(var0);
+-	}
+-
+-	public static String getStringParams(String var0, Object... var1) {
+-		return i18nLocale.formatMessage(var0, var1);
++	static void setLocale(Locale par0Locale) {
++		i18nLocale = par0Locale;
++	}
++
++	public static String getString(String par0Str) {
++		return i18nLocale.translateKey(par0Str);
++	}
++
++	public static String getStringParams(String par0Str, Object ... par1ArrayOfObj) {
++		return i18nLocale.formatMessage(par0Str, par1ArrayOfObj);
+ 	}
+ }

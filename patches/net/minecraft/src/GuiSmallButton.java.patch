@@ -1,0 +1,28 @@
+--- net/minecraft/src/GuiSmallButton.java
++++ net/minecraft/src/GuiSmallButton.java
+@@ -3,18 +3,18 @@
+ public class GuiSmallButton extends GuiButton {
+ 	private final EnumOptions enumOptions;
+ 
+-	public GuiSmallButton(int var1, int var2, int var3, String var4) {
+-		this(var1, var2, var3, (EnumOptions)null, var4);
++	public GuiSmallButton(int par1, int par2, int par3, String par4Str) {
++		this(par1, par2, par3, (EnumOptions)null, par4Str);
+ 	}
+ 
+-	public GuiSmallButton(int var1, int var2, int var3, int var4, int var5, String var6) {
+-		super(var1, var2, var3, var4, var5, var6);
++	public GuiSmallButton(int par1, int par2, int par3, int par4, int par5, String par6Str) {
++		super(par1, par2, par3, par4, par5, par6Str);
+ 		this.enumOptions = null;
+ 	}
+ 
+-	public GuiSmallButton(int var1, int var2, int var3, EnumOptions var4, String var5) {
+-		super(var1, var2, var3, 150, 20, var5);
+-		this.enumOptions = var4;
++	public GuiSmallButton(int par1, int par2, int par3, EnumOptions par4EnumOptions, String par5Str) {
++		super(par1, par2, par3, 150, 20, par5Str);
++		this.enumOptions = par4EnumOptions;
+ 	}
+ 
+ 	public EnumOptions returnEnumOptions() {

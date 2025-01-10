@@ -1,0 +1,13 @@
+--- net/minecraft/src/CallableLevelDimension.java
++++ net/minecraft/src/CallableLevelDimension.java
+@@ -5,8 +5,8 @@
+ class CallableLevelDimension implements Callable {
+ 	final WorldInfo worldInfoInstance;
+ 
+-	CallableLevelDimension(WorldInfo var1) {
+-		this.worldInfoInstance = var1;
++	CallableLevelDimension(WorldInfo par1WorldInfo) {
++		this.worldInfoInstance = par1WorldInfo;
+ 	}
+ 
+ 	public String callLevelDimension() {

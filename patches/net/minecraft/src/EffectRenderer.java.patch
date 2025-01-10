@@ -1,0 +1,372 @@
+--- net/minecraft/src/EffectRenderer.java
++++ net/minecraft/src/EffectRenderer.java
+@@ -3,70 +3,96 @@
+ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Random;
++
+ import org.lwjgl.opengl.GL11;
+ 
++import com.prupe.mcpatcher.sky.FireworksHelper;
++
++import org.newdawn.slick.opengl.Texture;
++
++//Spout Start
++import org.spoutcraft.api.block.design.BlockDesign;
++import org.spoutcraft.api.Spoutcraft;
++import org.spoutcraft.api.material.CustomBlock;
++import org.spoutcraft.api.material.MaterialData;
++import org.spoutcraft.client.io.CustomTextureManager;
++import org.spoutcraft.client.SpoutClient;
++import org.spoutcraft.client.block.SpoutcraftChunk;
++import org.spoutcraft.client.config.Configuration;
++//Spout End
++
+ public class EffectRenderer {
+ 	private static final ResourceLocation particleTextures = new ResourceLocation("textures/particle/particles.png");
+-	protected World worldObj;
+-	private List[] c = new List[4];
++	/** Reference to the World object. */
++	// MCPatcher Start - protected to public
++	public World worldObj;
++	// MCPatcher End
++	private List[] fxLayers = new List[5];
+ 	private TextureManager renderer;
+-	private Random e = new Random();
+-
+-	public EffectRenderer(World var1, TextureManager var2) {
+-		if(var1 != null) {
+-			this.worldObj = var1;
+-		}
+-
+-		this.renderer = var2;
+-
+-		for(int var3 = 0; var3 < 4; ++var3) {
+-			this.c[var3] = new ArrayList();
+-		}
+-
++
++	/** RNG. */
++	private Random rand = new Random();
++
++	public EffectRenderer(World par1World, TextureManager par2TextureManager) {
++		if (par1World != null) {
++			this.worldObj = par1World;
++		}
++
++		this.renderer = par2TextureManager;
++
++		for (int var3 = 0; var3 < 5; ++var3) {
++			this.fxLayers[var3] = new ArrayList();
++		}
+ 	}
++	
++	public void addEffect(EntityFX par1EntityFX) {
++		int var2 = FireworksHelper.getFXLayer(par1EntityFX);
+ 
+-	public void addEffect(EntityFX var1) {
+-		int var2 = var1.getFXLayer();
+-		if(this.c[var2].size() >= 4000) {
+-			this.c[var2].remove(0);
++		if (this.fxLayers[var2].size() >= 4000) {
++			this.fxLayers[var2].remove(0);
+ 		}
+ 
+-		this.c[var2].add(var1);
++		this.fxLayers[var2].add(par1EntityFX);
+ 	}
+ 
+ 	public void updateEffects() {
+-		for(int var1 = 0; var1 < 4; ++var1) {
+-			for(int var2 = 0; var2 < this.c[var1].size(); ++var2) {
+-				EntityFX var3 = (EntityFX)this.c[var1].get(var2);
++		for (int var1 = 0; var1 < 5; ++var1) {
++			for (int var2 = 0; var2 < this.fxLayers[var1].size(); ++var2) {
++				EntityFX var3 = (EntityFX)this.fxLayers[var1].get(var2);
+ 				var3.onUpdate();
+-				if(var3.isDead) {
+-					this.c[var1].remove(var2--);
++
++				if (var3.isDead) {
++					this.fxLayers[var1].remove(var2--);
+ 				}
+ 			}
+ 		}
+-
+ 	}
+ 
+-	public void renderParticles(Entity var1, float var2) {
++	/**
++	 * Renders all current particles. Args player, partialTickTime
++	 */
++	public void renderParticles(Entity par1Entity, float par2) {
+ 		float var3 = ActiveRenderInfo.rotationX;
+ 		float var4 = ActiveRenderInfo.rotationZ;
+ 		float var5 = ActiveRenderInfo.rotationYZ;
+ 		float var6 = ActiveRenderInfo.rotationXY;
+ 		float var7 = ActiveRenderInfo.rotationXZ;
+-		EntityFX.interpPosX = var1.lastTickPosX + (var1.posX - var1.lastTickPosX) * (double)var2;
+-		EntityFX.interpPosY = var1.lastTickPosY + (var1.posY - var1.lastTickPosY) * (double)var2;
+-		EntityFX.interpPosZ = var1.lastTickPosZ + (var1.posZ - var1.lastTickPosZ) * (double)var2;
++		EntityFX.interpPosX = par1Entity.lastTickPosX + (par1Entity.posX - par1Entity.lastTickPosX) * (double)par2;
++		EntityFX.interpPosY = par1Entity.lastTickPosY + (par1Entity.posY - par1Entity.lastTickPosY) * (double)par2;
++		EntityFX.interpPosZ = par1Entity.lastTickPosZ + (par1Entity.posZ - par1Entity.lastTickPosZ) * (double)par2;
+ 
+-		for(int var8 = 0; var8 < 3; ++var8) {
+-			if(!this.c[var8].isEmpty()) {
+-				switch(var8) {
++		for (int var8 = 0; var8 < 5; ++var8) {
++			if (!FireworksHelper.skipThisLayer(this.fxLayers[var8].isEmpty(), var8)) {
++				switch (var8) {
+ 				case 0:
+ 				default:
+ 					this.renderer.bindTexture(particleTextures);
+ 					break;
++
+ 				case 1:
+ 					this.renderer.bindTexture(TextureMap.locationBlocksTexture);
+ 					break;
++
+ 				case 2:
+ 					this.renderer.bindTexture(TextureMap.locationItemsTexture);
+ 				}
+@@ -74,15 +100,15 @@
+ 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+ 				GL11.glDepthMask(false);
+ 				GL11.glEnable(GL11.GL_BLEND);
+-				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
++				FireworksHelper.setParticleBlendMethod(var8);
+ 				GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569F);
+ 				Tessellator var9 = Tessellator.instance;
+ 				var9.startDrawingQuads();
+ 
+-				for(int var10 = 0; var10 < this.c[var8].size(); ++var10) {
+-					EntityFX var11 = (EntityFX)this.c[var8].get(var10);
+-					var9.setBrightness(var11.getBrightnessForRender(var2));
+-					var11.renderParticle(var9, var2, var3, var7, var4, var5, var6);
++				for (int var10 = 0; var10 < this.fxLayers[var8].size(); ++var10) {
++					EntityFX var11 = (EntityFX)this.fxLayers[var8].get(var10);
++					var9.setBrightness(var11.getBrightnessForRender(par2));
++					var11.renderParticle(var9, par2, var3, var7, var4, var5, var6);
+ 				}
+ 
+ 				var9.draw();
+@@ -91,95 +117,148 @@
+ 				GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+ 			}
+ 		}
+-
+ 	}
+ 
+-	public void renderLitParticles(Entity var1, float var2) {
+-		float var3 = (float)Math.PI / 180.0F;
+-		float var4 = MathHelper.cos(var1.rotationYaw * ((float)Math.PI / 180.0F));
+-		float var5 = MathHelper.sin(var1.rotationYaw * ((float)Math.PI / 180.0F));
+-		float var6 = -var5 * MathHelper.sin(var1.rotationPitch * ((float)Math.PI / 180.0F));
+-		float var7 = var4 * MathHelper.sin(var1.rotationPitch * ((float)Math.PI / 180.0F));
+-		float var8 = MathHelper.cos(var1.rotationPitch * ((float)Math.PI / 180.0F));
++	public void renderLitParticles(Entity par1Entity, float par2) {
++		float var3 = 0.017453292F;
++		float var4 = MathHelper.cos(par1Entity.rotationYaw * 0.017453292F);
++		float var5 = MathHelper.sin(par1Entity.rotationYaw * 0.017453292F);
++		float var6 = -var5 * MathHelper.sin(par1Entity.rotationPitch * 0.017453292F);
++		float var7 = var4 * MathHelper.sin(par1Entity.rotationPitch * 0.017453292F);
++		float var8 = MathHelper.cos(par1Entity.rotationPitch * 0.017453292F);
+ 		byte var9 = 3;
+-		List var10 = this.c[var9];
+-		if(!var10.isEmpty()) {
++		List var10 = this.fxLayers[var9];
++
++		if (!var10.isEmpty()) {
+ 			Tessellator var11 = Tessellator.instance;
+ 
+-			for(int var12 = 0; var12 < var10.size(); ++var12) {
++			for (int var12 = 0; var12 < var10.size(); ++var12) {
+ 				EntityFX var13 = (EntityFX)var10.get(var12);
+-				var11.setBrightness(var13.getBrightnessForRender(var2));
+-				var13.renderParticle(var11, var2, var4, var8, var5, var6, var7);
+-			}
+-
+-		}
+-	}
+-
+-	public void clearEffects(World var1) {
+-		this.worldObj = var1;
+-
+-		for(int var2 = 0; var2 < 4; ++var2) {
+-			this.c[var2].clear();
+-		}
+-
+-	}
+-
+-	public void addBlockDestroyEffects(int var1, int var2, int var3, int var4, int var5) {
+-		if(var4 != 0) {
+-			Block var6 = Block.blocksList[var4];
++				var11.setBrightness(var13.getBrightnessForRender(par2));
++				var13.renderParticle(var11, par2, var4, var8, var5, var6, var7);
++			}
++		}
++	}
++
++	public void clearEffects(World par1World) {
++		this.worldObj = par1World;
++
++		for (int var2 = 0; var2 < 5; ++var2) {
++			this.fxLayers[var2].clear();
++		}
++	}
++
++	public void addBlockDestroyEffects(int par1, int par2, int par3, int par4, int par5) {
++		if (par4 != 0) {
++			Block var6 = Block.blocksList[par4];
++			// Spout Start
++			Texture texture = null;			
++			short customId = 0;
++			if (SpoutClient.getInstance().getRawWorld() != null) {
++				SpoutcraftChunk sChunk = Spoutcraft.getChunkAt(SpoutClient.getInstance().getRawWorld(), par1, par2, par3);
++				customId = sChunk.getCustomBlockId(par1, par2, par3);
++				short[] customBlockIds = sChunk.getCustomBlockIds();
++				byte[] customBlockData = sChunk.getCustomBlockData();
++				if (customId > 0) {
++					if (Configuration.displayCustomParticles) {
++						CustomBlock block = MaterialData.getCustomBlock(customId);
++						if (block != null) {
++							BlockDesign design = block.getBlockDesign(customBlockData[customId]);
++							if (design != null) {
++								texture = CustomTextureManager.getTextureFromUrl(block.getAddon(), design.getTextureURL());
++							}
++						}
++					} else {
++						return;
++					}
++				}
++			}
++			// Spout End
+ 			byte var7 = 4;
+ 
+-			for(int var8 = 0; var8 < var7; ++var8) {
+-				for(int var9 = 0; var9 < var7; ++var9) {
+-					for(int var10 = 0; var10 < var7; ++var10) {
+-						double var11 = (double)var1 + ((double)var8 + 0.5D) / (double)var7;
+-						double var13 = (double)var2 + ((double)var9 + 0.5D) / (double)var7;
+-						double var15 = (double)var3 + ((double)var10 + 0.5D) / (double)var7;
+-						this.addEffect((new EntityDiggingFX(this.worldObj, var11, var13, var15, var11 - (double)var1 - 0.5D, var13 - (double)var2 - 0.5D, var15 - (double)var3 - 0.5D, var6, var5)).applyColourMultiplier(var1, var2, var3));
++			for (int var8 = 0; var8 < var7; ++var8) {
++				for (int var9 = 0; var9 < var7; ++var9) {
++					for (int var10 = 0; var10 < var7; ++var10) {
++						double var11 = (double)par1 + ((double)var8 + 0.5D) / (double)var7;
++						double var13 = (double)par2 + ((double)var9 + 0.5D) / (double)var7;
++						double var15 = (double)par3 + ((double)var10 + 0.5D) / (double)var7;
++						this.addEffect((new EntityDiggingFX(this.worldObj, var11, var13, var15, var11 - (double)par1 - 0.5D, var13 - (double)par2 - 0.5D, var15 - (double)par3 - 0.5D, var6, par5, texture)).applyColourMultiplier(par1, par2, par3));
+ 					}
+ 				}
+ 			}
+-
+ 		}
+ 	}
+ 
+-	public void addBlockHitEffects(int var1, int var2, int var3, int var4) {
+-		int var5 = this.worldObj.getBlockId(var1, var2, var3);
+-		if(var5 != 0) {
++	/**
++	 * Adds block hit particles for the specified block. Args: x, y, z, sideHit
++	 */
++	public void addBlockHitEffects(int par1, int par2, int par3, int par4) {
++		int var5 = this.worldObj.getBlockId(par1, par2, par3);
++
++		if (var5 != 0) {
+ 			Block var6 = Block.blocksList[var5];
++
++			// Spout Start
++			Texture texture = null;
++
++			short customId = 0;
++			if (SpoutClient.getInstance().getRawWorld() != null) {
++				SpoutcraftChunk sChunk = Spoutcraft.getChunkAt(SpoutClient.getInstance().getRawWorld(), par1, par2, par3);
++				customId = sChunk.getCustomBlockId(par1, par2, par3);
++				short[] customBlockIds = sChunk.getCustomBlockIds();
++				byte[] customBlockData = sChunk.getCustomBlockData();
++
++				if (customId > 0) {
++					if (Configuration.displayCustomParticles) {
++						CustomBlock block = MaterialData.getCustomBlock(customId);
++						if (block != null) {
++							BlockDesign design = block.getBlockDesign(customBlockData[customId]);
++							if (design != null) {
++								texture = CustomTextureManager.getTextureFromUrl(block.getAddon(), design.getTextureURL());
++							}
++						}
++					} else {
++						return;
++					}
++				}
++
++			}
++			// Spout End
++
+ 			float var7 = 0.1F;
+-			double var8 = (double)var1 + this.e.nextDouble() * (var6.getBlockBoundsMaxX() - var6.getMinX() - (double)(var7 * 2.0F)) + (double)var7 + var6.getMinX();
+-			double var10 = (double)var2 + this.e.nextDouble() * (var6.getBlockBoundsMaxY() - var6.getBlockBoundsMinY() - (double)(var7 * 2.0F)) + (double)var7 + var6.getBlockBoundsMinY();
+-			double var12 = (double)var3 + this.e.nextDouble() * (var6.getBlockBoundsMaxZ() - var6.getBlockBoundsMinZ() - (double)(var7 * 2.0F)) + (double)var7 + var6.getBlockBoundsMinZ();
+-			if(var4 == 0) {
+-				var10 = (double)var2 + var6.getBlockBoundsMinY() - (double)var7;
+-			}
+-
+-			if(var4 == 1) {
+-				var10 = (double)var2 + var6.getBlockBoundsMaxY() + (double)var7;
+-			}
+-
+-			if(var4 == 2) {
+-				var12 = (double)var3 + var6.getBlockBoundsMinZ() - (double)var7;
+-			}
+-
+-			if(var4 == 3) {
+-				var12 = (double)var3 + var6.getBlockBoundsMaxZ() + (double)var7;
+-			}
+-
+-			if(var4 == 4) {
+-				var8 = (double)var1 + var6.getMinX() - (double)var7;
+-			}
+-
+-			if(var4 == 5) {
+-				var8 = (double)var1 + var6.getBlockBoundsMaxX() + (double)var7;
+-			}
+-
+-			this.addEffect((new EntityDiggingFX(this.worldObj, var8, var10, var12, 0.0D, 0.0D, 0.0D, var6, this.worldObj.getBlockMetadata(var1, var2, var3))).applyColourMultiplier(var1, var2, var3).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
++			double var8 = (double)par1 + this.rand.nextDouble() * (var6.getBlockBoundsMaxX() - var6.getBlockBoundsMinX() - (double)(var7 * 2.0F)) + (double)var7 + var6.getBlockBoundsMinX();
++			double var10 = (double)par2 + this.rand.nextDouble() * (var6.getBlockBoundsMaxY() - var6.getBlockBoundsMinY() - (double)(var7 * 2.0F)) + (double)var7 + var6.getBlockBoundsMinY();
++			double var12 = (double)par3 + this.rand.nextDouble() * (var6.getBlockBoundsMaxZ() - var6.getBlockBoundsMinZ() - (double)(var7 * 2.0F)) + (double)var7 + var6.getBlockBoundsMinZ();
++
++			if (par4 == 0) {
++				var10 = (double)par2 + var6.getBlockBoundsMinY() - (double)var7;
++			}
++
++			if (par4 == 1) {
++				var10 = (double)par2 + var6.getBlockBoundsMaxY() + (double)var7;
++			}
++
++			if (par4 == 2) {
++				var12 = (double)par3 + var6.getBlockBoundsMinZ() - (double)var7;
++			}
++
++			if (par4 == 3) {
++				var12 = (double)par3 + var6.getBlockBoundsMaxZ() + (double)var7;
++			}
++
++			if (par4 == 4) {
++				var8 = (double)par1 + var6.getBlockBoundsMinX() - (double)var7;
++			}
++
++			if (par4 == 5) {
++				var8 = (double)par1 + var6.getBlockBoundsMaxX() + (double)var7;
++			}
++
++			this.addEffect((new EntityDiggingFX(this.worldObj, var8, var10, var12, 0.0D, 0.0D, 0.0D, var6, this.worldObj.getBlockMetadata(par1, par2, par3), texture)).applyColourMultiplier(par1, par2, par3).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
+ 		}
+ 	}
+ 
+ 	public String getStatistics() {
+-		return "" + (this.c[0].size() + this.c[1].size() + this.c[2].size());
++		return "" + (this.fxLayers[0].size() + this.fxLayers[1].size() + this.fxLayers[2].size());
+ 	}
+ }

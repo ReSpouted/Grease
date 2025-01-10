@@ -1,0 +1,155 @@
+--- net/minecraft/src/BanList.java
++++ net/minecraft/src/BanList.java
+@@ -15,76 +15,83 @@
+ 
+ public class BanList {
+ 	private final LowerStringMap theBanList = new LowerStringMap();
+-	private final File b;
++	private final File fileName;
++
++	/** set to true if not singlePlayer */
+ 	private boolean listActive = true;
+ 
+-	public BanList(File var1) {
+-		this.b = var1;
++	public BanList(File par1File) {
++		this.fileName = par1File;
+ 	}
+ 
+ 	public boolean isListActive() {
+ 		return this.listActive;
+ 	}
+ 
+-	public void setListActive(boolean var1) {
+-		this.listActive = var1;
++	public void setListActive(boolean par1) {
++		this.listActive = par1;
+ 	}
+ 
++	/**
++	 * removes expired Bans before returning
++	 */
+ 	public Map getBannedList() {
+ 		this.removeExpiredBans();
+ 		return this.theBanList;
+ 	}
+ 
+-	public boolean isBanned(String var1) {
+-		if(!this.isListActive()) {
++	public boolean isBanned(String par1Str) {
++		if (!this.isListActive()) {
+ 			return false;
+ 		} else {
+ 			this.removeExpiredBans();
+-			return this.theBanList.containsKey(var1);
++			return this.theBanList.containsKey(par1Str);
+ 		}
+ 	}
+ 
+-	public void put(BanEntry var1) {
+-		this.theBanList.putLower(var1.getBannedUsername(), var1);
++	public void put(BanEntry par1BanEntry) {
++		this.theBanList.putLower(par1BanEntry.getBannedUsername(), par1BanEntry);
+ 		this.saveToFileWithHeader();
+ 	}
+ 
+-	public void remove(String var1) {
+-		this.theBanList.remove(var1);
++	public void remove(String par1Str) {
++		this.theBanList.remove(par1Str);
+ 		this.saveToFileWithHeader();
+ 	}
+ 
+ 	public void removeExpiredBans() {
+ 		Iterator var1 = this.theBanList.values().iterator();
+ 
+-		while(var1.hasNext()) {
++		while (var1.hasNext()) {
+ 			BanEntry var2 = (BanEntry)var1.next();
+-			if(var2.hasBanExpired()) {
++
++			if (var2.hasBanExpired()) {
+ 				var1.remove();
+ 			}
+ 		}
+-
+ 	}
+ 
++	/**
++	 * Loads the ban list from the file (adds every entry, does not clear the current list).
++	 */
+ 	public void loadBanList() {
+-		if(this.b.isFile()) {
++		if (this.fileName.isFile()) {
+ 			BufferedReader var1;
++
+ 			try {
+-				var1 = new BufferedReader(new FileReader(this.b));
++				var1 = new BufferedReader(new FileReader(this.fileName));
+ 			} catch (FileNotFoundException var4) {
+ 				throw new Error();
+ 			}
+ 
+-			try {
+-				while(true) {
+-					String var2 = var1.readLine();
+-					if(var2 == null) {
+-						break;
+-					}
++			String var2;
+ 
+-					if(!var2.startsWith("#")) {
++			try {
++				while ((var2 = var1.readLine()) != null) {
++					if (!var2.startsWith("#")) {
+ 						BanEntry var3 = BanEntry.parse(var2);
+-						if(var3 != null) {
++
++						if (var3 != null) {
+ 							this.theBanList.putLower(var3.getBannedUsername(), var3);
+ 						}
+ 					}
+@@ -92,7 +99,6 @@
+ 			} catch (IOException var5) {
+ 				MinecraftServer.getServer().getLogAgent().logSevereException("Could not load ban list", var5);
+ 			}
+-
+ 		}
+ 	}
+ 
+@@ -100,12 +106,16 @@
+ 		this.saveToFile(true);
+ 	}
+ 
+-	public void saveToFile(boolean var1) {
++	/**
++	 * par1: include header
++	 */
++	public void saveToFile(boolean par1) {
+ 		this.removeExpiredBans();
+ 
+ 		try {
+-			PrintWriter var2 = new PrintWriter(new FileWriter(this.b, false));
+-			if(var1) {
++			PrintWriter var2 = new PrintWriter(new FileWriter(this.fileName, false));
++
++			if (par1) {
+ 				var2.println("# Updated " + (new SimpleDateFormat()).format(new Date()) + " by Minecraft " + "1.6.4");
+ 				var2.println("# victim name | ban date | banned by | banned until | reason");
+ 				var2.println();
+@@ -113,7 +123,7 @@
+ 
+ 			Iterator var3 = this.theBanList.values().iterator();
+ 
+-			while(var3.hasNext()) {
++			while (var3.hasNext()) {
+ 				BanEntry var4 = (BanEntry)var3.next();
+ 				var2.println(var4.buildBanString());
+ 			}
+@@ -122,6 +132,5 @@
+ 		} catch (IOException var5) {
+ 			MinecraftServer.getServer().getLogAgent().logSevereException("Could not save ban list", var5);
+ 		}
+-
+ 	}
+ }

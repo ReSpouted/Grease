@@ -1,0 +1,26 @@
+--- net/minecraft/src/EntityAINearestAttackableTargetSelector.java
++++ net/minecraft/src/EntityAINearestAttackableTargetSelector.java
+@@ -2,14 +2,18 @@
+ 
+ class EntityAINearestAttackableTargetSelector implements IEntitySelector {
+ 	final IEntitySelector field_111103_c;
++
+ 	final EntityAINearestAttackableTarget field_111102_d;
+ 
+-	EntityAINearestAttackableTargetSelector(EntityAINearestAttackableTarget var1, IEntitySelector var2) {
+-		this.field_111102_d = var1;
+-		this.field_111103_c = var2;
++	EntityAINearestAttackableTargetSelector(EntityAINearestAttackableTarget par1EntityAINearestAttackableTarget, IEntitySelector par2IEntitySelector) {
++		this.field_111102_d = par1EntityAINearestAttackableTarget;
++		this.field_111103_c = par2IEntitySelector;
+ 	}
+ 
+-	public boolean isEntityApplicable(Entity var1) {
+-		return !(var1 instanceof EntityLivingBase) ? false : (this.field_111103_c != null && !this.field_111103_c.isEntityApplicable(var1) ? false : this.field_111102_d.isSuitableTarget((EntityLivingBase)var1, false));
++	/**
++	 * Return whether the specified entity is applicable to this filter.
++	 */
++	public boolean isEntityApplicable(Entity par1Entity) {
++		return !(par1Entity instanceof EntityLivingBase) ? false : (this.field_111103_c != null && !this.field_111103_c.isEntityApplicable(par1Entity) ? false : this.field_111102_d.isSuitableTarget((EntityLivingBase)par1Entity, false));
+ 	}
+ }

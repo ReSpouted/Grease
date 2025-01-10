@@ -1,0 +1,12 @@
+--- net/minecraft/src/IThreadedFileIO.java
++++ net/minecraft/src/IThreadedFileIO.java
+@@ -1,5 +1,9 @@
+ package net.minecraft.src;
+ 
+ public interface IThreadedFileIO {
++
++	/**
++	 * Returns a boolean stating if the write was unsuccessful.
++	 */
+ 	boolean writeNextIO();
+ }

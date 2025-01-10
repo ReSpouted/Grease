@@ -1,0 +1,21 @@
+--- net/minecraft/src/ItemAnvilBlock.java
++++ net/minecraft/src/ItemAnvilBlock.java
+@@ -1,11 +1,14 @@
+ package net.minecraft.src;
+ 
+ public class ItemAnvilBlock extends ItemMultiTextureTile {
+-	public ItemAnvilBlock(Block var1) {
+-		super(var1.blockID - 256, var1, BlockAnvil.a);
++	public ItemAnvilBlock(Block par1Block) {
++		super(par1Block.blockID - 256, par1Block, BlockAnvil.statuses);
+ 	}
+ 
+-	public int getMetadata(int var1) {
+-		return var1 << 2;
++	/**
++	 * Returns the metadata of the block which this Item (ItemBlock) can place
++	 */
++	public int getMetadata(int par1) {
++		return par1 << 2;
+ 	}
+ }

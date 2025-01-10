@@ -1,0 +1,159 @@
+--- net/minecraft/src/ScorePlayerTeam.java
++++ net/minecraft/src/ScorePlayerTeam.java
+@@ -6,81 +6,92 @@
+ 
+ public class ScorePlayerTeam extends Team {
+ 	private final Scoreboard theScoreboard;
+-	private final String b;
+-	private final Set c = new HashSet();
+-	private String d;
+-	private String e = "";
+-	private String f = "";
++	private final String field_96675_b;
++
++	/** A set of all team member usernames. */
++	private final Set membershipSet = new HashSet();
++	private String field_96673_d;
++	private String field_96674_e = "";
++	private String colorSuffix = "";
+ 	private boolean allowFriendlyFire = true;
+ 	private boolean field_98301_h = true;
+ 
+-	public ScorePlayerTeam(Scoreboard var1, String var2) {
+-		this.theScoreboard = var1;
+-		this.b = var2;
+-		this.d = var2;
++	public ScorePlayerTeam(Scoreboard par1Scoreboard, String par2Str) {
++		this.theScoreboard = par1Scoreboard;
++		this.field_96675_b = par2Str;
++		this.field_96673_d = par2Str;
+ 	}
+ 
+ 	public String func_96661_b() {
+-		return this.b;
++		return this.field_96675_b;
+ 	}
+ 
+ 	public String func_96669_c() {
+-		return this.d;
++		return this.field_96673_d;
+ 	}
+ 
+-	public void setTeamName(String var1) {
+-		if(var1 == null) {
++	public void func_96664_a(String par1Str) {
++		if (par1Str == null) {
+ 			throw new IllegalArgumentException("Name cannot be null");
+ 		} else {
+-			this.d = var1;
++			this.field_96673_d = par1Str;
+ 			this.theScoreboard.func_96538_b(this);
+ 		}
+ 	}
+ 
+ 	public Collection getMembershipCollection() {
+-		return this.c;
++		return this.membershipSet;
+ 	}
+ 
++	/**
++	 * Returns the color prefix for the player's team name
++	 */
+ 	public String getColorPrefix() {
+-		return this.e;
++		return this.field_96674_e;
+ 	}
+ 
+-	public void setNamePrefix(String var1) {
+-		if(var1 == null) {
++	public void func_96666_b(String par1Str) {
++		if (par1Str == null) {
+ 			throw new IllegalArgumentException("Prefix cannot be null");
+ 		} else {
+-			this.e = var1;
++			this.field_96674_e = par1Str;
+ 			this.theScoreboard.func_96538_b(this);
+ 		}
+ 	}
+ 
++	/**
++	 * Returns the color suffix for the player's team name
++	 */
+ 	public String getColorSuffix() {
+-		return this.f;
++		return this.colorSuffix;
+ 	}
+ 
+-	public void setNameSuffix(String var1) {
+-		if(var1 == null) {
++	public void func_96662_c(String par1Str) {
++		if (par1Str == null) {
+ 			throw new IllegalArgumentException("Suffix cannot be null");
+ 		} else {
+-			this.f = var1;
++			this.colorSuffix = par1Str;
+ 			this.theScoreboard.func_96538_b(this);
+ 		}
+ 	}
+ 
+-	public String func_142053_d(String var1) {
+-		return this.getColorPrefix() + var1 + this.getColorSuffix();
++	public String func_142053_d(String par1Str) {
++		return this.getColorPrefix() + par1Str + this.getColorSuffix();
+ 	}
+ 
+-	public static String formatPlayerName(Team var0, String var1) {
+-		return var0 == null ? var1 : var0.func_142053_d(var1);
++	/**
++	 * Returns the player name including the color prefixes and suffixes
++	 */
++	public static String formatPlayerName(Team par0Team, String par1Str) {
++		return par0Team == null ? par1Str : par0Team.func_142053_d(par1Str);
+ 	}
+ 
+ 	public boolean getAllowFriendlyFire() {
+ 		return this.allowFriendlyFire;
+ 	}
+ 
+-	public void setAllowFriendlyFire(boolean var1) {
+-		this.allowFriendlyFire = var1;
++	public void setAllowFriendlyFire(boolean par1) {
++		this.allowFriendlyFire = par1;
+ 		this.theScoreboard.func_96538_b(this);
+ 	}
+ 
+@@ -88,26 +99,27 @@
+ 		return this.field_98301_h;
+ 	}
+ 
+-	public void setSeeFriendlyInvisiblesEnabled(boolean var1) {
+-		this.field_98301_h = var1;
++	public void func_98300_b(boolean par1) {
++		this.field_98301_h = par1;
+ 		this.theScoreboard.func_96538_b(this);
+ 	}
+ 
+ 	public int func_98299_i() {
+ 		int var1 = 0;
+-		if(this.getAllowFriendlyFire()) {
++
++		if (this.getAllowFriendlyFire()) {
+ 			var1 |= 1;
+ 		}
+ 
+-		if(this.func_98297_h()) {
++		if (this.func_98297_h()) {
+ 			var1 |= 2;
+ 		}
+ 
+ 		return var1;
+ 	}
+ 
+-	public void func_98298_a(int var1) {
+-		this.setAllowFriendlyFire((var1 & 1) > 0);
+-		this.setSeeFriendlyInvisiblesEnabled((var1 & 2) > 0);
++	public void func_98298_a(int par1) {
++		this.setAllowFriendlyFire((par1 & 1) > 0);
++		this.func_98300_b((par1 & 2) > 0);
+ 	}
+ }

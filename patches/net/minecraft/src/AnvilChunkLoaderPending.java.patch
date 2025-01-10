@@ -1,0 +1,14 @@
+--- net/minecraft/src/AnvilChunkLoaderPending.java
++++ net/minecraft/src/AnvilChunkLoaderPending.java
+@@ -4,8 +4,8 @@
+ 	public final ChunkCoordIntPair chunkCoordinate;
+ 	public final NBTTagCompound nbtTags;
+ 
+-	public AnvilChunkLoaderPending(ChunkCoordIntPair var1, NBTTagCompound var2) {
+-		this.chunkCoordinate = var1;
+-		this.nbtTags = var2;
++	public AnvilChunkLoaderPending(ChunkCoordIntPair par1ChunkCoordIntPair, NBTTagCompound par2NBTTagCompound) {
++		this.chunkCoordinate = par1ChunkCoordIntPair;
++		this.nbtTags = par2NBTTagCompound;
+ 	}
+ }

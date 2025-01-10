@@ -1,0 +1,110 @@
+--- net/minecraft/src/MapGenStructureIO.java
++++ net/minecraft/src/MapGenStructureIO.java
+@@ -4,68 +4,70 @@
+ import java.util.Map;
+ 
+ public class MapGenStructureIO {
+-	private static Map a = new HashMap();
+-	private static Map b = new HashMap();
+-	private static Map c = new HashMap();
+-	private static Map d = new HashMap();
+-
+-	private static void func_143034_b(Class var0, String var1) {
+-		a.put(var1, var0);
+-		b.put(var0, var1);
+-	}
+-
+-	static void func_143031_a(Class var0, String var1) {
+-		c.put(var1, var0);
+-		d.put(var0, var1);
+-	}
+-
+-	public static String func_143033_a(StructureStart var0) {
+-		return (String)b.get(var0.getClass());
+-	}
+-
+-	public static String func_143036_a(StructureComponent var0) {
+-		return (String)d.get(var0.getClass());
+-	}
+-
+-	public static StructureStart func_143035_a(NBTTagCompound var0, World var1) {
++	private static Map field_143040_a = new HashMap();
++	private static Map field_143038_b = new HashMap();
++	private static Map field_143039_c = new HashMap();
++	private static Map field_143037_d = new HashMap();
++
++	private static void func_143034_b(Class par0Class, String par1Str) {
++		field_143040_a.put(par1Str, par0Class);
++		field_143038_b.put(par0Class, par1Str);
++	}
++
++	static void func_143031_a(Class par0Class, String par1Str) {
++		field_143039_c.put(par1Str, par0Class);
++		field_143037_d.put(par0Class, par1Str);
++	}
++
++	public static String func_143033_a(StructureStart par0StructureStart) {
++		return (String)field_143038_b.get(par0StructureStart.getClass());
++	}
++
++	public static String func_143036_a(StructureComponent par0StructureComponent) {
++		return (String)field_143037_d.get(par0StructureComponent.getClass());
++	}
++
++	public static StructureStart func_143035_a(NBTTagCompound par0NBTTagCompound, World par1World) {
+ 		StructureStart var2 = null;
+ 
+ 		try {
+-			Class var3 = (Class)a.get(var0.getString("id"));
+-			if(var3 != null) {
++			Class var3 = (Class)field_143040_a.get(par0NBTTagCompound.getString("id"));
++
++			if (var3 != null) {
+ 				var2 = (StructureStart)var3.newInstance();
+ 			}
+ 		} catch (Exception var4) {
+-			var1.getWorldLogAgent().logWarning("Failed Start with id " + var0.getString("id"));
++			par1World.getWorldLogAgent().logWarning("Failed Start with id " + par0NBTTagCompound.getString("id"));
+ 			var4.printStackTrace();
+ 		}
+ 
+-		if(var2 != null) {
+-			var2.func_143020_a(var1, var0);
++		if (var2 != null) {
++			var2.func_143020_a(par1World, par0NBTTagCompound);
+ 		} else {
+-			var1.getWorldLogAgent().logWarning("Skipping Structure with id " + var0.getString("id"));
++			par1World.getWorldLogAgent().logWarning("Skipping Structure with id " + par0NBTTagCompound.getString("id"));
+ 		}
+ 
+ 		return var2;
+ 	}
+ 
+-	public static StructureComponent func_143032_b(NBTTagCompound var0, World var1) {
++	public static StructureComponent func_143032_b(NBTTagCompound par0NBTTagCompound, World par1World) {
+ 		StructureComponent var2 = null;
+ 
+ 		try {
+-			Class var3 = (Class)c.get(var0.getString("id"));
+-			if(var3 != null) {
++			Class var3 = (Class)field_143039_c.get(par0NBTTagCompound.getString("id"));
++
++			if (var3 != null) {
+ 				var2 = (StructureComponent)var3.newInstance();
+ 			}
+ 		} catch (Exception var4) {
+-			var1.getWorldLogAgent().logWarning("Failed Piece with id " + var0.getString("id"));
++			par1World.getWorldLogAgent().logWarning("Failed Piece with id " + par0NBTTagCompound.getString("id"));
+ 			var4.printStackTrace();
+ 		}
+ 
+-		if(var2 != null) {
+-			var2.func_143009_a(var1, var0);
++		if (var2 != null) {
++			var2.func_143009_a(par1World, par0NBTTagCompound);
+ 		} else {
+-			var1.getWorldLogAgent().logWarning("Skipping Piece with id " + var0.getString("id"));
++			par1World.getWorldLogAgent().logWarning("Skipping Piece with id " + par0NBTTagCompound.getString("id"));
+ 		}
+ 
+ 		return var2;

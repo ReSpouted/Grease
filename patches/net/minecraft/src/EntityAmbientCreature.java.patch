@@ -1,0 +1,24 @@
+--- net/minecraft/src/EntityAmbientCreature.java
++++ net/minecraft/src/EntityAmbientCreature.java
+@@ -1,15 +1,18 @@
+ package net.minecraft.src;
+ 
+ public abstract class EntityAmbientCreature extends EntityLiving implements IAnimals {
+-	public EntityAmbientCreature(World var1) {
+-		super(var1);
++	public EntityAmbientCreature(World par1World) {
++		super(par1World);
+ 	}
+ 
+ 	public boolean allowLeashing() {
+ 		return false;
+ 	}
+ 
+-	protected boolean interact(EntityPlayer var1) {
++	/**
++	 * Called when a player interacts with a mob. e.g. gets milk from a cow, gets into the saddle on a pig.
++	 */
++	protected boolean interact(EntityPlayer par1EntityPlayer) {
+ 		return false;
+ 	}
+ }

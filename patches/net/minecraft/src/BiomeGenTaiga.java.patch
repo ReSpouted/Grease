@@ -1,0 +1,25 @@
+--- net/minecraft/src/BiomeGenTaiga.java
++++ net/minecraft/src/BiomeGenTaiga.java
+@@ -3,14 +3,17 @@
+ import java.util.Random;
+ 
+ public class BiomeGenTaiga extends BiomeGenBase {
+-	public BiomeGenTaiga(int var1) {
+-		super(var1);
+-		this.K.add(new SpawnListEntry(EntityWolf.class, 8, 4, 4));
++	public BiomeGenTaiga(int par1) {
++		super(par1);
++		this.spawnableCreatureList.add(new SpawnListEntry(EntityWolf.class, 8, 4, 4));
+ 		this.theBiomeDecorator.treesPerChunk = 10;
+ 		this.theBiomeDecorator.grassPerChunk = 1;
+ 	}
+ 
+-	public WorldGenerator getRandomWorldGenForTrees(Random var1) {
+-		return (WorldGenerator)(var1.nextInt(3) == 0 ? new WorldGenTaiga1() : new WorldGenTaiga2(false));
++	/**
++	 * Gets a WorldGen appropriate for this biome.
++	 */
++	public WorldGenerator getRandomWorldGenForTrees(Random par1Random) {
++		return (WorldGenerator)(par1Random.nextInt(3) == 0 ? new WorldGenTaiga1() : new WorldGenTaiga2(false));
+ 	}
+ }

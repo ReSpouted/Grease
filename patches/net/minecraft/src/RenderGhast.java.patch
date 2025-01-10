@@ -1,0 +1,48 @@
+--- net/minecraft/src/RenderGhast.java
++++ net/minecraft/src/RenderGhast.java
+@@ -10,13 +10,17 @@
+ 		super(new ModelGhast(), 0.5F);
+ 	}
+ 
+-	protected ResourceLocation func_110867_a(EntityGhast var1) {
+-		return var1.func_110182_bF() ? ghastShootingTextures : ghastTextures;
++	protected ResourceLocation func_110867_a(EntityGhast par1EntityGhast) {
++		return par1EntityGhast.func_110182_bF() ? ghastShootingTextures : ghastTextures;
+ 	}
+ 
+-	protected void preRenderGhast(EntityGhast var1, float var2) {
+-		float var4 = ((float)var1.prevAttackCounter + (float)(var1.attackCounter - var1.prevAttackCounter) * var2) / 20.0F;
+-		if(var4 < 0.0F) {
++	/**
++	 * Pre-Renders the Ghast.
++	 */
++	protected void preRenderGhast(EntityGhast par1EntityGhast, float par2) {
++		float var4 = ((float)par1EntityGhast.prevAttackCounter + (float)(par1EntityGhast.attackCounter - par1EntityGhast.prevAttackCounter) * par2) / 20.0F;
++
++		if (var4 < 0.0F) {
+ 			var4 = 0.0F;
+ 		}
+ 
+@@ -27,11 +31,18 @@
+ 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+ 	}
+ 
+-	protected void preRenderCallback(EntityLivingBase var1, float var2) {
+-		this.preRenderGhast((EntityGhast)var1, var2);
++	/**
++	 * Allows the render to do any OpenGL state modifications necessary before the model is rendered. Args: entityLiving,
++	 * partialTickTime
++	 */
++	protected void preRenderCallback(EntityLivingBase par1EntityLivingBase, float par2) {
++		this.preRenderGhast((EntityGhast)par1EntityLivingBase, par2);
+ 	}
+ 
+-	protected ResourceLocation getEntityTexture(Entity var1) {
+-		return this.func_110867_a((EntityGhast)var1);
++	/**
++	 * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
++	 */
++	protected ResourceLocation getEntityTexture(Entity par1Entity) {
++		return this.func_110867_a((EntityGhast)par1Entity);
+ 	}
+ }

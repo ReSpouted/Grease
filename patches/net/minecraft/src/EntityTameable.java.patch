@@ -1,0 +1,192 @@
+--- net/minecraft/src/EntityTameable.java
++++ net/minecraft/src/EntityTameable.java
+@@ -3,8 +3,8 @@
+ public abstract class EntityTameable extends EntityAnimal implements EntityOwnable {
+ 	protected EntityAISit aiSit = new EntityAISit(this);
+ 
+-	public EntityTameable(World var1) {
+-		super(var1);
++	public EntityTameable(World par1World) {
++		super(par1World);
+ 	}
+ 
+ 	protected void entityInit() {
+@@ -13,89 +13,99 @@
+ 		this.dataWatcher.addObject(17, "");
+ 	}
+ 
+-	public void writeEntityToNBT(NBTTagCompound var1) {
+-		super.writeEntityToNBT(var1);
+-		if(this.getOwnerName() == null) {
+-			var1.setString("Owner", "");
++	/**
++	 * (abstract) Protected helper method to write subclass entity data to NBT.
++	 */
++	public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
++		super.writeEntityToNBT(par1NBTTagCompound);
++
++		if (this.getOwnerName() == null) {
++			par1NBTTagCompound.setString("Owner", "");
+ 		} else {
+-			var1.setString("Owner", this.getOwnerName());
++			par1NBTTagCompound.setString("Owner", this.getOwnerName());
+ 		}
+ 
+-		var1.setBoolean("Sitting", this.isSitting());
++		par1NBTTagCompound.setBoolean("Sitting", this.isSitting());
+ 	}
+ 
+-	public void readEntityFromNBT(NBTTagCompound var1) {
+-		super.readEntityFromNBT(var1);
+-		String var2 = var1.getString("Owner");
+-		if(var2.length() > 0) {
++	/**
++	 * (abstract) Protected helper method to read subclass entity data from NBT.
++	 */
++	public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
++		super.readEntityFromNBT(par1NBTTagCompound);
++		String var2 = par1NBTTagCompound.getString("Owner");
++
++		if (var2.length() > 0) {
+ 			this.setOwner(var2);
+ 			this.setTamed(true);
+ 		}
+ 
+-		this.aiSit.setSitting(var1.getBoolean("Sitting"));
+-		this.setSitting(var1.getBoolean("Sitting"));
++		this.aiSit.setSitting(par1NBTTagCompound.getBoolean("Sitting"));
++		this.setSitting(par1NBTTagCompound.getBoolean("Sitting"));
+ 	}
+ 
+-	protected void playTameEffect(boolean var1) {
++	/**
++	 * Play the taming effect, will either be hearts or smoke depending on status
++	 */
++	protected void playTameEffect(boolean par1) {
+ 		String var2 = "heart";
+-		if(!var1) {
++
++		if (!par1) {
+ 			var2 = "smoke";
+ 		}
+ 
+-		for(int var3 = 0; var3 < 7; ++var3) {
+-			double var4 = this.ab.nextGaussian() * 0.02D;
+-			double var6 = this.ab.nextGaussian() * 0.02D;
+-			double var8 = this.ab.nextGaussian() * 0.02D;
+-			this.worldObj.spawnParticle(var2, this.posX + (double)(this.ab.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + 0.5D + (double)(this.ab.nextFloat() * this.height), this.posZ + (double)(this.ab.nextFloat() * this.width * 2.0F) - (double)this.width, var4, var6, var8);
++		for (int var3 = 0; var3 < 7; ++var3) {
++			double var4 = this.rand.nextGaussian() * 0.02D;
++			double var6 = this.rand.nextGaussian() * 0.02D;
++			double var8 = this.rand.nextGaussian() * 0.02D;
++			this.worldObj.spawnParticle(var2, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + 0.5D + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, var4, var6, var8);
+ 		}
+-
+ 	}
+ 
+-	public void handleHealthUpdate(byte var1) {
+-		if(var1 == 7) {
++	public void handleHealthUpdate(byte par1) {
++		if (par1 == 7) {
+ 			this.playTameEffect(true);
+-		} else if(var1 == 6) {
++		} else if (par1 == 6) {
+ 			this.playTameEffect(false);
+ 		} else {
+-			super.handleHealthUpdate(var1);
++			super.handleHealthUpdate(par1);
+ 		}
+-
+ 	}
+ 
+ 	public boolean isTamed() {
+ 		return (this.dataWatcher.getWatchableObjectByte(16) & 4) != 0;
+ 	}
+ 
+-	public void setTamed(boolean var1) {
++	public void setTamed(boolean par1) {
+ 		byte var2 = this.dataWatcher.getWatchableObjectByte(16);
+-		if(var1) {
++
++		if (par1) {
+ 			this.dataWatcher.updateObject(16, Byte.valueOf((byte)(var2 | 4)));
+ 		} else {
+ 			this.dataWatcher.updateObject(16, Byte.valueOf((byte)(var2 & -5)));
+ 		}
+-
+ 	}
+ 
+ 	public boolean isSitting() {
+ 		return (this.dataWatcher.getWatchableObjectByte(16) & 1) != 0;
+ 	}
+ 
+-	public void setSitting(boolean var1) {
++	public void setSitting(boolean par1) {
+ 		byte var2 = this.dataWatcher.getWatchableObjectByte(16);
+-		if(var1) {
++
++		if (par1) {
+ 			this.dataWatcher.updateObject(16, Byte.valueOf((byte)(var2 | 1)));
+ 		} else {
+ 			this.dataWatcher.updateObject(16, Byte.valueOf((byte)(var2 & -2)));
+ 		}
+-
+ 	}
+ 
+ 	public String getOwnerName() {
+ 		return this.dataWatcher.getWatchableObjectString(17);
+ 	}
+ 
+-	public void setOwner(String var1) {
+-		this.dataWatcher.updateObject(17, var1);
++	public void setOwner(String par1Str) {
++		this.dataWatcher.updateObject(17, par1Str);
+ 	}
+ 
+ 	public EntityLivingBase func_130012_q() {
+@@ -106,14 +116,15 @@
+ 		return this.aiSit;
+ 	}
+ 
+-	public boolean func_142018_a(EntityLivingBase var1, EntityLivingBase var2) {
++	public boolean func_142018_a(EntityLivingBase par1EntityLivingBase, EntityLivingBase par2EntityLivingBase) {
+ 		return true;
+ 	}
+ 
+ 	public Team getTeam() {
+-		if(this.isTamed()) {
++		if (this.isTamed()) {
+ 			EntityLivingBase var1 = this.func_130012_q();
+-			if(var1 != null) {
++
++			if (var1 != null) {
+ 				return var1.getTeam();
+ 			}
+ 		}
+@@ -121,19 +132,20 @@
+ 		return super.getTeam();
+ 	}
+ 
+-	public boolean isOnSameTeam(EntityLivingBase var1) {
+-		if(this.isTamed()) {
++	public boolean isOnSameTeam(EntityLivingBase par1EntityLivingBase) {
++		if (this.isTamed()) {
+ 			EntityLivingBase var2 = this.func_130012_q();
+-			if(var1 == var2) {
++
++			if (par1EntityLivingBase == var2) {
+ 				return true;
+ 			}
+ 
+-			if(var2 != null) {
+-				return var2.isOnSameTeam(var1);
++			if (var2 != null) {
++				return var2.isOnSameTeam(par1EntityLivingBase);
+ 			}
+ 		}
+ 
+-		return super.isOnSameTeam(var1);
++		return super.isOnSameTeam(par1EntityLivingBase);
+ 	}
+ 
+ 	public Entity getOwner() {

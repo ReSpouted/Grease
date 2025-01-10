@@ -1,0 +1,97 @@
+--- net/minecraft/src/DefaultResourcePack.java
++++ net/minecraft/src/DefaultResourcePack.java
+@@ -13,62 +13,63 @@
+ import javax.imageio.ImageIO;
+ 
+ public class DefaultResourcePack implements ResourcePack {
+-	public static final Set a = ImmutableSet.of("minecraft");
+-	private final Map b = Maps.newHashMap();
+-	private final File c;
++	public static final Set defaultResourceDomains = ImmutableSet.of("minecraft");
++	private final Map mapResourceFiles = Maps.newHashMap();
++	public final File fileAssets;
+ 
+-	public DefaultResourcePack(File var1) {
+-		this.c = var1;
+-		this.readAssetsDir(this.c);
++	public DefaultResourcePack(File par1File) {
++		this.fileAssets = par1File;
++		this.readAssetsDir(this.fileAssets);
+ 	}
+ 
+-	public InputStream getInputStream(ResourceLocation var1) throws IOException {
+-		InputStream var2 = this.getResourceStream(var1);
+-		if(var2 != null) {
++	public InputStream getInputStream(ResourceLocation par1ResourceLocation) throws IOException {
++		InputStream var2 = this.getResourceStream(par1ResourceLocation);
++
++		if (var2 != null) {
+ 			return var2;
+ 		} else {
+-			File var3 = (File)this.b.get(var1.toString());
+-			if(var3 != null) {
++			File var3 = (File)this.mapResourceFiles.get(par1ResourceLocation.toString());
++
++			if (var3 != null) {
+ 				return new FileInputStream(var3);
+ 			} else {
+-				throw new FileNotFoundException(var1.getResourcePath());
++				throw new FileNotFoundException(par1ResourceLocation.getResourcePath());
+ 			}
+ 		}
+ 	}
+ 
+-	private InputStream getResourceStream(ResourceLocation var1) {
+-		return DefaultResourcePack.class.getResourceAsStream("/assets/minecraft/" + var1.getResourcePath());
+-	}
+-
+-	public void addResourceFile(String var1, File var2) {
+-		this.b.put((new ResourceLocation(var1)).toString(), var2);
+-	}
+-
+-	public boolean resourceExists(ResourceLocation var1) {
+-		return this.getResourceStream(var1) != null || this.b.containsKey(var1.toString());
++	private InputStream getResourceStream(ResourceLocation par1ResourceLocation) {
++		return DefaultResourcePack.class.getResourceAsStream("/assets/minecraft/" + par1ResourceLocation.getResourcePath());
++	}
++
++	public void addResourceFile(String par1Str, File par2File) {
++		this.mapResourceFiles.put((new ResourceLocation(par1Str)).toString(), par2File);
++	}
++
++	public boolean resourceExists(ResourceLocation par1ResourceLocation) {
++		return this.getResourceStream(par1ResourceLocation) != null || this.mapResourceFiles.containsKey(par1ResourceLocation.toString());
+ 	}
+ 
+ 	public Set getResourceDomains() {
+-		return a;
++		return defaultResourceDomains;
+ 	}
+ 
+-	public void readAssetsDir(File var1) {
+-		if(var1.isDirectory()) {
+-			File[] var2 = var1.listFiles();
++	public void readAssetsDir(File par1File) {
++		if (par1File.isDirectory()) {
++			File[] var2 = par1File.listFiles();
+ 			int var3 = var2.length;
+ 
+-			for(int var4 = 0; var4 < var3; ++var4) {
++			for (int var4 = 0; var4 < var3; ++var4) {
+ 				File var5 = var2[var4];
+ 				this.readAssetsDir(var5);
+ 			}
+ 		} else {
+-			this.addResourceFile(AbstractResourcePack.getRelativeName(this.c, var1), var1);
++			this.addResourceFile(AbstractResourcePack.getRelativeName(this.fileAssets, par1File), par1File);
+ 		}
+-
+ 	}
+ 
+-	public MetadataSection getPackMetadata(MetadataSerializer var1, String var2) throws IOException {
+-		return AbstractResourcePack.readMetadata(var1, DefaultResourcePack.class.getResourceAsStream("/" + (new ResourceLocation("pack.mcmeta")).getResourcePath()), var2);
++	public MetadataSection getPackMetadata(MetadataSerializer par1MetadataSerializer, String par2Str) throws IOException {
++		return AbstractResourcePack.readMetadata(par1MetadataSerializer, DefaultResourcePack.class.getResourceAsStream("/" + (new ResourceLocation("pack.mcmeta")).getResourcePath()), par2Str);
+ 	}
+ 
+ 	public BufferedImage getPackImage() throws IOException {

@@ -1,0 +1,191 @@
+--- net/minecraft/src/TileEntityChestRenderer.java
++++ net/minecraft/src/TileEntityChestRenderer.java
+@@ -1,9 +1,18 @@
+ package net.minecraft.src;
+ 
+ import java.util.Calendar;
++
++import net.minecraft.src.TileEntityChest;
++
+ import org.lwjgl.opengl.GL11;
+ import org.lwjgl.opengl.GL12;
+ 
++// Spout Start
++import org.spoutcraft.api.Spoutcraft;
++import org.spoutcraft.client.SpoutClient;
++import org.spoutcraft.client.block.SpoutcraftChunk;
++// Spout End
++
+ public class TileEntityChestRenderer extends TileEntitySpecialRenderer {
+ 	private static final ResourceLocation RES_TRAPPED_DOUBLE = new ResourceLocation("textures/entity/chest/trapped_double.png");
+ 	private static final ResourceLocation RES_CHRISTMAS_DOUBLE = new ResourceLocation("textures/entity/chest/christmas_double.png");
+@@ -11,49 +20,76 @@
+ 	private static final ResourceLocation RES_TRAPPED_SINGLE = new ResourceLocation("textures/entity/chest/trapped.png");
+ 	private static final ResourceLocation RES_CHRISTMAS_SINGLE = new ResourceLocation("textures/entity/chest/christmas.png");
+ 	private static final ResourceLocation RES_NORMAL_SINGLE = new ResourceLocation("textures/entity/chest/normal.png");
++
++	/** The normal small chest model. */
+ 	private ModelChest chestModel = new ModelChest();
++
++	/** The large double chest model. */
+ 	private ModelChest largeChestModel = new ModelLargeChest();
++
++	/** If true, chests will be rendered with the Christmas present textures. */
+ 	private boolean isChristmas;
+ 
+ 	public TileEntityChestRenderer() {
+ 		Calendar var1 = Calendar.getInstance();
+-		if(var1.get(2) + 1 == 12 && var1.get(5) >= 24 && var1.get(5) <= 26) {
++
++		if (var1.get(2) + 1 == 12 && var1.get(5) >= 24 && var1.get(5) <= 26) {
+ 			this.isChristmas = true;
+ 		}
+-
+ 	}
+ 
+-	public void renderTileEntityChestAt(TileEntityChest var1, double var2, double var4, double var6, float var8) {
++	/**
++	 * Renders the TileEntity for the chest at a position.
++	 */
++	public void renderTileEntityChestAt(TileEntityChest par1TileEntityChest, double par2, double par4, double par6, float par8) {
+ 		int var9;
+-		if(!var1.hasWorldObj()) {
++		// Spout Start
++		short customId = 0;		
++		if (SpoutClient.getInstance().getRawWorld() != null && par1TileEntityChest.hasWorldObj()) {
++			SpoutcraftChunk sChunk = Spoutcraft.getChunkAt(par1TileEntityChest.worldObj, par1TileEntityChest.xCoord, par1TileEntityChest.yCoord, par1TileEntityChest.zCoord);
++			customId = sChunk.getCustomBlockId(par1TileEntityChest.xCoord, par1TileEntityChest.yCoord, par1TileEntityChest.zCoord);	
++			short[] customBlockIds = sChunk.getCustomBlockIds();
++			byte[] customBlockData = sChunk.getCustomBlockData();			
++
++			if (customId > 0) {				
++				return; // Don't render the chest image or animation if its a custom chest.
++			}
++		}
++		// Spout End
++		
++		if (!par1TileEntityChest.hasWorldObj()) {
+ 			var9 = 0;
+ 		} else {
+-			Block var10 = var1.getBlockType();
+-			var9 = var1.getBlockMetadata();
+-			if(var10 instanceof BlockChest && var9 == 0) {
+-				((BlockChest)var10).unifyAdjacentChests(var1.getWorldObj(), var1.xCoord, var1.yCoord, var1.zCoord);
+-				var9 = var1.getBlockMetadata();
++			Block var10 = par1TileEntityChest.getBlockType();
++			var9 = par1TileEntityChest.getBlockMetadata();
++
++			if (var10 instanceof BlockChest && var9 == 0) {
++				((BlockChest)var10).unifyAdjacentChests(par1TileEntityChest.getWorldObj(), par1TileEntityChest.xCoord, par1TileEntityChest.yCoord, par1TileEntityChest.zCoord);
++				var9 = par1TileEntityChest.getBlockMetadata();
+ 			}
+ 
+-			var1.checkForAdjacentChests();
++			par1TileEntityChest.checkForAdjacentChests();
+ 		}
+ 
+-		if(var1.adjacentChestZNeg == null && var1.adjacentChestXNeg == null) {
++		if (par1TileEntityChest.adjacentChestZNeg == null && par1TileEntityChest.adjacentChestXNeg == null) {
+ 			ModelChest var14;
+-			if(var1.adjacentChestXPos == null && var1.adjacentChestZPosition == null) {
++			
++			if (par1TileEntityChest.adjacentChestXPos == null && par1TileEntityChest.adjacentChestZPosition == null) {
+ 				var14 = this.chestModel;
+-				if(var1.getChestType() == 1) {
++
++				if (par1TileEntityChest.getChestType() == 1) {
+ 					this.bindTexture(RES_TRAPPED_SINGLE);
+-				} else if(this.isChristmas) {
++				} else if (this.isChristmas) {
+ 					this.bindTexture(RES_CHRISTMAS_SINGLE);
+ 				} else {
+ 					this.bindTexture(RES_NORMAL_SINGLE);
+ 				}
+ 			} else {
+ 				var14 = this.largeChestModel;
+-				if(var1.getChestType() == 1) {
++
++				if (par1TileEntityChest.getChestType() == 1) {
+ 					this.bindTexture(RES_TRAPPED_DOUBLE);
+-				} else if(this.isChristmas) {
++				} else if (this.isChristmas) {
+ 					this.bindTexture(RES_CHRISTMAS_DOUBLE);
+ 				} else {
+ 					this.bindTexture(RES_NORMAL_DOUBLE);
+@@ -63,48 +99,52 @@
+ 			GL11.glPushMatrix();
+ 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+ 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+-			GL11.glTranslatef((float)var2, (float)var4 + 1.0F, (float)var6 + 1.0F);
++			GL11.glTranslatef((float)par2, (float)par4 + 1.0F, (float)par6 + 1.0F);
+ 			GL11.glScalef(1.0F, -1.0F, -1.0F);
+ 			GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+ 			short var11 = 0;
+-			if(var9 == 2) {
++
++			if (var9 == 2) {
+ 				var11 = 180;
+ 			}
+ 
+-			if(var9 == 3) {
++			if (var9 == 3) {
+ 				var11 = 0;
+ 			}
+ 
+-			if(var9 == 4) {
++			if (var9 == 4) {
+ 				var11 = 90;
+ 			}
+ 
+-			if(var9 == 5) {
++			if (var9 == 5) {
+ 				var11 = -90;
+ 			}
+ 
+-			if(var9 == 2 && var1.adjacentChestXPos != null) {
++			if (var9 == 2 && par1TileEntityChest.adjacentChestXPos != null) {
+ 				GL11.glTranslatef(1.0F, 0.0F, 0.0F);
+ 			}
+ 
+-			if(var9 == 5 && var1.adjacentChestZPosition != null) {
++			if (var9 == 5 && par1TileEntityChest.adjacentChestZPosition != null) {
+ 				GL11.glTranslatef(0.0F, 0.0F, -1.0F);
+ 			}
+ 
+ 			GL11.glRotatef((float)var11, 0.0F, 1.0F, 0.0F);
+ 			GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+-			float var12 = var1.prevLidAngle + (var1.lidAngle - var1.prevLidAngle) * var8;
++			float var12 = par1TileEntityChest.prevLidAngle + (par1TileEntityChest.lidAngle - par1TileEntityChest.prevLidAngle) * par8;
+ 			float var13;
+-			if(var1.adjacentChestZNeg != null) {
+-				var13 = var1.adjacentChestZNeg.prevLidAngle + (var1.adjacentChestZNeg.lidAngle - var1.adjacentChestZNeg.prevLidAngle) * var8;
+-				if(var13 > var12) {
++
++			if (par1TileEntityChest.adjacentChestZNeg != null) {
++				var13 = par1TileEntityChest.adjacentChestZNeg.prevLidAngle + (par1TileEntityChest.adjacentChestZNeg.lidAngle - par1TileEntityChest.adjacentChestZNeg.prevLidAngle) * par8;
++
++				if (var13 > var12) {
+ 					var12 = var13;
+ 				}
+ 			}
+ 
+-			if(var1.adjacentChestXNeg != null) {
+-				var13 = var1.adjacentChestXNeg.prevLidAngle + (var1.adjacentChestXNeg.lidAngle - var1.adjacentChestXNeg.prevLidAngle) * var8;
+-				if(var13 > var12) {
++			if (par1TileEntityChest.adjacentChestXNeg != null) {
++				var13 = par1TileEntityChest.adjacentChestXNeg.prevLidAngle + (par1TileEntityChest.adjacentChestXNeg.lidAngle - par1TileEntityChest.adjacentChestXNeg.prevLidAngle) * par8;
++
++				if (var13 > var12) {
+ 					var12 = var13;
+ 				}
+ 			}
+@@ -119,7 +159,7 @@
+ 		}
+ 	}
+ 
+-	public void renderTileEntityAt(TileEntity var1, double var2, double var4, double var6, float var8) {
+-		this.renderTileEntityChestAt((TileEntityChest)var1, var2, var4, var6, var8);
++	public void renderTileEntityAt(TileEntity par1TileEntity, double par2, double par4, double par6, float par8) {
++		this.renderTileEntityChestAt((TileEntityChest)par1TileEntity, par2, par4, par6, par8);
+ 	}
+ }

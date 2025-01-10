@@ -1,0 +1,12 @@
+--- net/minecraft/src/IRangedAttackMob.java
++++ net/minecraft/src/IRangedAttackMob.java
+@@ -1,5 +1,9 @@
+ package net.minecraft.src;
+ 
+ public interface IRangedAttackMob {
++
++	/**
++	 * Attack the specified entity using a ranged attack.
++	 */
+ 	void attackEntityWithRangedAttack(EntityLivingBase var1, float var2);
+ }

@@ -1,0 +1,18 @@
+--- net/minecraft/src/CallableConnectionName.java
++++ net/minecraft/src/CallableConnectionName.java
+@@ -4,11 +4,12 @@
+ 
+ class CallableConnectionName implements Callable {
+ 	final NetServerHandler field_111201_a;
++
+ 	final NetworkListenThread field_111200_b;
+ 
+-	CallableConnectionName(NetworkListenThread var1, NetServerHandler var2) {
+-		this.field_111200_b = var1;
+-		this.field_111201_a = var2;
++	CallableConnectionName(NetworkListenThread par1NetworkListenThread, NetServerHandler par2NetServerHandler) {
++		this.field_111200_b = par1NetworkListenThread;
++		this.field_111201_a = par2NetServerHandler;
+ 	}
+ 
+ 	public String func_111199_a() {

@@ -1,0 +1,65 @@
+--- net/minecraft/src/Packet11PlayerPosition.java
++++ net/minecraft/src/Packet11PlayerPosition.java
+@@ -9,31 +9,40 @@
+ 		this.moving = true;
+ 	}
+ 
+-	public Packet11PlayerPosition(double var1, double var3, double var5, double var7, boolean var9) {
+-		this.xPosition = var1;
+-		this.yPosition = var3;
+-		this.stance = var5;
+-		this.zPosition = var7;
+-		this.onGround = var9;
++	public Packet11PlayerPosition(double par1, double par3, double par5, double par7, boolean par9) {
++		this.xPosition = par1;
++		this.yPosition = par3;
++		this.stance = par5;
++		this.zPosition = par7;
++		this.onGround = par9;
+ 		this.moving = true;
+ 	}
+ 
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.xPosition = var1.readDouble();
+-		this.yPosition = var1.readDouble();
+-		this.stance = var1.readDouble();
+-		this.zPosition = var1.readDouble();
+-		super.readPacketData(var1);
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeDouble(this.xPosition);
+-		var1.writeDouble(this.yPosition);
+-		var1.writeDouble(this.stance);
+-		var1.writeDouble(this.zPosition);
+-		super.writePacketData(var1);
+-	}
+-
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.xPosition = par1DataInput.readDouble();
++		this.yPosition = par1DataInput.readDouble();
++		this.stance = par1DataInput.readDouble();
++		this.zPosition = par1DataInput.readDouble();
++		super.readPacketData(par1DataInput);
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeDouble(this.xPosition);
++		par1DataOutput.writeDouble(this.yPosition);
++		par1DataOutput.writeDouble(this.stance);
++		par1DataOutput.writeDouble(this.zPosition);
++		super.writePacketData(par1DataOutput);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 33;
+ 	}

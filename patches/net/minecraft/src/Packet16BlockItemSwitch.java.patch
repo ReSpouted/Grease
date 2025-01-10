@@ -1,0 +1,79 @@
+--- net/minecraft/src/Packet16BlockItemSwitch.java
++++ net/minecraft/src/Packet16BlockItemSwitch.java
+@@ -5,36 +5,56 @@
+ import java.io.IOException;
+ 
+ public class Packet16BlockItemSwitch extends Packet {
++
++	/** The block/item id to be equipped. */
+ 	public int id;
+ 
+-	public Packet16BlockItemSwitch() {
+-	}
+-
+-	public Packet16BlockItemSwitch(int var1) {
+-		this.id = var1;
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.id = var1.readShort();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeShort(this.id);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleBlockItemSwitch(this);
+-	}
+-
++	public Packet16BlockItemSwitch() {}
++
++	public Packet16BlockItemSwitch(int par1) {
++		this.id = par1;
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.id = par1DataInput.readShort();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeShort(this.id);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleBlockItemSwitch(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 2;
+ 	}
+ 
++	/**
++	 * only false for the abstract Packet class, all real packets return true
++	 */
+ 	public boolean isRealPacket() {
+ 		return true;
+ 	}
+ 
+-	public boolean containsSameEntityIDAs(Packet var1) {
++	/**
++	 * eg return packet30entity.entityId == entityId; WARNING : will throw if you compare a packet to a different packet
++	 * class
++	 */
++	public boolean containsSameEntityIDAs(Packet par1Packet) {
+ 		return true;
+ 	}
+ }

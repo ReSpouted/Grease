@@ -1,0 +1,73 @@
+--- net/minecraft/src/MetadataSerializer.java
++++ net/minecraft/src/MetadataSerializer.java
+@@ -2,43 +2,49 @@
+ 
+ import com.google.gson.Gson;
+ import com.google.gson.GsonBuilder;
+-import com.google.gson.JsonElement;
+ import com.google.gson.JsonObject;
+-import java.lang.reflect.Type;
+ 
+ public class MetadataSerializer {
+ 	private final IRegistry metadataSectionSerializerRegistry = new RegistrySimple();
+-	private final GsonBuilder b = new GsonBuilder();
+-	private Gson c;
+-
+-	public void registerMetadataSectionType(MetadataSectionSerializer var1, Class var2) {
+-		this.metadataSectionSerializerRegistry.putObject(var1.getSectionName(), new MetadataSerializerRegistration(this, var1, var2, (MetadataSerializerEmptyAnon)null));
+-		this.b.registerTypeAdapter(var2, var1);
+-		this.c = null;
++	private final GsonBuilder gsonBuilder = new GsonBuilder();
++
++	/**
++	 * Cached Gson instance. Set to null when more sections are registered, and then re-created from the builder.
++	 */
++	private Gson gson;
++
++	public void registerMetadataSectionType(MetadataSectionSerializer par1MetadataSectionSerializer, Class par2Class) {
++		this.metadataSectionSerializerRegistry.putObject(par1MetadataSectionSerializer.getSectionName(), new MetadataSerializerRegistration(this, par1MetadataSectionSerializer, par2Class, (MetadataSerializerEmptyAnon)null));
++		this.gsonBuilder.registerTypeAdapter(par2Class, par1MetadataSectionSerializer);
++		this.gson = null;
+ 	}
+ 
+-	public MetadataSection parseMetadataSection(String var1, JsonObject var2) {
+-		if(var1 == null) {
++	public MetadataSection parseMetadataSection(String par1Str, JsonObject par2JsonObject) {
++		if (par1Str == null) {
+ 			throw new IllegalArgumentException("Metadata section name cannot be null");
+-		} else if(!var2.has(var1)) {
++		} else if (!par2JsonObject.has(par1Str)) {
+ 			return null;
+-		} else if(!var2.get(var1).isJsonObject()) {
+-			throw new IllegalArgumentException("Invalid metadata for \'" + var1 + "\' - expected object, found " + var2.get(var1));
++		} else if (!par2JsonObject.get(par1Str).isJsonObject()) {
++			throw new IllegalArgumentException("Invalid metadata for \'" + par1Str + "\' - expected object, found " + par2JsonObject.get(par1Str));
+ 		} else {
+-			MetadataSerializerRegistration var3 = (MetadataSerializerRegistration)this.metadataSectionSerializerRegistry.getObject(var1);
+-			if(var3 == null) {
+-				throw new IllegalArgumentException("Don\'t know how to handle metadata section \'" + var1 + "\'");
++			MetadataSerializerRegistration var3 = (MetadataSerializerRegistration)this.metadataSectionSerializerRegistry.getObject(par1Str);
++
++			if (var3 == null) {
++				throw new IllegalArgumentException("Don\'t know how to handle metadata section \'" + par1Str + "\'");
+ 			} else {
+-				return (MetadataSection)this.getGson().fromJson((JsonElement)var2.getAsJsonObject(var1), (Type)var3.b);
++				return (MetadataSection)this.getGson().fromJson(par2JsonObject.getAsJsonObject(par1Str), var3.field_110500_b);
+ 			}
+ 		}
+ 	}
+ 
++	/**
++	 * Returns a Gson instance with type adapters registered for metadata sections.
++	 */
+ 	private Gson getGson() {
+-		if(this.c == null) {
+-			this.c = this.b.create();
++		if (this.gson == null) {
++			this.gson = this.gsonBuilder.create();
+ 		}
+ 
+-		return this.c;
++		return this.gson;
+ 	}
+ }

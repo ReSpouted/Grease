@@ -1,0 +1,14 @@
+--- net/minecraft/src/StitcherException.java
++++ net/minecraft/src/StitcherException.java
+@@ -3,8 +3,8 @@
+ public class StitcherException extends RuntimeException {
+ 	private final StitchHolder field_98149_a;
+ 
+-	public StitcherException(StitchHolder var1, String var2) {
+-		super(var2);
+-		this.field_98149_a = var1;
++	public StitcherException(StitchHolder par1StitchHolder, String par2Str) {
++		super(par2Str);
++		this.field_98149_a = par1StitchHolder;
+ 	}
+ }

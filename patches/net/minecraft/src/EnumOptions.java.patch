@@ -1,0 +1,49 @@
+--- net/minecraft/src/EnumOptions.java
++++ net/minecraft/src/EnumOptions.java
+@@ -33,18 +33,18 @@
+ 	CHAT_WIDTH("options.chat.width", true, false),
+ 	CHAT_HEIGHT_FOCUSED("options.chat.height.focused", true, false),
+ 	CHAT_HEIGHT_UNFOCUSED("options.chat.height.unfocused", true, false);
+-
+ 	private final boolean enumFloat;
+ 	private final boolean enumBoolean;
+-	private final String I;
++	private final String enumString;
+ 
+-	public static EnumOptions getEnumOptions(int var0) {
++	public static EnumOptions getEnumOptions(int par0) {
+ 		EnumOptions[] var1 = values();
+ 		int var2 = var1.length;
+ 
+-		for(int var3 = 0; var3 < var2; ++var3) {
++		for (int var3 = 0; var3 < var2; ++var3) {
+ 			EnumOptions var4 = var1[var3];
+-			if(var4.returnEnumOrdinal() == var0) {
++
++			if (var4.returnEnumOrdinal() == par0) {
+ 				return var4;
+ 			}
+ 		}
+@@ -52,10 +52,10 @@
+ 		return null;
+ 	}
+ 
+-	private EnumOptions(String var3, boolean var4, boolean var5) {
+-		this.I = var3;
+-		this.enumFloat = var4;
+-		this.enumBoolean = var5;
++	private EnumOptions(String par3Str, boolean par4, boolean par5) {
++		this.enumString = par3Str;
++		this.enumFloat = par4;
++		this.enumBoolean = par5;
+ 	}
+ 
+ 	public boolean getEnumFloat() {
+@@ -71,6 +71,6 @@
+ 	}
+ 
+ 	public String getEnumString() {
+-		return this.I;
++		return this.enumString;
+ 	}
+ }

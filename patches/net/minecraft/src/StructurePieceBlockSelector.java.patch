@@ -1,0 +1,12 @@
+--- net/minecraft/src/StructurePieceBlockSelector.java
++++ net/minecraft/src/StructurePieceBlockSelector.java
+@@ -6,6 +6,9 @@
+ 	protected int selectedBlockId;
+ 	protected int selectedBlockMetaData;
+ 
++	/**
++	 * picks Block Ids and Metadata (Silverfish)
++	 */
+ 	public abstract void selectBlocks(Random var1, int var2, int var3, int var4, boolean var5);
+ 
+ 	public int getSelectedBlockId() {

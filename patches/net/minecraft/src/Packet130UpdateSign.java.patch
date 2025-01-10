@@ -1,0 +1,102 @@
+--- net/minecraft/src/Packet130UpdateSign.java
++++ net/minecraft/src/Packet130UpdateSign.java
+@@ -8,52 +8,62 @@
+ 	public int xPosition;
+ 	public int yPosition;
+ 	public int zPosition;
+-	public String[] d;
++	public String[] signLines;
+ 
+ 	public Packet130UpdateSign() {
+ 		this.isChunkDataPacket = true;
+ 	}
+ 
+-	public Packet130UpdateSign(int var1, int var2, int var3, String[] var4) {
++	public Packet130UpdateSign(int par1, int par2, int par3, String[] par4ArrayOfStr) {
+ 		this.isChunkDataPacket = true;
+-		this.xPosition = var1;
+-		this.yPosition = var2;
+-		this.zPosition = var3;
+-		this.d = new String[]{var4[0], var4[1], var4[2], var4[3]};
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.xPosition = var1.readInt();
+-		this.yPosition = var1.readShort();
+-		this.zPosition = var1.readInt();
+-		this.d = new String[4];
+-
+-		for(int var2 = 0; var2 < 4; ++var2) {
+-			this.d[var2] = readString(var1, 15);
+-		}
+-
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeInt(this.xPosition);
+-		var1.writeShort(this.yPosition);
+-		var1.writeInt(this.zPosition);
+-
+-		for(int var2 = 0; var2 < 4; ++var2) {
+-			writeString(this.d[var2], var1);
+-		}
+-
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleUpdateSign(this);
+-	}
+-
++		this.xPosition = par1;
++		this.yPosition = par2;
++		this.zPosition = par3;
++		this.signLines = new String[] {par4ArrayOfStr[0], par4ArrayOfStr[1], par4ArrayOfStr[2], par4ArrayOfStr[3]};
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.xPosition = par1DataInput.readInt();
++		this.yPosition = par1DataInput.readShort();
++		this.zPosition = par1DataInput.readInt();
++		this.signLines = new String[4];
++
++		for (int var2 = 0; var2 < 4; ++var2) {
++			this.signLines[var2] = readString(par1DataInput, 15);
++		}
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeInt(this.xPosition);
++		par1DataOutput.writeShort(this.yPosition);
++		par1DataOutput.writeInt(this.zPosition);
++
++		for (int var2 = 0; var2 < 4; ++var2) {
++			writeString(this.signLines[var2], par1DataOutput);
++		}
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleUpdateSign(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		int var1 = 0;
+ 
+-		for(int var2 = 0; var2 < 4; ++var2) {
+-			var1 += this.d[var2].length();
++		for (int var2 = 0; var2 < 4; ++var2) {
++			var1 += this.signLines[var2].length();
+ 		}
+ 
+ 		return var1;

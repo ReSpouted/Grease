@@ -1,0 +1,29 @@
+--- net/minecraft/src/Session.java
++++ net/minecraft/src/Session.java
+@@ -1,19 +1,19 @@
+ package net.minecraft.src;
+ 
+ public class Session {
+-	private final String a;
+-	private final String b;
++	private final String username;
++	private final String sessionId;
+ 
+-	public Session(String var1, String var2) {
+-		this.a = var1;
+-		this.b = var2;
++	public Session(String par1Str, String par2Str) {
++		this.username = par1Str;
++		this.sessionId = par2Str;
+ 	}
+ 
+ 	public String getUsername() {
+-		return this.a;
++		return this.username;
+ 	}
+ 
+ 	public String getSessionID() {
+-		return this.b;
++		return this.sessionId;
+ 	}
+ }

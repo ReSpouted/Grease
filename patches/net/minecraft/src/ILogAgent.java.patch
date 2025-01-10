@@ -1,0 +1,11 @@
+--- net/minecraft/src/ILogAgent.java
++++ net/minecraft/src/ILogAgent.java
+@@ -5,7 +5,7 @@
+ 
+ 	void logWarning(String var1);
+ 
+-	void logWarningFormatted(String var1, Object... var2);
++	void logWarningFormatted(String var1, Object ... var2);
+ 
+ 	void logWarningException(String var1, Throwable var2);
+ 

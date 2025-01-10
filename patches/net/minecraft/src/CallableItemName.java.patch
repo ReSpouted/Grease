@@ -1,0 +1,18 @@
+--- net/minecraft/src/CallableItemName.java
++++ net/minecraft/src/CallableItemName.java
+@@ -4,11 +4,12 @@
+ 
+ class CallableItemName implements Callable {
+ 	final ItemStack theItemStack;
++
+ 	final InventoryPlayer playerInventory;
+ 
+-	CallableItemName(InventoryPlayer var1, ItemStack var2) {
+-		this.playerInventory = var1;
+-		this.theItemStack = var2;
++	CallableItemName(InventoryPlayer par1InventoryPlayer, ItemStack par2ItemStack) {
++		this.playerInventory = par1InventoryPlayer;
++		this.theItemStack = par2ItemStack;
+ 	}
+ 
+ 	public String callItemDisplayName() {

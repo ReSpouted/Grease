@@ -1,0 +1,32 @@
+--- net/minecraft/src/PotionAbsoption.java
++++ net/minecraft/src/PotionAbsoption.java
+@@ -1,17 +1,17 @@
+ package net.minecraft.src;
+ 
+ public class PotionAbsoption extends Potion {
+-	protected PotionAbsoption(int var1, boolean var2, int var3) {
+-		super(var1, var2, var3);
+-	}
+-
+-	public void removeAttributesModifiersFromEntity(EntityLivingBase var1, BaseAttributeMap var2, int var3) {
+-		var1.setAbsorptionAmount(var1.getAbsorptionAmount() - (float)(4 * (var3 + 1)));
+-		super.removeAttributesModifiersFromEntity(var1, var2, var3);
+-	}
+-
+-	public void applyAttributesModifiersToEntity(EntityLivingBase var1, BaseAttributeMap var2, int var3) {
+-		var1.setAbsorptionAmount(var1.getAbsorptionAmount() + (float)(4 * (var3 + 1)));
+-		super.applyAttributesModifiersToEntity(var1, var2, var3);
++	protected PotionAbsoption(int par1, boolean par2, int par3) {
++		super(par1, par2, par3);
++	}
++
++	public void removeAttributesModifiersFromEntity(EntityLivingBase par1EntityLivingBase, BaseAttributeMap par2BaseAttributeMap, int par3) {
++		par1EntityLivingBase.setAbsorptionAmount(par1EntityLivingBase.getAbsorptionAmount() - (float)(4 * (par3 + 1)));
++		super.removeAttributesModifiersFromEntity(par1EntityLivingBase, par2BaseAttributeMap, par3);
++	}
++
++	public void applyAttributesModifiersToEntity(EntityLivingBase par1EntityLivingBase, BaseAttributeMap par2BaseAttributeMap, int par3) {
++		par1EntityLivingBase.setAbsorptionAmount(par1EntityLivingBase.getAbsorptionAmount() + (float)(4 * (par3 + 1)));
++		super.applyAttributesModifiersToEntity(par1EntityLivingBase, par2BaseAttributeMap, par3);
+ 	}
+ }

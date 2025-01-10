@@ -1,0 +1,99 @@
+--- net/minecraft/src/Packet2ClientProtocol.java
++++ net/minecraft/src/Packet2ClientProtocol.java
+@@ -6,47 +6,64 @@
+ 
+ public class Packet2ClientProtocol extends Packet {
+ 	private int protocolVersion;
+-	private String b;
+-	private String c;
++	private String username;
++	private String serverHost;
+ 	private int serverPort;
+ 
+-	public Packet2ClientProtocol() {
+-	}
+-
+-	public Packet2ClientProtocol(int var1, String var2, String var3, int var4) {
+-		this.protocolVersion = var1;
+-		this.b = var2;
+-		this.c = var3;
+-		this.serverPort = var4;
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.protocolVersion = var1.readByte();
+-		this.b = readString(var1, 16);
+-		this.c = readString(var1, 255);
+-		this.serverPort = var1.readInt();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeByte(this.protocolVersion);
+-		writeString(this.b, var1);
+-		writeString(this.c, var1);
+-		var1.writeInt(this.serverPort);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleClientProtocol(this);
+-	}
+-
++	public Packet2ClientProtocol() {}
++
++	public Packet2ClientProtocol(int par1, String par2Str, String par3Str, int par4) {
++		this.protocolVersion = par1;
++		this.username = par2Str;
++		this.serverHost = par3Str;
++		this.serverPort = par4;
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.protocolVersion = par1DataInput.readByte();
++		this.username = readString(par1DataInput, 16);
++		this.serverHost = readString(par1DataInput, 255);
++		this.serverPort = par1DataInput.readInt();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeByte(this.protocolVersion);
++		writeString(this.username, par1DataOutput);
++		writeString(this.serverHost, par1DataOutput);
++		par1DataOutput.writeInt(this.serverPort);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleClientProtocol(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+-		return 3 + 2 * this.b.length();
++		return 3 + 2 * this.username.length();
+ 	}
+ 
++	/**
++	 * Returns the protocol version.
++	 */
+ 	public int getProtocolVersion() {
+ 		return this.protocolVersion;
+ 	}
+ 
++	/**
++	 * Returns the username.
++	 */
+ 	public String getUsername() {
+-		return this.b;
++		return this.username;
+ 	}
+ }

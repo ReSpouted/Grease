@@ -1,0 +1,18 @@
+--- net/minecraft/src/ScoreComparator.java
++++ net/minecraft/src/ScoreComparator.java
+@@ -3,11 +3,11 @@
+ import java.util.Comparator;
+ 
+ final class ScoreComparator implements Comparator {
+-	public int func_96659_a(Score var1, Score var2) {
+-		return var1.getScorePoints() > var2.getScorePoints() ? 1 : (var1.getScorePoints() < var2.getScorePoints() ? -1 : 0);
++	public int func_96659_a(Score par1Score, Score par2Score) {
++		return par1Score.getScorePoints() > par2Score.getScorePoints() ? 1 : (par1Score.getScorePoints() < par2Score.getScorePoints() ? -1 : 0);
+ 	}
+ 
+-	public int compare(Object var1, Object var2) {
+-		return this.func_96659_a((Score)var1, (Score)var2);
++	public int compare(Object par1Obj, Object par2Obj) {
++		return this.func_96659_a((Score)par1Obj, (Score)par2Obj);
+ 	}
+ }

@@ -1,0 +1,17 @@
+--- net/minecraft/src/ItemSimpleFoiled.java
++++ net/minecraft/src/ItemSimpleFoiled.java
+@@ -1,11 +1,11 @@
+ package net.minecraft.src;
+ 
+ public class ItemSimpleFoiled extends Item {
+-	public ItemSimpleFoiled(int var1) {
+-		super(var1);
++	public ItemSimpleFoiled(int par1) {
++		super(par1);
+ 	}
+ 
+-	public boolean hasEffect(ItemStack var1) {
++	public boolean hasEffect(ItemStack par1ItemStack) {
+ 		return true;
+ 	}
+ }

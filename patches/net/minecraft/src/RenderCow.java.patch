@@ -1,0 +1,26 @@
+--- net/minecraft/src/RenderCow.java
++++ net/minecraft/src/RenderCow.java
+@@ -3,15 +3,18 @@
+ public class RenderCow extends RenderLiving {
+ 	private static final ResourceLocation cowTextures = new ResourceLocation("textures/entity/cow/cow.png");
+ 
+-	public RenderCow(ModelBase var1, float var2) {
+-		super(var1, var2);
++	public RenderCow(ModelBase par1ModelBase, float par2) {
++		super(par1ModelBase, par2);
+ 	}
+ 
+-	protected ResourceLocation getCowTextures(EntityCow var1) {
++	protected ResourceLocation getCowTextures(EntityCow par1EntityCow) {
+ 		return cowTextures;
+ 	}
+ 
+-	protected ResourceLocation getEntityTexture(Entity var1) {
+-		return this.getCowTextures((EntityCow)var1);
++	/**
++	 * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
++	 */
++	protected ResourceLocation getEntityTexture(Entity par1Entity) {
++		return this.getCowTextures((EntityCow)par1Entity);
+ 	}
+ }

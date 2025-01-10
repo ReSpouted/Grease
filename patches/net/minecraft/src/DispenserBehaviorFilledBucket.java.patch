@@ -1,0 +1,36 @@
+--- net/minecraft/src/DispenserBehaviorFilledBucket.java
++++ net/minecraft/src/DispenserBehaviorFilledBucket.java
+@@ -3,18 +3,22 @@
+ final class DispenserBehaviorFilledBucket extends BehaviorDefaultDispenseItem {
+ 	private final BehaviorDefaultDispenseItem defaultDispenserItemBehavior = new BehaviorDefaultDispenseItem();
+ 
+-	public ItemStack dispenseStack(IBlockSource var1, ItemStack var2) {
+-		ItemBucket var3 = (ItemBucket)var2.getItem();
+-		int var4 = var1.getXInt();
+-		int var5 = var1.getYInt();
+-		int var6 = var1.getZInt();
+-		EnumFacing var7 = BlockDispenser.getFacing(var1.getBlockMetadata());
+-		if(var3.tryPlaceContainedLiquid(var1.getWorld(), var4 + var7.getFrontOffsetX(), var5 + var7.getFrontOffsetY(), var6 + var7.getFrontOffsetZ())) {
+-			var2.itemID = Item.bucketEmpty.itemID;
+-			var2.stackSize = 1;
+-			return var2;
++	/**
++	 * Dispense the specified stack, play the dispense sound and spawn particles.
++	 */
++	public ItemStack dispenseStack(IBlockSource par1IBlockSource, ItemStack par2ItemStack) {
++		ItemBucket var3 = (ItemBucket)par2ItemStack.getItem();
++		int var4 = par1IBlockSource.getXInt();
++		int var5 = par1IBlockSource.getYInt();
++		int var6 = par1IBlockSource.getZInt();
++		EnumFacing var7 = BlockDispenser.getFacing(par1IBlockSource.getBlockMetadata());
++
++		if (var3.tryPlaceContainedLiquid(par1IBlockSource.getWorld(), var4 + var7.getFrontOffsetX(), var5 + var7.getFrontOffsetY(), var6 + var7.getFrontOffsetZ())) {
++			par2ItemStack.itemID = Item.bucketEmpty.itemID;
++			par2ItemStack.stackSize = 1;
++			return par2ItemStack;
+ 		} else {
+-			return this.defaultDispenserItemBehavior.dispense(var1, var2);
++			return this.defaultDispenserItemBehavior.dispense(par1IBlockSource, par2ItemStack);
+ 		}
+ 	}
+ }

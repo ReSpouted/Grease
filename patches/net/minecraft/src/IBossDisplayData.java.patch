@@ -1,0 +1,11 @@
+--- net/minecraft/src/IBossDisplayData.java
++++ net/minecraft/src/IBossDisplayData.java
+@@ -5,5 +5,8 @@
+ 
+ 	float getHealth();
+ 
++	/**
++	 * Gets the username of the entity.
++	 */
+ 	String getEntityName();
+ }

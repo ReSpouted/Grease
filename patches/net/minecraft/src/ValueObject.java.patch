@@ -1,0 +1,29 @@
+--- net/minecraft/src/ValueObject.java
++++ net/minecraft/src/ValueObject.java
+@@ -9,12 +9,14 @@
+ 		Field[] var2 = this.getClass().getFields();
+ 		int var3 = var2.length;
+ 
+-		for(int var4 = 0; var4 < var3; ++var4) {
++		for (int var4 = 0; var4 < var3; ++var4) {
+ 			Field var5 = var2[var4];
+-			if(!func_96394_a(var5)) {
++
++			if (!func_96394_a(var5)) {
+ 				try {
+ 					var1.append(var5.getName()).append("=").append(var5.get(this)).append(" ");
+ 				} catch (IllegalAccessException var7) {
++					;
+ 				}
+ 			}
+ 		}
+@@ -24,7 +26,7 @@
+ 		return var1.toString();
+ 	}
+ 
+-	private static boolean func_96394_a(Field var0) {
+-		return Modifier.isStatic(var0.getModifiers());
++	private static boolean func_96394_a(Field par0Field) {
++		return Modifier.isStatic(par0Field.getModifiers());
+ 	}
+ }

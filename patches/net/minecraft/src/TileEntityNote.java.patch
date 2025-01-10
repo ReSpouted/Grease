@@ -1,0 +1,90 @@
+--- net/minecraft/src/TileEntityNote.java
++++ net/minecraft/src/TileEntityNote.java
+@@ -1,53 +1,70 @@
+ package net.minecraft.src;
+ 
+ public class TileEntityNote extends TileEntity {
++
++	/** Note to play */
+ 	public byte note;
++
++	/** stores the latest redstone state */
+ 	public boolean previousRedstoneState;
+ 
+-	public void writeToNBT(NBTTagCompound var1) {
+-		super.writeToNBT(var1);
+-		var1.setByte("note", this.note);
++	/**
++	 * Writes a tile entity to NBT.
++	 */
++	public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
++		super.writeToNBT(par1NBTTagCompound);
++		par1NBTTagCompound.setByte("note", this.note);
+ 	}
+ 
+-	public void readFromNBT(NBTTagCompound var1) {
+-		super.readFromNBT(var1);
+-		this.note = var1.getByte("note");
+-		if(this.note < 0) {
++	/**
++	 * Reads a tile entity from NBT.
++	 */
++	public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
++		super.readFromNBT(par1NBTTagCompound);
++		this.note = par1NBTTagCompound.getByte("note");
++
++		if (this.note < 0) {
+ 			this.note = 0;
+ 		}
+ 
+-		if(this.note > 24) {
++		if (this.note > 24) {
+ 			this.note = 24;
+ 		}
+-
+ 	}
+ 
++	/**
++	 * change pitch by -> (currentPitch + 1) % 25
++	 */
+ 	public void changePitch() {
+ 		this.note = (byte)((this.note + 1) % 25);
+ 		this.onInventoryChanged();
+ 	}
+ 
+-	public void triggerNote(World var1, int var2, int var3, int var4) {
+-		if(var1.getBlockMaterial(var2, var3 + 1, var4) == Material.air) {
+-			Material var5 = var1.getBlockMaterial(var2, var3 - 1, var4);
++	/**
++	 * plays the stored note
++	 */
++	public void triggerNote(World par1World, int par2, int par3, int par4) {
++		if (par1World.getBlockMaterial(par2, par3 + 1, par4) == Material.air) {
++			Material var5 = par1World.getBlockMaterial(par2, par3 - 1, par4);
+ 			byte var6 = 0;
+-			if(var5 == Material.rock) {
++
++			if (var5 == Material.rock) {
+ 				var6 = 1;
+ 			}
+ 
+-			if(var5 == Material.sand) {
++			if (var5 == Material.sand) {
+ 				var6 = 2;
+ 			}
+ 
+-			if(var5 == Material.glass) {
++			if (var5 == Material.glass) {
+ 				var6 = 3;
+ 			}
+ 
+-			if(var5 == Material.wood) {
++			if (var5 == Material.wood) {
+ 				var6 = 4;
+ 			}
+ 
+-			var1.addBlockEvent(var2, var3, var4, Block.music.blockID, var6, this.note);
++			par1World.addBlockEvent(par2, par3, par4, Block.music.blockID, var6, this.note);
+ 		}
+ 	}
+ }

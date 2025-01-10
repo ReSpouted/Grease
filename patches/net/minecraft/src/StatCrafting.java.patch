@@ -1,0 +1,15 @@
+--- net/minecraft/src/StatCrafting.java
++++ net/minecraft/src/StatCrafting.java
+@@ -3,9 +3,9 @@
+ public class StatCrafting extends StatBase {
+ 	private final int itemID;
+ 
+-	public StatCrafting(int var1, String var2, int var3) {
+-		super(var1, var2);
+-		this.itemID = var3;
++	public StatCrafting(int par1, String par2Str, int par3) {
++		super(par1, par2Str);
++		this.itemID = par3;
+ 	}
+ 
+ 	public int getItemID() {

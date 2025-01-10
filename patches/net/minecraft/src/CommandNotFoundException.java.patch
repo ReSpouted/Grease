@@ -1,0 +1,12 @@
+--- net/minecraft/src/CommandNotFoundException.java
++++ net/minecraft/src/CommandNotFoundException.java
+@@ -5,7 +5,7 @@
+ 		this("commands.generic.notFound", new Object[0]);
+ 	}
+ 
+-	public CommandNotFoundException(String var1, Object... var2) {
+-		super(var1, var2);
++	public CommandNotFoundException(String par1Str, Object ... par2ArrayOfObj) {
++		super(par1Str, par2ArrayOfObj);
+ 	}
+ }

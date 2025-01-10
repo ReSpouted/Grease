@@ -1,0 +1,12 @@
+--- net/minecraft/src/IInvBasic.java
++++ net/minecraft/src/IInvBasic.java
+@@ -1,5 +1,9 @@
+ package net.minecraft.src;
+ 
+ public interface IInvBasic {
++
++	/**
++	 * Called by InventoryBasic.onInventoryChanged() on a array that is never filled.
++	 */
+ 	void onInventoryChanged(InventoryBasic var1);
+ }

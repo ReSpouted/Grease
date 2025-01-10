@@ -1,0 +1,157 @@
+--- net/minecraft/src/DemoWorldManager.java
++++ net/minecraft/src/DemoWorldManager.java
+@@ -6,8 +6,8 @@
+ 	private int field_73104_e;
+ 	private int field_73102_f;
+ 
+-	public DemoWorldManager(World var1) {
+-		super(var1);
++	public DemoWorldManager(World par1World) {
++		super(par1World);
+ 	}
+ 
+ 	public void updateBlockRemoving() {
+@@ -15,75 +15,92 @@
+ 		++this.field_73102_f;
+ 		long var1 = this.theWorld.getTotalWorldTime();
+ 		long var3 = var1 / 24000L + 1L;
+-		if(!this.field_73105_c && this.field_73102_f > 20) {
++
++		if (!this.field_73105_c && this.field_73102_f > 20) {
+ 			this.field_73105_c = true;
+-			this.thisPlayerMP.playerNetServerHandler.sendPacket(new Packet70GameEvent(5, 0));
++			this.thisPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet70GameEvent(5, 0));
+ 		}
+ 
+ 		this.demoTimeExpired = var1 > 120500L;
+-		if(this.demoTimeExpired) {
++
++		if (this.demoTimeExpired) {
+ 			++this.field_73104_e;
+ 		}
+ 
+-		if(var1 % 24000L == 500L) {
+-			if(var3 <= 6L) {
++		if (var1 % 24000L == 500L) {
++			if (var3 <= 6L) {
+ 				this.thisPlayerMP.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("demo.day." + var3));
+ 			}
+-		} else if(var3 == 1L) {
+-			if(var1 == 100L) {
+-				this.thisPlayerMP.playerNetServerHandler.sendPacket(new Packet70GameEvent(5, 101));
+-			} else if(var1 == 175L) {
+-				this.thisPlayerMP.playerNetServerHandler.sendPacket(new Packet70GameEvent(5, 102));
+-			} else if(var1 == 250L) {
+-				this.thisPlayerMP.playerNetServerHandler.sendPacket(new Packet70GameEvent(5, 103));
++		} else if (var3 == 1L) {
++			if (var1 == 100L) {
++				this.thisPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet70GameEvent(5, 101));
++			} else if (var1 == 175L) {
++				this.thisPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet70GameEvent(5, 102));
++			} else if (var1 == 250L) {
++				this.thisPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet70GameEvent(5, 103));
+ 			}
+-		} else if(var3 == 5L && var1 % 24000L == 22000L) {
++		} else if (var3 == 5L && var1 % 24000L == 22000L) {
+ 			this.thisPlayerMP.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("demo.day.warning"));
+ 		}
+-
+ 	}
+ 
++	/**
++	 * Sends a message to the player reminding them that this is the demo version
++	 */
+ 	private void sendDemoReminder() {
+-		if(this.field_73104_e > 100) {
++		if (this.field_73104_e > 100) {
+ 			this.thisPlayerMP.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("demo.reminder"));
+ 			this.field_73104_e = 0;
+ 		}
+-
+-	}
+-
+-	public void onBlockClicked(int var1, int var2, int var3, int var4) {
+-		if(this.demoTimeExpired) {
+-			this.sendDemoReminder();
+-		} else {
+-			super.onBlockClicked(var1, var2, var3, var4);
+-		}
+-	}
+-
+-	public void blockRemoving(int var1, int var2, int var3) {
+-		if(!this.demoTimeExpired) {
+-			super.blockRemoving(var1, var2, var3);
+-		}
+-	}
+-
+-	public boolean tryHarvestBlock(int var1, int var2, int var3) {
+-		return this.demoTimeExpired ? false : super.tryHarvestBlock(var1, var2, var3);
+-	}
+-
+-	public boolean tryUseItem(EntityPlayer var1, World var2, ItemStack var3) {
+-		if(this.demoTimeExpired) {
+-			this.sendDemoReminder();
+-			return false;
+-		} else {
+-			return super.tryUseItem(var1, var2, var3);
+-		}
+-	}
+-
+-	public boolean activateBlockOrUseItem(EntityPlayer var1, World var2, ItemStack var3, int var4, int var5, int var6, int var7, float var8, float var9, float var10) {
+-		if(this.demoTimeExpired) {
+-			this.sendDemoReminder();
+-			return false;
+-		} else {
+-			return super.activateBlockOrUseItem(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10);
++	}
++
++	/**
++	 * if not creative, it calls destroyBlockInWorldPartially untill the block is broken first. par4 is the specific side.
++	 * tryHarvestBlock can also be the result of this call
++	 */
++	public void onBlockClicked(int par1, int par2, int par3, int par4) {
++		if (this.demoTimeExpired) {
++			this.sendDemoReminder();
++		} else {
++			super.onBlockClicked(par1, par2, par3, par4);
++		}
++	}
++
++	public void uncheckedTryHarvestBlock(int par1, int par2, int par3) {
++		if (!this.demoTimeExpired) {
++			super.uncheckedTryHarvestBlock(par1, par2, par3);
++		}
++	}
++
++	/**
++	 * Attempts to harvest a block at the given coordinate
++	 */
++	public boolean tryHarvestBlock(int par1, int par2, int par3) {
++		return this.demoTimeExpired ? false : super.tryHarvestBlock(par1, par2, par3);
++	}
++
++	/**
++	 * Attempts to right-click use an item by the given EntityPlayer in the given World
++	 */
++	public boolean tryUseItem(EntityPlayer par1EntityPlayer, World par2World, ItemStack par3ItemStack) {
++		if (this.demoTimeExpired) {
++			this.sendDemoReminder();
++			return false;
++		} else {
++			return super.tryUseItem(par1EntityPlayer, par2World, par3ItemStack);
++		}
++	}
++
++	/**
++	 * Activate the clicked on block, otherwise use the held item. Args: player, world, itemStack, x, y, z, side, xOffset,
++	 * yOffset, zOffset
++	 */
++	public boolean activateBlockOrUseItem(EntityPlayer par1EntityPlayer, World par2World, ItemStack par3ItemStack, int par4, int par5, int par6, int par7, float par8, float par9, float par10) {
++		if (this.demoTimeExpired) {
++			this.sendDemoReminder();
++			return false;
++		} else {
++			return super.activateBlockOrUseItem(par1EntityPlayer, par2World, par3ItemStack, par4, par5, par6, par7, par8, par9, par10);
+ 		}
+ 	}
+ }

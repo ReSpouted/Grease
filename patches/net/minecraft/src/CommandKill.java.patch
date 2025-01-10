@@ -1,0 +1,27 @@
+--- net/minecraft/src/CommandKill.java
++++ net/minecraft/src/CommandKill.java
+@@ -5,17 +5,20 @@
+ 		return "kill";
+ 	}
+ 
++	/**
++	 * Return the required permission level for this command.
++	 */
+ 	public int getRequiredPermissionLevel() {
+ 		return 0;
+ 	}
+ 
+-	public String getCommandUsage(ICommandSender var1) {
++	public String getCommandUsage(ICommandSender par1ICommandSender) {
+ 		return "commands.kill.usage";
+ 	}
+ 
+-	public void processCommand(ICommandSender var1, String[] var2) {
+-		EntityPlayerMP var3 = getCommandSenderAsPlayer(var1);
++	public void processCommand(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
++		EntityPlayerMP var3 = getCommandSenderAsPlayer(par1ICommandSender);
+ 		var3.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
+-		var1.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("commands.kill.success"));
++		par1ICommandSender.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("commands.kill.success"));
+ 	}
+ }

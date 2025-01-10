@@ -1,0 +1,13 @@
+--- net/minecraft/src/BlockSponge.java
++++ net/minecraft/src/BlockSponge.java
+@@ -1,8 +1,8 @@
+ package net.minecraft.src;
+ 
+ public class BlockSponge extends Block {
+-	protected BlockSponge(int var1) {
+-		super(var1, Material.sponge);
++	protected BlockSponge(int par1) {
++		super(par1, Material.sponge);
+ 		this.setCreativeTab(CreativeTabs.tabBlock);
+ 	}
+ }

@@ -1,0 +1,27 @@
+--- net/minecraft/src/DispenserBehaviorPotionProjectile.java
++++ net/minecraft/src/DispenserBehaviorPotionProjectile.java
+@@ -2,15 +2,19 @@
+ 
+ class DispenserBehaviorPotionProjectile extends BehaviorProjectileDispense {
+ 	final ItemStack potionItemStack;
++
+ 	final DispenserBehaviorPotion dispenserPotionBehavior;
+ 
+-	DispenserBehaviorPotionProjectile(DispenserBehaviorPotion var1, ItemStack var2) {
+-		this.dispenserPotionBehavior = var1;
+-		this.potionItemStack = var2;
++	DispenserBehaviorPotionProjectile(DispenserBehaviorPotion par1DispenserBehaviorPotion, ItemStack par2ItemStack) {
++		this.dispenserPotionBehavior = par1DispenserBehaviorPotion;
++		this.potionItemStack = par2ItemStack;
+ 	}
+ 
+-	protected IProjectile getProjectileEntity(World var1, IPosition var2) {
+-		return new EntityPotion(var1, var2.getX(), var2.getY(), var2.getZ(), this.potionItemStack.copy());
++	/**
++	 * Return the projectile entity spawned by this dispense behavior.
++	 */
++	protected IProjectile getProjectileEntity(World par1World, IPosition par2IPosition) {
++		return new EntityPotion(par1World, par2IPosition.getX(), par2IPosition.getY(), par2IPosition.getZ(), this.potionItemStack.copy());
+ 	}
+ 
+ 	protected float func_82498_a() {

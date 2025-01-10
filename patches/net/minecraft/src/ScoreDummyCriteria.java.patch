@@ -1,0 +1,27 @@
+--- net/minecraft/src/ScoreDummyCriteria.java
++++ net/minecraft/src/ScoreDummyCriteria.java
+@@ -3,18 +3,18 @@
+ import java.util.List;
+ 
+ public class ScoreDummyCriteria implements ScoreObjectiveCriteria {
+-	private final String g;
++	private final String field_96644_g;
+ 
+-	public ScoreDummyCriteria(String var1) {
+-		this.g = var1;
+-		ScoreObjectiveCriteria.a.put(var1, this);
++	public ScoreDummyCriteria(String par1Str) {
++		this.field_96644_g = par1Str;
++		ScoreObjectiveCriteria.field_96643_a.put(par1Str, this);
+ 	}
+ 
+ 	public String func_96636_a() {
+-		return this.g;
++		return this.field_96644_g;
+ 	}
+ 
+-	public int func_96635_a(List var1) {
++	public int func_96635_a(List par1List) {
+ 		return 0;
+ 	}
+ 

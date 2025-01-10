@@ -1,0 +1,28 @@
+--- net/minecraft/src/BlockObsidian.java
++++ net/minecraft/src/BlockObsidian.java
+@@ -3,15 +3,21 @@
+ import java.util.Random;
+ 
+ public class BlockObsidian extends BlockStone {
+-	public BlockObsidian(int var1) {
+-		super(var1);
++	public BlockObsidian(int par1) {
++		super(par1);
+ 	}
+ 
+-	public int quantityDropped(Random var1) {
++	/**
++	 * Returns the quantity of items to drop on block destruction.
++	 */
++	public int quantityDropped(Random par1Random) {
+ 		return 1;
+ 	}
+ 
+-	public int idDropped(int var1, Random var2, int var3) {
++	/**
++	 * Returns the ID of the items to drop on destruction.
++	 */
++	public int idDropped(int par1, Random par2Random, int par3) {
+ 		return Block.obsidian.blockID;
+ 	}
+ }

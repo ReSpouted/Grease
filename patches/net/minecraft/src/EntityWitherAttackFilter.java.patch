@@ -1,0 +1,16 @@
+--- net/minecraft/src/EntityWitherAttackFilter.java
++++ net/minecraft/src/EntityWitherAttackFilter.java
+@@ -1,7 +1,11 @@
+ package net.minecraft.src;
+ 
+ final class EntityWitherAttackFilter implements IEntitySelector {
+-	public boolean isEntityApplicable(Entity var1) {
+-		return var1 instanceof EntityLivingBase && ((EntityLivingBase)var1).getCreatureAttribute() != EnumCreatureAttribute.UNDEAD;
++
++	/**
++	 * Return whether the specified entity is applicable to this filter.
++	 */
++	public boolean isEntityApplicable(Entity par1Entity) {
++		return par1Entity instanceof EntityLivingBase && ((EntityLivingBase)par1Entity).getCreatureAttribute() != EnumCreatureAttribute.UNDEAD;
+ 	}
+ }

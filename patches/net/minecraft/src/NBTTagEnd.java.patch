@@ -1,0 +1,38 @@
+--- net/minecraft/src/NBTTagEnd.java
++++ net/minecraft/src/NBTTagEnd.java
+@@ -9,12 +9,19 @@
+ 		super((String)null);
+ 	}
+ 
+-	void load(DataInput var1, int var2) throws IOException {
+-	}
+-
+-	void write(DataOutput var1) throws IOException {
+-	}
+-
++	/**
++	 * Read the actual data contents of the tag, implemented in NBT extension classes
++	 */
++	void load(DataInput par1DataInput, int par2) throws IOException {}
++
++	/**
++	 * Write the actual data contents of the tag, implemented in NBT extension classes
++	 */
++	void write(DataOutput par1DataOutput) throws IOException {}
++
++	/**
++	 * Gets the type byte for the tag.
++	 */
+ 	public byte getId() {
+ 		return (byte)0;
+ 	}
+@@ -23,6 +30,9 @@
+ 		return "END";
+ 	}
+ 
++	/**
++	 * Creates a clone of the tag.
++	 */
+ 	public NBTBase copy() {
+ 		return new NBTTagEnd();
+ 	}

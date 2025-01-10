@@ -1,0 +1,22 @@
+--- net/minecraft/src/CallableMPL1.java
++++ net/minecraft/src/CallableMPL1.java
+@@ -3,12 +3,17 @@
+ import java.util.concurrent.Callable;
+ 
+ class CallableMPL1 implements Callable {
++
++	/** Reference to the WorldClient object. */
+ 	final WorldClient theWorldClient;
+ 
+-	CallableMPL1(WorldClient var1) {
+-		this.theWorldClient = var1;
++	CallableMPL1(WorldClient par1WorldClient) {
++		this.theWorldClient = par1WorldClient;
+ 	}
+ 
++	/**
++	 * Returns the size and contents of the entity list.
++	 */
+ 	public String getEntityCountAndList() {
+ 		return WorldClient.getEntityList(this.theWorldClient).size() + " total; " + WorldClient.getEntityList(this.theWorldClient).toString();
+ 	}

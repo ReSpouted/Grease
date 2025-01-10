@@ -1,0 +1,103 @@
+--- net/minecraft/src/EnumChatFormatting.java
++++ net/minecraft/src/EnumChatFormatting.java
+@@ -29,22 +29,21 @@
+ 	UNDERLINE('n', true),
+ 	ITALIC('o', true),
+ 	RESET('r');
+-
+-	private static final Map w = new HashMap();
+-	private static final Map x = new HashMap();
+-	private static final Pattern y = Pattern.compile("(?i)" + String.valueOf('\u00a7') + "[0-9A-FK-OR]");
++	private static final Map field_96321_w = new HashMap();
++	private static final Map field_96331_x = new HashMap();
++	private static final Pattern field_96330_y = Pattern.compile("(?i)" + String.valueOf('\u00a7') + "[0-9A-FK-OR]");
+ 	private final char field_96329_z;
+ 	private final boolean field_96303_A;
+-	private final String B;
++	private final String field_96304_B;
+ 
+-	private EnumChatFormatting(char var3) {
+-		this(var3, false);
++	private EnumChatFormatting(char par3) {
++		this(par3, false);
+ 	}
+ 
+-	private EnumChatFormatting(char var3, boolean var4) {
+-		this.field_96329_z = var3;
+-		this.field_96303_A = var4;
+-		this.B = "\u00a7" + var3;
++	private EnumChatFormatting(char par3, boolean par4) {
++		this.field_96329_z = par3;
++		this.field_96303_A = par4;
++		this.field_96304_B = "\u00a7" + par3;
+ 	}
+ 
+ 	public char func_96298_a() {
+@@ -55,7 +54,10 @@
+ 		return this.field_96303_A;
+ 	}
+ 
+-	public boolean Checks() {
++	/**
++	 * Checks if typo is a color.
++	 */
++	public boolean isColor() {
+ 		return !this.field_96303_A && this != RESET;
+ 	}
+ 
+@@ -64,25 +66,26 @@
+ 	}
+ 
+ 	public String toString() {
+-		return this.B;
+-	}
+-
+-	public static String func_110646_a(String var0) {
+-		return var0 == null ? null : y.matcher(var0).replaceAll("");
+-	}
+-
+-	public static EnumChatFormatting func_96300_b(String var0) {
+-		return var0 == null ? null : (EnumChatFormatting)x.get(var0.toLowerCase());
+-	}
+-
+-	public static Collection func_96296_a(boolean var0, boolean var1) {
++		return this.field_96304_B;
++	}
++
++	public static String func_110646_a(String par0Str) {
++		return par0Str == null ? null : field_96330_y.matcher(par0Str).replaceAll("");
++	}
++
++	public static EnumChatFormatting func_96300_b(String par0Str) {
++		return par0Str == null ? null : (EnumChatFormatting)field_96331_x.get(par0Str.toLowerCase());
++	}
++
++	public static Collection func_96296_a(boolean par0, boolean par1) {
+ 		ArrayList var2 = new ArrayList();
+ 		EnumChatFormatting[] var3 = values();
+ 		int var4 = var3.length;
+ 
+-		for(int var5 = 0; var5 < var4; ++var5) {
++		for (int var5 = 0; var5 < var4; ++var5) {
+ 			EnumChatFormatting var6 = var3[var5];
+-			if((!var6.Checks() || var0) && (!var6.func_96301_b() || var1)) {
++
++			if ((!var6.isColor() || par0) && (!var6.func_96301_b() || par1)) {
+ 				var2.add(var6.func_96297_d());
+ 			}
+ 		}
+@@ -94,11 +97,10 @@
+ 		EnumChatFormatting[] var0 = values();
+ 		int var1 = var0.length;
+ 
+-		for(int var2 = 0; var2 < var1; ++var2) {
++		for (int var2 = 0; var2 < var1; ++var2) {
+ 			EnumChatFormatting var3 = var0[var2];
+-			w.put(Character.valueOf(var3.func_96298_a()), var3);
+-			x.put(var3.func_96297_d(), var3);
++			field_96321_w.put(Character.valueOf(var3.func_96298_a()), var3);
++			field_96331_x.put(var3.func_96297_d(), var3);
+ 		}
+-
+ 	}
+ }

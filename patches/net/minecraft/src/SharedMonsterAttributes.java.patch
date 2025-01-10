@@ -1,0 +1,129 @@
+--- net/minecraft/src/SharedMonsterAttributes.java
++++ net/minecraft/src/SharedMonsterAttributes.java
+@@ -8,14 +8,14 @@
+ 	public static final Attribute maxHealth = (new RangedAttribute("generic.maxHealth", 20.0D, 0.0D, Double.MAX_VALUE)).func_111117_a("Max Health").setShouldWatch(true);
+ 	public static final Attribute followRange = (new RangedAttribute("generic.followRange", 32.0D, 0.0D, 2048.0D)).func_111117_a("Follow Range");
+ 	public static final Attribute knockbackResistance = (new RangedAttribute("generic.knockbackResistance", 0.0D, 0.0D, 1.0D)).func_111117_a("Knockback Resistance");
+-	public static final Attribute movementSpeed = (new RangedAttribute("generic.movementSpeed", (double)0.7F, 0.0D, Double.MAX_VALUE)).func_111117_a("Movement Speed").setShouldWatch(true);
++	public static final Attribute movementSpeed = (new RangedAttribute("generic.movementSpeed", 0.699999988079071D, 0.0D, Double.MAX_VALUE)).func_111117_a("Movement Speed").setShouldWatch(true);
+ 	public static final Attribute attackDamage = new RangedAttribute("generic.attackDamage", 2.0D, 0.0D, Double.MAX_VALUE);
+ 
+-	public static NBTTagList func_111257_a(BaseAttributeMap var0) {
++	public static NBTTagList func_111257_a(BaseAttributeMap par0BaseAttributeMap) {
+ 		NBTTagList var1 = new NBTTagList();
+-		Iterator var2 = var0.getAllAttributes().iterator();
++		Iterator var2 = par0BaseAttributeMap.getAllAttributes().iterator();
+ 
+-		while(var2.hasNext()) {
++		while (var2.hasNext()) {
+ 			AttributeInstance var3 = (AttributeInstance)var2.next();
+ 			var1.appendTag(func_111261_a(var3));
+ 		}
+@@ -23,19 +23,21 @@
+ 		return var1;
+ 	}
+ 
+-	private static NBTTagCompound func_111261_a(AttributeInstance var0) {
++	private static NBTTagCompound func_111261_a(AttributeInstance par0AttributeInstance) {
+ 		NBTTagCompound var1 = new NBTTagCompound();
+-		Attribute var2 = var0.func_111123_a();
++		Attribute var2 = par0AttributeInstance.func_111123_a();
+ 		var1.setString("Name", var2.getAttributeUnlocalizedName());
+-		var1.setDouble("Base", var0.getBaseValue());
+-		Collection var3 = var0.func_111122_c();
+-		if(var3 != null && !var3.isEmpty()) {
++		var1.setDouble("Base", par0AttributeInstance.getBaseValue());
++		Collection var3 = par0AttributeInstance.func_111122_c();
++
++		if (var3 != null && !var3.isEmpty()) {
+ 			NBTTagList var4 = new NBTTagList();
+ 			Iterator var5 = var3.iterator();
+ 
+-			while(var5.hasNext()) {
++			while (var5.hasNext()) {
+ 				AttributeModifier var6 = (AttributeModifier)var5.next();
+-				if(var6.isSaved()) {
++
++				if (var6.isSaved()) {
+ 					var4.appendTag(func_111262_a(var6));
+ 				}
+ 			}
+@@ -46,49 +48,50 @@
+ 		return var1;
+ 	}
+ 
+-	private static NBTTagCompound func_111262_a(AttributeModifier var0) {
++	private static NBTTagCompound func_111262_a(AttributeModifier par0AttributeModifier) {
+ 		NBTTagCompound var1 = new NBTTagCompound();
+-		var1.setString("Name", var0.getName());
+-		var1.setDouble("Amount", var0.getAmount());
+-		var1.setInteger("Operation", var0.getOperation());
+-		var1.setLong("UUIDMost", var0.getID().getMostSignificantBits());
+-		var1.setLong("UUIDLeast", var0.getID().getLeastSignificantBits());
++		var1.setString("Name", par0AttributeModifier.getName());
++		var1.setDouble("Amount", par0AttributeModifier.getAmount());
++		var1.setInteger("Operation", par0AttributeModifier.getOperation());
++		var1.setLong("UUIDMost", par0AttributeModifier.getID().getMostSignificantBits());
++		var1.setLong("UUIDLeast", par0AttributeModifier.getID().getLeastSignificantBits());
+ 		return var1;
+ 	}
+ 
+-	public static void func_111260_a(BaseAttributeMap var0, NBTTagList var1, ILogAgent var2) {
+-		for(int var3 = 0; var3 < var1.tagCount(); ++var3) {
+-			NBTTagCompound var4 = (NBTTagCompound)var1.tagAt(var3);
+-			AttributeInstance var5 = var0.getAttributeInstanceByName(var4.getString("Name"));
+-			if(var5 != null) {
++	public static void func_111260_a(BaseAttributeMap par0BaseAttributeMap, NBTTagList par1NBTTagList, ILogAgent par2ILogAgent) {
++		for (int var3 = 0; var3 < par1NBTTagList.tagCount(); ++var3) {
++			NBTTagCompound var4 = (NBTTagCompound)par1NBTTagList.tagAt(var3);
++			AttributeInstance var5 = par0BaseAttributeMap.getAttributeInstanceByName(var4.getString("Name"));
++
++			if (var5 != null) {
+ 				func_111258_a(var5, var4);
+-			} else if(var2 != null) {
+-				var2.logWarning("Ignoring unknown attribute \'" + var4.getString("Name") + "\'");
++			} else if (par2ILogAgent != null) {
++				par2ILogAgent.logWarning("Ignoring unknown attribute \'" + var4.getString("Name") + "\'");
+ 			}
+ 		}
+-
+ 	}
+ 
+-	private static void func_111258_a(AttributeInstance var0, NBTTagCompound var1) {
+-		var0.setAttribute(var1.getDouble("Base"));
+-		if(var1.hasKey("Modifiers")) {
+-			NBTTagList var2 = var1.getTagList("Modifiers");
+-
+-			for(int var3 = 0; var3 < var2.tagCount(); ++var3) {
++	private static void func_111258_a(AttributeInstance par0AttributeInstance, NBTTagCompound par1NBTTagCompound) {
++		par0AttributeInstance.setAttribute(par1NBTTagCompound.getDouble("Base"));
++
++		if (par1NBTTagCompound.hasKey("Modifiers")) {
++			NBTTagList var2 = par1NBTTagCompound.getTagList("Modifiers");
++
++			for (int var3 = 0; var3 < var2.tagCount(); ++var3) {
+ 				AttributeModifier var4 = func_111259_a((NBTTagCompound)var2.tagAt(var3));
+-				AttributeModifier var5 = var0.getModifier(var4.getID());
+-				if(var5 != null) {
+-					var0.removeModifier(var5);
++				AttributeModifier var5 = par0AttributeInstance.getModifier(var4.getID());
++
++				if (var5 != null) {
++					par0AttributeInstance.removeModifier(var5);
+ 				}
+ 
+-				var0.applyModifier(var4);
++				par0AttributeInstance.applyModifier(var4);
+ 			}
+ 		}
+-
+ 	}
+ 
+-	public static AttributeModifier func_111259_a(NBTTagCompound var0) {
+-		UUID var1 = new UUID(var0.getLong("UUIDMost"), var0.getLong("UUIDLeast"));
+-		return new AttributeModifier(var1, var0.getString("Name"), var0.getDouble("Amount"), var0.getInteger("Operation"));
++	public static AttributeModifier func_111259_a(NBTTagCompound par0NBTTagCompound) {
++		UUID var1 = new UUID(par0NBTTagCompound.getLong("UUIDMost"), par0NBTTagCompound.getLong("UUIDLeast"));
++		return new AttributeModifier(var1, par0NBTTagCompound.getString("Name"), par0NBTTagCompound.getDouble("Amount"), par0NBTTagCompound.getInteger("Operation"));
+ 	}
+ }

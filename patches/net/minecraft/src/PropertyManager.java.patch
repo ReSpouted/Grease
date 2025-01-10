@@ -1,0 +1,173 @@
+--- net/minecraft/src/PropertyManager.java
++++ net/minecraft/src/PropertyManager.java
+@@ -7,96 +7,119 @@
+ import java.util.Properties;
+ 
+ public class PropertyManager {
+-	private final Properties a = new Properties();
++	private final Properties properties = new Properties();
++
++	/** Reference to the logger. */
+ 	private final ILogAgent logger;
+-	private final File c;
+-
+-	public PropertyManager(File var1, ILogAgent var2) {
+-		this.c = var1;
+-		this.logger = var2;
+-		if(var1.exists()) {
++	private final File associatedFile;
++
++	public PropertyManager(File par1File, ILogAgent par2ILogAgent) {
++		this.associatedFile = par1File;
++		this.logger = par2ILogAgent;
++
++		if (par1File.exists()) {
+ 			FileInputStream var3 = null;
+ 
+ 			try {
+-				var3 = new FileInputStream(var1);
+-				this.a.load(var3);
++				var3 = new FileInputStream(par1File);
++				this.properties.load(var3);
+ 			} catch (Exception var13) {
+-				var2.logWarningException("Failed to load " + var1, var13);
+-				this.generateNewProperties();
++				par2ILogAgent.logWarningException("Failed to load " + par1File, var13);
++				this.logMessageAndSave();
+ 			} finally {
+-				if(var3 != null) {
++				if (var3 != null) {
+ 					try {
+ 						var3.close();
+ 					} catch (IOException var12) {
++						;
+ 					}
+ 				}
+-
+ 			}
+ 		} else {
+-			var2.logWarning(var1 + " does not exist");
+-			this.generateNewProperties();
++			par2ILogAgent.logWarning(par1File + " does not exist");
++			this.logMessageAndSave();
+ 		}
+-
+ 	}
+ 
+-	public void generateNewProperties() {
++	/**
++	 * logs an info message then calls saveSettingsToFile Yes this appears to be a potential stack overflow - these 2
++	 * functions call each other repeatdly if an exception occurs.
++	 */
++	public void logMessageAndSave() {
+ 		this.logger.logInfo("Generating new properties file");
+ 		this.saveProperties();
+ 	}
+ 
++	/**
++	 * Writes the properties to the properties file.
++	 */
+ 	public void saveProperties() {
+ 		FileOutputStream var1 = null;
+ 
+ 		try {
+-			var1 = new FileOutputStream(this.c);
+-			this.a.store(var1, "Minecraft server properties");
++			var1 = new FileOutputStream(this.associatedFile);
++			this.properties.store(var1, "Minecraft server properties");
+ 		} catch (Exception var11) {
+-			this.logger.logWarningException("Failed to save " + this.c, var11);
+-			this.generateNewProperties();
++			this.logger.logWarningException("Failed to save " + this.associatedFile, var11);
++			this.logMessageAndSave();
+ 		} finally {
+-			if(var1 != null) {
++			if (var1 != null) {
+ 				try {
+ 					var1.close();
+ 				} catch (IOException var10) {
++					;
+ 				}
+ 			}
+-
+ 		}
+-
+ 	}
+ 
++	/**
++	 * Returns this PropertyManager's file object used for property saving.
++	 */
+ 	public File getPropertiesFile() {
+-		return this.c;
++		return this.associatedFile;
+ 	}
+ 
+-	public String getStringProperty(String var1, String var2) {
+-		if(!this.a.containsKey(var1)) {
+-			this.a.setProperty(var1, var2);
++	/**
++	 * Gets a property. If it does not exist, set it to the specified value.
++	 */
++	public String getProperty(String par1Str, String par2Str) {
++		if (!this.properties.containsKey(par1Str)) {
++			this.properties.setProperty(par1Str, par2Str);
+ 			this.saveProperties();
+ 		}
+ 
+-		return this.a.getProperty(var1, var2);
+-	}
+-
+-	public int getIntProperty(String var1, int var2) {
+-		try {
+-			return Integer.parseInt(this.getStringProperty(var1, "" + var2));
+-		} catch (Exception var4) {
+-			this.a.setProperty(var1, "" + var2);
+-			return var2;
+-		}
+-	}
+-
+-	public boolean getBooleanProperty(String var1, boolean var2) {
+-		try {
+-			return Boolean.parseBoolean(this.getStringProperty(var1, "" + var2));
+-		} catch (Exception var4) {
+-			this.a.setProperty(var1, "" + var2);
+-			return var2;
+-		}
+-	}
+-
+-	public void setProperty(String var1, Object var2) {
+-		this.a.setProperty(var1, "" + var2);
++		return this.properties.getProperty(par1Str, par2Str);
++	}
++
++	/**
++	 * Gets an integer property. If it does not exist, set it to the specified value.
++	 */
++	public int getIntProperty(String par1Str, int par2) {
++		try {
++			return Integer.parseInt(this.getProperty(par1Str, "" + par2));
++		} catch (Exception var4) {
++			this.properties.setProperty(par1Str, "" + par2);
++			return par2;
++		}
++	}
++
++	/**
++	 * Gets a boolean property. If it does not exist, set it to the specified value.
++	 */
++	public boolean getBooleanProperty(String par1Str, boolean par2) {
++		try {
++			return Boolean.parseBoolean(this.getProperty(par1Str, "" + par2));
++		} catch (Exception var4) {
++			this.properties.setProperty(par1Str, "" + par2);
++			return par2;
++		}
++	}
++
++	/**
++	 * Saves an Object with the given property name.
++	 */
++	public void setProperty(String par1Str, Object par2Obj) {
++		this.properties.setProperty(par1Str, "" + par2Obj);
+ 	}
+ }

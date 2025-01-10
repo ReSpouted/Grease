@@ -1,0 +1,24 @@
+--- net/minecraft/src/CallableIsServerModded.java
++++ net/minecraft/src/CallableIsServerModded.java
+@@ -4,14 +4,16 @@
+ import net.minecraft.server.MinecraftServer;
+ 
+ public class CallableIsServerModded implements Callable {
+-	final MinecraftServer a;
+-
+-	public CallableIsServerModded(MinecraftServer var1) {
+-		this.a = var1;
++
++	/** Reference to the MinecraftServer object. */
++	final MinecraftServer mcServer;
++
++	public CallableIsServerModded(MinecraftServer par1MinecraftServer) {
++		this.mcServer = par1MinecraftServer;
+ 	}
+ 
+ 	public String func_96558_a() {
+-		return this.a.theProfiler.profilingEnabled ? this.a.theProfiler.getNameOfLastSection() : "N/A (disabled)";
++		return this.mcServer.theProfiler.profilingEnabled ? this.mcServer.theProfiler.getNameOfLastSection() : "N/A (disabled)";
+ 	}
+ 
+ 	public Object call() {

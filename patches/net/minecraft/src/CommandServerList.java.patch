@@ -1,0 +1,26 @@
+--- net/minecraft/src/CommandServerList.java
++++ net/minecraft/src/CommandServerList.java
+@@ -7,16 +7,19 @@
+ 		return "list";
+ 	}
+ 
++	/**
++	 * Return the required permission level for this command.
++	 */
+ 	public int getRequiredPermissionLevel() {
+ 		return 0;
+ 	}
+ 
+-	public String getCommandUsage(ICommandSender var1) {
++	public String getCommandUsage(ICommandSender par1ICommandSender) {
+ 		return "commands.players.usage";
+ 	}
+ 
+-	public void processCommand(ICommandSender var1, String[] var2) {
+-		var1.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("commands.players.list", new Object[]{Integer.valueOf(MinecraftServer.getServer().getCurrentPlayerCount()), Integer.valueOf(MinecraftServer.getServer().getMaxPlayers())}));
+-		var1.sendChatToPlayer(ChatMessageComponent.createFromText(MinecraftServer.getServer().getConfigurationManager().getPlayerListAsString()));
++	public void processCommand(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
++		par1ICommandSender.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions("commands.players.list", new Object[] {Integer.valueOf(MinecraftServer.getServer().getCurrentPlayerCount()), Integer.valueOf(MinecraftServer.getServer().getMaxPlayers())}));
++		par1ICommandSender.sendChatToPlayer(ChatMessageComponent.createFromText(MinecraftServer.getServer().getConfigurationManager().getPlayerListAsString()));
+ 	}
+ }

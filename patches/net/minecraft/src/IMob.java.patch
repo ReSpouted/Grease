@@ -1,0 +1,10 @@
+--- net/minecraft/src/IMob.java
++++ net/minecraft/src/IMob.java
+@@ -1,5 +1,7 @@
+ package net.minecraft.src;
+ 
+ public interface IMob extends IAnimals {
++
++	/** Entity selector for IMob types. */
+ 	IEntitySelector mobSelector = new FilterIMob();
+ }

@@ -1,0 +1,153 @@
+--- net/minecraft/src/RenderPainting.java
++++ net/minecraft/src/RenderPainting.java
+@@ -6,52 +6,52 @@
+ public class RenderPainting extends Render {
+ 	private static final ResourceLocation field_110807_a = new ResourceLocation("textures/painting/paintings_kristoffer_zetterstrand.png");
+ 
+-	public void renderThePainting(EntityPainting var1, double var2, double var4, double var6, float var8, float var9) {
++	public void renderThePainting(EntityPainting par1EntityPainting, double par2, double par4, double par6, float par8, float par9) {
+ 		GL11.glPushMatrix();
+-		GL11.glTranslatef((float)var2, (float)var4, (float)var6);
+-		GL11.glRotatef(var8, 0.0F, 1.0F, 0.0F);
++		GL11.glTranslatef((float)par2, (float)par4, (float)par6);
++		GL11.glRotatef(par8, 0.0F, 1.0F, 0.0F);
+ 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+-		this.bindEntityTexture(var1);
+-		EnumArt var10 = var1.art;
+-		float var11 = 1.0F / 16.0F;
++		this.bindEntityTexture(par1EntityPainting);
++		EnumArt var10 = par1EntityPainting.art;
++		float var11 = 0.0625F;
+ 		GL11.glScalef(var11, var11, var11);
+-		this.func_77010_a(var1, var10.sizeX, var10.sizeY, var10.offsetX, var10.offsetY);
++		this.func_77010_a(par1EntityPainting, var10.sizeX, var10.sizeY, var10.offsetX, var10.offsetY);
+ 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+ 		GL11.glPopMatrix();
+ 	}
+ 
+-	protected ResourceLocation func_110806_a(EntityPainting var1) {
++	protected ResourceLocation func_110806_a(EntityPainting par1EntityPainting) {
+ 		return field_110807_a;
+ 	}
+ 
+-	private void func_77010_a(EntityPainting var1, int var2, int var3, int var4, int var5) {
+-		float var6 = (float)(-var2) / 2.0F;
+-		float var7 = (float)(-var3) / 2.0F;
++	private void func_77010_a(EntityPainting par1EntityPainting, int par2, int par3, int par4, int par5) {
++		float var6 = (float)(-par2) / 2.0F;
++		float var7 = (float)(-par3) / 2.0F;
+ 		float var8 = 0.5F;
+-		float var9 = 12.0F / 16.0F;
+-		float var10 = 13.0F / 16.0F;
++		float var9 = 0.75F;
++		float var10 = 0.8125F;
+ 		float var11 = 0.0F;
+-		float var12 = 1.0F / 16.0F;
+-		float var13 = 12.0F / 16.0F;
+-		float var14 = 13.0F / 16.0F;
++		float var12 = 0.0625F;
++		float var13 = 0.75F;
++		float var14 = 0.8125F;
+ 		float var15 = 0.001953125F;
+ 		float var16 = 0.001953125F;
+-		float var17 = 385.0F / 512.0F;
+-		float var18 = 385.0F / 512.0F;
++		float var17 = 0.7519531F;
++		float var18 = 0.7519531F;
+ 		float var19 = 0.0F;
+-		float var20 = 1.0F / 16.0F;
++		float var20 = 0.0625F;
+ 
+-		for(int var21 = 0; var21 < var2 / 16; ++var21) {
+-			for(int var22 = 0; var22 < var3 / 16; ++var22) {
++		for (int var21 = 0; var21 < par2 / 16; ++var21) {
++			for (int var22 = 0; var22 < par3 / 16; ++var22) {
+ 				float var23 = var6 + (float)((var21 + 1) * 16);
+ 				float var24 = var6 + (float)(var21 * 16);
+ 				float var25 = var7 + (float)((var22 + 1) * 16);
+ 				float var26 = var7 + (float)(var22 * 16);
+-				this.func_77008_a(var1, (var23 + var24) / 2.0F, (var25 + var26) / 2.0F);
+-				float var27 = (float)(var4 + var2 - var21 * 16) / 256.0F;
+-				float var28 = (float)(var4 + var2 - (var21 + 1) * 16) / 256.0F;
+-				float var29 = (float)(var5 + var3 - var22 * 16) / 256.0F;
+-				float var30 = (float)(var5 + var3 - (var22 + 1) * 16) / 256.0F;
++				this.func_77008_a(par1EntityPainting, (var23 + var24) / 2.0F, (var25 + var26) / 2.0F);
++				float var27 = (float)(par4 + par2 - var21 * 16) / 256.0F;
++				float var28 = (float)(par4 + par2 - (var21 + 1) * 16) / 256.0F;
++				float var29 = (float)(par5 + par3 - var22 * 16) / 256.0F;
++				float var30 = (float)(par5 + par3 - (var22 + 1) * 16) / 256.0F;
+ 				Tessellator var31 = Tessellator.instance;
+ 				var31.startDrawingQuads();
+ 				var31.setNormal(0.0F, 0.0F, -1.0F);
+@@ -87,27 +87,27 @@
+ 				var31.draw();
+ 			}
+ 		}
+-
+ 	}
+ 
+-	private void func_77008_a(EntityPainting var1, float var2, float var3) {
+-		int var4 = MathHelper.floor_double(var1.posX);
+-		int var5 = MathHelper.floor_double(var1.posY + (double)(var3 / 16.0F));
+-		int var6 = MathHelper.floor_double(var1.posZ);
+-		if(var1.hangingDirection == 2) {
+-			var4 = MathHelper.floor_double(var1.posX + (double)(var2 / 16.0F));
+-		}
+-
+-		if(var1.hangingDirection == 1) {
+-			var6 = MathHelper.floor_double(var1.posZ - (double)(var2 / 16.0F));
+-		}
+-
+-		if(var1.hangingDirection == 0) {
+-			var4 = MathHelper.floor_double(var1.posX - (double)(var2 / 16.0F));
+-		}
+-
+-		if(var1.hangingDirection == 3) {
+-			var6 = MathHelper.floor_double(var1.posZ + (double)(var2 / 16.0F));
++	private void func_77008_a(EntityPainting par1EntityPainting, float par2, float par3) {
++		int var4 = MathHelper.floor_double(par1EntityPainting.posX);
++		int var5 = MathHelper.floor_double(par1EntityPainting.posY + (double)(par3 / 16.0F));
++		int var6 = MathHelper.floor_double(par1EntityPainting.posZ);
++
++		if (par1EntityPainting.hangingDirection == 2) {
++			var4 = MathHelper.floor_double(par1EntityPainting.posX + (double)(par2 / 16.0F));
++		}
++
++		if (par1EntityPainting.hangingDirection == 1) {
++			var6 = MathHelper.floor_double(par1EntityPainting.posZ - (double)(par2 / 16.0F));
++		}
++
++		if (par1EntityPainting.hangingDirection == 0) {
++			var4 = MathHelper.floor_double(par1EntityPainting.posX - (double)(par2 / 16.0F));
++		}
++
++		if (par1EntityPainting.hangingDirection == 3) {
++			var6 = MathHelper.floor_double(par1EntityPainting.posZ + (double)(par2 / 16.0F));
+ 		}
+ 
+ 		int var7 = this.renderManager.worldObj.getLightBrightnessForSkyBlocks(var4, var5, var6, 0);
+@@ -117,11 +117,20 @@
+ 		GL11.glColor3f(1.0F, 1.0F, 1.0F);
+ 	}
+ 
+-	protected ResourceLocation getEntityTexture(Entity var1) {
+-		return this.func_110806_a((EntityPainting)var1);
++	/**
++	 * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
++	 */
++	protected ResourceLocation getEntityTexture(Entity par1Entity) {
++		return this.func_110806_a((EntityPainting)par1Entity);
+ 	}
+ 
+-	public void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9) {
+-		this.renderThePainting((EntityPainting)var1, var2, var4, var6, var8, var9);
++	/**
++	 * Actually renders the given argument. This is a synthetic bridge method, always casting down its argument and then
++	 * handing it off to a worker function which does the actual work. In all probabilty, the class Render is generic
++	 * (Render<T extends Entity) and this method has signature public void doRender(T entity, double d, double d1,
++	 * double d2, float f, float f1). But JAD is pre 1.5 so doesn't do that.
++	 */
++	public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
++		this.renderThePainting((EntityPainting)par1Entity, par2, par4, par6, par8, par9);
+ 	}
+ }

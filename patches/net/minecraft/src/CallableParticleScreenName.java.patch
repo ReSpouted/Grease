@@ -1,0 +1,13 @@
+--- net/minecraft/src/CallableParticleScreenName.java
++++ net/minecraft/src/CallableParticleScreenName.java
+@@ -5,8 +5,8 @@
+ class CallableParticleScreenName implements Callable {
+ 	final Minecraft theMinecraft;
+ 
+-	CallableParticleScreenName(Minecraft var1) {
+-		this.theMinecraft = var1;
++	CallableParticleScreenName(Minecraft par1Minecraft) {
++		this.theMinecraft = par1Minecraft;
+ 	}
+ 
+ 	public String callParticleScreenName() {

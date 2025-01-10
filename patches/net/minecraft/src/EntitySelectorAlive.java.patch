@@ -1,0 +1,16 @@
+--- net/minecraft/src/EntitySelectorAlive.java
++++ net/minecraft/src/EntitySelectorAlive.java
+@@ -1,7 +1,11 @@
+ package net.minecraft.src;
+ 
+ final class EntitySelectorAlive implements IEntitySelector {
+-	public boolean isEntityApplicable(Entity var1) {
+-		return var1.isEntityAlive();
++
++	/**
++	 * Return whether the specified entity is applicable to this filter.
++	 */
++	public boolean isEntityApplicable(Entity par1Entity) {
++		return par1Entity.isEntityAlive();
+ 	}
+ }

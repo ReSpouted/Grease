@@ -1,0 +1,53 @@
+--- net/minecraft/src/TcpWriterThread.java
++++ net/minecraft/src/TcpWriterThread.java
+@@ -5,26 +5,28 @@
+ class TcpWriterThread extends Thread {
+ 	final TcpConnection theTcpConnection;
+ 
+-	TcpWriterThread(TcpConnection var1, String var2) {
+-		super(var2);
+-		this.theTcpConnection = var1;
++	TcpWriterThread(TcpConnection par1TcpConnection, String par2Str) {
++		super(par2Str);
++		this.theTcpConnection = par1TcpConnection;
+ 	}
+ 
+ 	public void run() {
+-		TcpConnection.b.getAndIncrement();
++		TcpConnection.field_74469_b.getAndIncrement();
+ 
+ 		try {
+-			while(TcpConnection.isRunning(this.theTcpConnection)) {
++			while (TcpConnection.isRunning(this.theTcpConnection)) {
+ 				boolean var1;
+-				for(var1 = false; TcpConnection.sendNetworkPacket(this.theTcpConnection); var1 = true) {
++
++				for (var1 = false; TcpConnection.sendNetworkPacket(this.theTcpConnection); var1 = true) {
++					;
+ 				}
+ 
+ 				try {
+-					if(var1 && TcpConnection.getOutputStream(this.theTcpConnection) != null) {
++					if (var1 && TcpConnection.getOutputStream(this.theTcpConnection) != null) {
+ 						TcpConnection.getOutputStream(this.theTcpConnection).flush();
+ 					}
+ 				} catch (IOException var8) {
+-					if(!TcpConnection.isTerminating(this.theTcpConnection)) {
++					if (!TcpConnection.isTerminating(this.theTcpConnection)) {
+ 						TcpConnection.sendError(this.theTcpConnection, var8);
+ 					}
+ 
+@@ -34,11 +36,11 @@
+ 				try {
+ 					sleep(2L);
+ 				} catch (InterruptedException var7) {
++					;
+ 				}
+ 			}
+ 		} finally {
+-			TcpConnection.b.getAndDecrement();
++			TcpConnection.field_74469_b.getAndDecrement();
+ 		}
+-
+ 	}
+ }

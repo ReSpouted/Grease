@@ -1,0 +1,93 @@
+--- net/minecraft/src/Vec3Pool.java
++++ net/minecraft/src/Vec3Pool.java
+@@ -6,27 +6,33 @@
+ public class Vec3Pool {
+ 	private final int truncateArrayResetThreshold;
+ 	private final int minimumSize;
+-	private final List c = new ArrayList();
++
++	/** items at and above nextFreeSpace are assumed to be available */
++	private final List vec3Cache = new ArrayList();
+ 	private int nextFreeSpace;
+ 	private int maximumSizeSinceLastTruncation;
+ 	private int resetCount;
+ 
+-	public Vec3Pool(int var1, int var2) {
+-		this.truncateArrayResetThreshold = var1;
+-		this.minimumSize = var2;
++	public Vec3Pool(int par1, int par2) {
++		this.truncateArrayResetThreshold = par1;
++		this.minimumSize = par2;
+ 	}
+ 
+-	public Vec3 getVecFromPool(double var1, double var3, double var5) {
+-		if(this.func_82589_e()) {
+-			return new Vec3(this, var1, var3, var5);
++	/**
++	 * extends the pool if all vecs are currently "out"
++	 */
++	public Vec3 getVecFromPool(double par1, double par3, double par5) {
++		if (this.func_82589_e()) {
++			return new Vec3(this, par1, par3, par5);
+ 		} else {
+ 			Vec3 var7;
+-			if(this.nextFreeSpace >= this.c.size()) {
+-				var7 = new Vec3(this, var1, var3, var5);
+-				this.c.add(var7);
++
++			if (this.nextFreeSpace >= this.vec3Cache.size()) {
++				var7 = new Vec3(this, par1, par3, par5);
++				this.vec3Cache.add(var7);
+ 			} else {
+-				var7 = (Vec3)this.c.get(this.nextFreeSpace);
+-				var7.setComponents(var1, var3, var5);
++				var7 = (Vec3)this.vec3Cache.get(this.nextFreeSpace);
++				var7.setComponents(par1, par3, par5);
+ 			}
+ 
+ 			++this.nextFreeSpace;
+@@ -34,17 +40,20 @@
+ 		}
+ 	}
+ 
++	/**
++	 * Will truncate the array everyN clears to the maximum size observed since the last truncation.
++	 */
+ 	public void clear() {
+-		if(!this.func_82589_e()) {
+-			if(this.nextFreeSpace > this.maximumSizeSinceLastTruncation) {
++		if (!this.func_82589_e()) {
++			if (this.nextFreeSpace > this.maximumSizeSinceLastTruncation) {
+ 				this.maximumSizeSinceLastTruncation = this.nextFreeSpace;
+ 			}
+ 
+-			if(this.resetCount++ == this.truncateArrayResetThreshold) {
+-				int var1 = Math.max(this.maximumSizeSinceLastTruncation, this.c.size() - this.minimumSize);
++			if (this.resetCount++ == this.truncateArrayResetThreshold) {
++				int var1 = Math.max(this.maximumSizeSinceLastTruncation, this.vec3Cache.size() - this.minimumSize);
+ 
+-				while(this.c.size() > var1) {
+-					this.c.remove(var1);
++				while (this.vec3Cache.size() > var1) {
++					this.vec3Cache.remove(var1);
+ 				}
+ 
+ 				this.maximumSizeSinceLastTruncation = 0;
+@@ -56,14 +65,14 @@
+ 	}
+ 
+ 	public void clearAndFreeCache() {
+-		if(!this.func_82589_e()) {
++		if (!this.func_82589_e()) {
+ 			this.nextFreeSpace = 0;
+-			this.c.clear();
++			this.vec3Cache.clear();
+ 		}
+ 	}
+ 
+ 	public int getPoolSize() {
+-		return this.c.size();
++		return this.vec3Cache.size();
+ 	}
+ 
+ 	public int func_82590_d() {

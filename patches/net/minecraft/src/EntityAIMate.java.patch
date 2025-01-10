@@ -1,0 +1,113 @@
+--- net/minecraft/src/EntityAIMate.java
++++ net/minecraft/src/EntityAIMate.java
+@@ -8,18 +8,27 @@
+ 	private EntityAnimal theAnimal;
+ 	World theWorld;
+ 	private EntityAnimal targetMate;
++
++	/**
++	 * Delay preventing a baby from spawning immediately when two mate-able animals find each other.
++	 */
+ 	int spawnBabyDelay;
++
++	/** The speed the creature moves at during mating behavior. */
+ 	double moveSpeed;
+ 
+-	public EntityAIMate(EntityAnimal var1, double var2) {
+-		this.theAnimal = var1;
+-		this.theWorld = var1.worldObj;
+-		this.moveSpeed = var2;
++	public EntityAIMate(EntityAnimal par1EntityAnimal, double par2) {
++		this.theAnimal = par1EntityAnimal;
++		this.theWorld = par1EntityAnimal.worldObj;
++		this.moveSpeed = par2;
+ 		this.setMutexBits(3);
+ 	}
+ 
++	/**
++	 * Returns whether the EntityAIBase should begin execution.
++	 */
+ 	public boolean shouldExecute() {
+-		if(!this.theAnimal.isInLove()) {
++		if (!this.theAnimal.isInLove()) {
+ 			return false;
+ 		} else {
+ 			this.targetMate = this.getNearbyMate();
+@@ -27,25 +36,38 @@
+ 		}
+ 	}
+ 
++	/**
++	 * Returns whether an in-progress EntityAIBase should continue executing
++	 */
+ 	public boolean continueExecuting() {
+ 		return this.targetMate.isEntityAlive() && this.targetMate.isInLove() && this.spawnBabyDelay < 60;
+ 	}
+ 
++	/**
++	 * Resets the task
++	 */
+ 	public void resetTask() {
+ 		this.targetMate = null;
+ 		this.spawnBabyDelay = 0;
+ 	}
+ 
++	/**
++	 * Updates the task
++	 */
+ 	public void updateTask() {
+ 		this.theAnimal.getLookHelper().setLookPositionWithEntity(this.targetMate, 10.0F, (float)this.theAnimal.getVerticalFaceSpeed());
+ 		this.theAnimal.getNavigator().tryMoveToEntityLiving(this.targetMate, this.moveSpeed);
+ 		++this.spawnBabyDelay;
+-		if(this.spawnBabyDelay >= 60 && this.theAnimal.getDistanceSqToEntity(this.targetMate) < 9.0D) {
++
++		if (this.spawnBabyDelay >= 60 && this.theAnimal.getDistanceSqToEntity(this.targetMate) < 9.0D) {
+ 			this.spawnBaby();
+ 		}
+-
+ 	}
+ 
++	/**
++	 * Loops through nearby animals and finds another animal of the same type that can be mated with. Returns the first
++	 * valid mate found.
++	 */
+ 	private EntityAnimal getNearbyMate() {
+ 		float var1 = 8.0F;
+ 		List var2 = this.theWorld.getEntitiesWithinAABB(this.theAnimal.getClass(), this.theAnimal.boundingBox.expand((double)var1, (double)var1, (double)var1));
+@@ -53,9 +75,10 @@
+ 		EntityAnimal var5 = null;
+ 		Iterator var6 = var2.iterator();
+ 
+-		while(var6.hasNext()) {
++		while (var6.hasNext()) {
+ 			EntityAnimal var7 = (EntityAnimal)var6.next();
+-			if(this.theAnimal.canMateWith(var7) && this.theAnimal.getDistanceSqToEntity(var7) < var3) {
++
++			if (this.theAnimal.canMateWith(var7) && this.theAnimal.getDistanceSqToEntity(var7) < var3) {
+ 				var5 = var7;
+ 				var3 = this.theAnimal.getDistanceSqToEntity(var7);
+ 			}
+@@ -64,9 +87,13 @@
+ 		return var5;
+ 	}
+ 
++	/**
++	 * Spawns a baby animal of the same type.
++	 */
+ 	private void spawnBaby() {
+ 		EntityAgeable var1 = this.theAnimal.createChild(this.targetMate);
+-		if(var1 != null) {
++
++		if (var1 != null) {
+ 			this.theAnimal.setGrowingAge(6000);
+ 			this.targetMate.setGrowingAge(6000);
+ 			this.theAnimal.resetInLove();
+@@ -76,7 +103,7 @@
+ 			this.theWorld.spawnEntityInWorld(var1);
+ 			Random var2 = this.theAnimal.getRNG();
+ 
+-			for(int var3 = 0; var3 < 7; ++var3) {
++			for (int var3 = 0; var3 < 7; ++var3) {
+ 				double var4 = var2.nextGaussian() * 0.02D;
+ 				double var6 = var2.nextGaussian() * 0.02D;
+ 				double var8 = var2.nextGaussian() * 0.02D;

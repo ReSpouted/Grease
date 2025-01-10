@@ -1,0 +1,13 @@
+--- net/minecraft/src/CallableType2.java
++++ net/minecraft/src/CallableType2.java
+@@ -5,8 +5,8 @@
+ class CallableType2 implements Callable {
+ 	final Minecraft mc;
+ 
+-	CallableType2(Minecraft var1) {
+-		this.mc = var1;
++	CallableType2(Minecraft par1Minecraft) {
++		this.mc = par1Minecraft;
+ 	}
+ 
+ 	public String func_82886_a() {

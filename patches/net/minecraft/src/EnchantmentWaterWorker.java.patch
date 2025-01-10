@@ -1,0 +1,36 @@
+--- net/minecraft/src/EnchantmentWaterWorker.java
++++ net/minecraft/src/EnchantmentWaterWorker.java
+@@ -1,19 +1,28 @@
+ package net.minecraft.src;
+ 
+ public class EnchantmentWaterWorker extends Enchantment {
+-	public EnchantmentWaterWorker(int var1, int var2) {
+-		super(var1, var2, EnumEnchantmentType.armor_head);
++	public EnchantmentWaterWorker(int par1, int par2) {
++		super(par1, par2, EnumEnchantmentType.armor_head);
+ 		this.setName("waterWorker");
+ 	}
+ 
+-	public int getMinEnchantability(int var1) {
++	/**
++	 * Returns the minimal value of enchantability needed on the enchantment level passed.
++	 */
++	public int getMinEnchantability(int par1) {
+ 		return 1;
+ 	}
+ 
+-	public int getMaxEnchantability(int var1) {
+-		return this.getMinEnchantability(var1) + 40;
++	/**
++	 * Returns the maximum value of enchantability nedded on the enchantment level passed.
++	 */
++	public int getMaxEnchantability(int par1) {
++		return this.getMinEnchantability(par1) + 40;
+ 	}
+ 
++	/**
++	 * Returns the maximum level that the enchantment can have.
++	 */
+ 	public int getMaxLevel() {
+ 		return 1;
+ 	}

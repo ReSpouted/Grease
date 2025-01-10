@@ -1,0 +1,12 @@
+--- net/minecraft/src/ExceptionMcoHttp.java
++++ net/minecraft/src/ExceptionMcoHttp.java
+@@ -1,7 +1,7 @@
+ package net.minecraft.src;
+ 
+ public class ExceptionMcoHttp extends RuntimeException {
+-	public ExceptionMcoHttp(String var1, Exception var2) {
+-		super(var1, var2);
++	public ExceptionMcoHttp(String par1Str, Exception par2Exception) {
++		super(par1Str, par2Exception);
+ 	}
+ }

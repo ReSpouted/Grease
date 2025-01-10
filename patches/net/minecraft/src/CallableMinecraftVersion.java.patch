@@ -1,0 +1,22 @@
+--- net/minecraft/src/CallableMinecraftVersion.java
++++ net/minecraft/src/CallableMinecraftVersion.java
+@@ -3,12 +3,17 @@
+ import java.util.concurrent.Callable;
+ 
+ class CallableMinecraftVersion implements Callable {
++
++	/** Reference to the CrashReport object. */
+ 	final CrashReport theCrashReport;
+ 
+-	CallableMinecraftVersion(CrashReport var1) {
+-		this.theCrashReport = var1;
++	CallableMinecraftVersion(CrashReport par1CrashReport) {
++		this.theCrashReport = par1CrashReport;
+ 	}
+ 
++	/**
++	 * The current version of Minecraft
++	 */
+ 	public String minecraftVersion() {
+ 		return "1.6.4";
+ 	}

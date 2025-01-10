@@ -1,0 +1,31 @@
+--- net/minecraft/src/DedicatedServerSleepThread.java
++++ net/minecraft/src/DedicatedServerSleepThread.java
+@@ -1,19 +1,24 @@
+ package net.minecraft.src;
+ 
+ class DedicatedServerSleepThread extends Thread {
++
++	/** Instance of the DecitatedServer. */
+ 	final DedicatedServer theDecitatedServer;
+ 
+-	DedicatedServerSleepThread(DedicatedServer var1) {
+-		this.theDecitatedServer = var1;
++	DedicatedServerSleepThread(DedicatedServer par1DedicatedServer) {
++		this.theDecitatedServer = par1DedicatedServer;
+ 		this.setDaemon(true);
+ 		this.start();
+ 	}
+ 
+ 	public void run() {
+-		while(true) {
++		while (true) {
+ 			try {
+-				Thread.sleep(2147483647L);
++				while (true) {
++					Thread.sleep(2147483647L);
++				}
+ 			} catch (InterruptedException var2) {
++				;
+ 			}
+ 		}
+ 	}

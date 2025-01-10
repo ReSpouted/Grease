@@ -1,0 +1,13 @@
+--- net/minecraft/src/CallableClientMemoryStats.java
++++ net/minecraft/src/CallableClientMemoryStats.java
+@@ -5,8 +5,8 @@
+ class CallableClientMemoryStats implements Callable {
+ 	final Minecraft theMinecraft;
+ 
+-	CallableClientMemoryStats(Minecraft var1) {
+-		this.theMinecraft = var1;
++	CallableClientMemoryStats(Minecraft par1Minecraft) {
++		this.theMinecraft = par1Minecraft;
+ 	}
+ 
+ 	public String callClientMemoryStats() {

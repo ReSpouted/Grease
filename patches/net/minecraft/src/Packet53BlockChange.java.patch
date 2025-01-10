@@ -1,0 +1,98 @@
+--- net/minecraft/src/Packet53BlockChange.java
++++ net/minecraft/src/Packet53BlockChange.java
+@@ -5,45 +5,67 @@
+ import java.io.IOException;
+ 
+ public class Packet53BlockChange extends Packet {
++
++	/** Block X position. */
+ 	public int xPosition;
++
++	/** Block Y position. */
+ 	public int yPosition;
++
++	/** Block Z position. */
+ 	public int zPosition;
++
++	/** The new block type for the block. */
+ 	public int type;
++
++	/** Metadata of the block. */
+ 	public int metadata;
+ 
+ 	public Packet53BlockChange() {
+ 		this.isChunkDataPacket = true;
+ 	}
+ 
+-	public Packet53BlockChange(int var1, int var2, int var3, World var4) {
++	public Packet53BlockChange(int par1, int par2, int par3, World par4World) {
+ 		this.isChunkDataPacket = true;
+-		this.xPosition = var1;
+-		this.yPosition = var2;
+-		this.zPosition = var3;
+-		this.type = var4.getBlockId(var1, var2, var3);
+-		this.metadata = var4.getBlockMetadata(var1, var2, var3);
+-	}
+-
+-	public void readPacketData(DataInput var1) throws IOException {
+-		this.xPosition = var1.readInt();
+-		this.yPosition = var1.readUnsignedByte();
+-		this.zPosition = var1.readInt();
+-		this.type = var1.readShort();
+-		this.metadata = var1.readUnsignedByte();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		var1.writeInt(this.xPosition);
+-		var1.write(this.yPosition);
+-		var1.writeInt(this.zPosition);
+-		var1.writeShort(this.type);
+-		var1.write(this.metadata);
+-	}
+-
+-	public void processPacket(NetHandler var1) {
+-		var1.handleBlockChange(this);
+-	}
+-
++		this.xPosition = par1;
++		this.yPosition = par2;
++		this.zPosition = par3;
++		this.type = par4World.getBlockId(par1, par2, par3);
++		this.metadata = par4World.getBlockMetadata(par1, par2, par3);
++	}
++
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		this.xPosition = par1DataInput.readInt();
++		this.yPosition = par1DataInput.readUnsignedByte();
++		this.zPosition = par1DataInput.readInt();
++		this.type = par1DataInput.readShort();
++		this.metadata = par1DataInput.readUnsignedByte();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		par1DataOutput.writeInt(this.xPosition);
++		par1DataOutput.write(this.yPosition);
++		par1DataOutput.writeInt(this.zPosition);
++		par1DataOutput.writeShort(this.type);
++		par1DataOutput.write(this.metadata);
++	}
++
++	/**
++	 * Passes this Packet on to the NetHandler for processing.
++	 */
++	public void processPacket(NetHandler par1NetHandler) {
++		par1NetHandler.handleBlockChange(this);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 11;
+ 	}

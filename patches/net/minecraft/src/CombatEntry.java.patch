@@ -1,0 +1,41 @@
+--- net/minecraft/src/CombatEntry.java
++++ net/minecraft/src/CombatEntry.java
+@@ -5,18 +5,21 @@
+ 	private final int field_94567_b;
+ 	private final float field_94568_c;
+ 	private final float field_94565_d;
+-	private final String e;
++	private final String field_94566_e;
+ 	private final float field_94564_f;
+ 
+-	public CombatEntry(DamageSource var1, int var2, float var3, float var4, String var5, float var6) {
+-		this.damageSrc = var1;
+-		this.field_94567_b = var2;
+-		this.field_94568_c = var4;
+-		this.field_94565_d = var3;
+-		this.e = var5;
+-		this.field_94564_f = var6;
++	public CombatEntry(DamageSource par1DamageSource, int par2, float par3, float par4, String par5Str, float par6) {
++		this.damageSrc = par1DamageSource;
++		this.field_94567_b = par2;
++		this.field_94568_c = par4;
++		this.field_94565_d = par3;
++		this.field_94566_e = par5Str;
++		this.field_94564_f = par6;
+ 	}
+ 
++	/**
++	 * Get the DamageSource of the CombatEntry instance.
++	 */
+ 	public DamageSource getDamageSrc() {
+ 		return this.damageSrc;
+ 	}
+@@ -30,7 +33,7 @@
+ 	}
+ 
+ 	public String func_94562_g() {
+-		return this.e;
++		return this.field_94566_e;
+ 	}
+ 
+ 	public String func_94558_h() {

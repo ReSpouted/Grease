@@ -1,0 +1,51 @@
+--- net/minecraft/src/ScoreObjective.java
++++ net/minecraft/src/ScoreObjective.java
+@@ -2,15 +2,17 @@
+ 
+ public class ScoreObjective {
+ 	private final Scoreboard theScoreboard;
+-	private final String b;
++	private final String name;
++
++	/** The ScoreObjectiveCriteria for this objetive */
+ 	private final ScoreObjectiveCriteria objectiveCriteria;
+-	private String d;
++	private String displayName;
+ 
+-	public ScoreObjective(Scoreboard var1, String var2, ScoreObjectiveCriteria var3) {
+-		this.theScoreboard = var1;
+-		this.b = var2;
+-		this.objectiveCriteria = var3;
+-		this.d = var2;
++	public ScoreObjective(Scoreboard par1Scoreboard, String par2Str, ScoreObjectiveCriteria par3ScoreObjectiveCriteria) {
++		this.theScoreboard = par1Scoreboard;
++		this.name = par2Str;
++		this.objectiveCriteria = par3ScoreObjectiveCriteria;
++		this.displayName = par2Str;
+ 	}
+ 
+ 	public Scoreboard getScoreboard() {
+@@ -18,7 +20,7 @@
+ 	}
+ 
+ 	public String getName() {
+-		return this.b;
++		return this.name;
+ 	}
+ 
+ 	public ScoreObjectiveCriteria getCriteria() {
+@@ -26,11 +28,11 @@
+ 	}
+ 
+ 	public String getDisplayName() {
+-		return this.d;
++		return this.displayName;
+ 	}
+ 
+-	public void setDisplayName(String var1) {
+-		this.d = var1;
++	public void setDisplayName(String par1Str) {
++		this.displayName = par1Str;
+ 		this.theScoreboard.func_96532_b(this);
+ 	}
+ }

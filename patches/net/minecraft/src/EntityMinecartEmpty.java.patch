@@ -1,0 +1,41 @@
+--- net/minecraft/src/EntityMinecartEmpty.java
++++ net/minecraft/src/EntityMinecartEmpty.java
+@@ -1,22 +1,25 @@
+ package net.minecraft.src;
+ 
+ public class EntityMinecartEmpty extends EntityMinecart {
+-	public EntityMinecartEmpty(World var1) {
+-		super(var1);
+-	}
+-
+-	public EntityMinecartEmpty(World var1, double var2, double var4, double var6) {
+-		super(var1, var2, var4, var6);
+-	}
+-
+-	public boolean interactFirst(EntityPlayer var1) {
+-		if(this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer && this.riddenByEntity != var1) {
++	public EntityMinecartEmpty(World par1World) {
++		super(par1World);
++	}
++
++	public EntityMinecartEmpty(World par1World, double par2, double par4, double par6) {
++		super(par1World, par2, par4, par6);
++	}
++
++	/**
++	 * First layer of player interaction
++	 */
++	public boolean interactFirst(EntityPlayer par1EntityPlayer) {
++		if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer && this.riddenByEntity != par1EntityPlayer) {
+ 			return true;
+-		} else if(this.riddenByEntity != null && this.riddenByEntity != var1) {
++		} else if (this.riddenByEntity != null && this.riddenByEntity != par1EntityPlayer) {
+ 			return false;
+ 		} else {
+-			if(!this.worldObj.isRemote) {
+-				var1.mountEntity(this);
++			if (!this.worldObj.isRemote) {
++				par1EntityPlayer.mountEntity(this);
+ 			}
+ 
+ 			return true;

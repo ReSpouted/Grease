@@ -1,0 +1,30 @@
+--- net/minecraft/src/MaterialLogic.java
++++ net/minecraft/src/MaterialLogic.java
+@@ -1,8 +1,8 @@
+ package net.minecraft.src;
+ 
+ public class MaterialLogic extends Material {
+-	public MaterialLogic(MapColor var1) {
+-		super(var1);
++	public MaterialLogic(MapColor par1MapColor) {
++		super(par1MapColor);
+ 		this.setAdventureModeExempt();
+ 	}
+ 
+@@ -10,10 +10,16 @@
+ 		return false;
+ 	}
+ 
++	/**
++	 * Will prevent grass from growing on dirt underneath and kill any grass below it if it returns true
++	 */
+ 	public boolean getCanBlockGrass() {
+ 		return false;
+ 	}
+ 
++	/**
++	 * Returns if this material is considered solid or not
++	 */
+ 	public boolean blocksMovement() {
+ 		return false;
+ 	}

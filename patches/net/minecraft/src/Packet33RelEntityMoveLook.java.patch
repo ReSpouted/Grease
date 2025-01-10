@@ -1,0 +1,71 @@
+--- net/minecraft/src/Packet33RelEntityMoveLook.java
++++ net/minecraft/src/Packet33RelEntityMoveLook.java
+@@ -9,34 +9,43 @@
+ 		this.rotating = true;
+ 	}
+ 
+-	public Packet33RelEntityMoveLook(int var1, byte var2, byte var3, byte var4, byte var5, byte var6) {
+-		super(var1);
+-		this.xPosition = var2;
+-		this.yPosition = var3;
+-		this.zPosition = var4;
+-		this.yaw = var5;
+-		this.pitch = var6;
++	public Packet33RelEntityMoveLook(int par1, byte par2, byte par3, byte par4, byte par5, byte par6) {
++		super(par1);
++		this.xPosition = par2;
++		this.yPosition = par3;
++		this.zPosition = par4;
++		this.yaw = par5;
++		this.pitch = par6;
+ 		this.rotating = true;
+ 	}
+ 
+-	public void readPacketData(DataInput var1) throws IOException {
+-		super.readPacketData(var1);
+-		this.xPosition = var1.readByte();
+-		this.yPosition = var1.readByte();
+-		this.zPosition = var1.readByte();
+-		this.yaw = var1.readByte();
+-		this.pitch = var1.readByte();
+-	}
+-
+-	public void writePacketData(DataOutput var1) throws IOException {
+-		super.writePacketData(var1);
+-		var1.writeByte(this.xPosition);
+-		var1.writeByte(this.yPosition);
+-		var1.writeByte(this.zPosition);
+-		var1.writeByte(this.yaw);
+-		var1.writeByte(this.pitch);
+-	}
+-
++	/**
++	 * Abstract. Reads the raw packet data from the data stream.
++	 */
++	public void readPacketData(DataInput par1DataInput) throws IOException {
++		super.readPacketData(par1DataInput);
++		this.xPosition = par1DataInput.readByte();
++		this.yPosition = par1DataInput.readByte();
++		this.zPosition = par1DataInput.readByte();
++		this.yaw = par1DataInput.readByte();
++		this.pitch = par1DataInput.readByte();
++	}
++
++	/**
++	 * Abstract. Writes the raw packet data to the data stream.
++	 */
++	public void writePacketData(DataOutput par1DataOutput) throws IOException {
++		super.writePacketData(par1DataOutput);
++		par1DataOutput.writeByte(this.xPosition);
++		par1DataOutput.writeByte(this.yPosition);
++		par1DataOutput.writeByte(this.zPosition);
++		par1DataOutput.writeByte(this.yaw);
++		par1DataOutput.writeByte(this.pitch);
++	}
++
++	/**
++	 * Abstract. Return the size of the packet (not counting the header).
++	 */
+ 	public int getPacketSize() {
+ 		return 9;
+ 	}

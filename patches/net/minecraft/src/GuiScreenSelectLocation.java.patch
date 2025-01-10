@@ -1,0 +1,342 @@
+--- net/minecraft/src/GuiScreenSelectLocation.java
++++ net/minecraft/src/GuiScreenSelectLocation.java
+@@ -25,30 +25,39 @@
+ 	private boolean field_104108_s;
+ 	private int field_104107_t;
+ 
+-	public GuiScreenSelectLocation(Minecraft var1, int var2, int var3, int var4, int var5, int var6) {
+-		this.field_104092_f = var1;
+-		this.field_104093_g = var2;
+-		this.field_104105_h = var3;
+-		this.field_104098_a = var4;
+-		this.field_104096_b = var5;
+-		this.field_104097_c = var6;
+-		this.field_104103_j = 0;
+-		this.field_104106_i = var2;
+-	}
+-
+-	public void func_104084_a(int var1, int var2, int var3, int var4) {
+-		this.field_104093_g = var1;
+-		this.field_104105_h = var2;
+-		this.field_104098_a = var3;
+-		this.field_104096_b = var4;
+-		this.field_104103_j = 0;
+-		this.field_104106_i = var1;
+-	}
+-
++	public GuiScreenSelectLocation(Minecraft par1Minecraft, int par2, int par3, int par4, int par5, int par6) {
++		this.field_104092_f = par1Minecraft;
++		this.field_104093_g = par2;
++		this.field_104105_h = par3;
++		this.field_104098_a = par4;
++		this.field_104096_b = par5;
++		this.field_104097_c = par6;
++		this.field_104103_j = 0;
++		this.field_104106_i = par2;
++	}
++
++	public void func_104084_a(int par1, int par2, int par3, int par4) {
++		this.field_104093_g = par1;
++		this.field_104105_h = par2;
++		this.field_104098_a = par3;
++		this.field_104096_b = par4;
++		this.field_104103_j = 0;
++		this.field_104106_i = par1;
++	}
++
++	/**
++	 * Gets the size of the current slot list.
++	 */
+ 	protected abstract int getSize();
+ 
++	/**
++	 * the element in the slot that was clicked, boolean for wether it was double clicked or not
++	 */
+ 	protected abstract void elementClicked(int var1, boolean var2);
+ 
++	/**
++	 * returns true if the element passed in is currently selected
++	 */
+ 	protected abstract boolean isSelected(int var1);
+ 
+ 	protected abstract boolean func_104086_b(int var1);
+@@ -61,53 +70,55 @@
+ 
+ 	protected abstract void drawSlot(int var1, int var2, int var3, int var4, Tessellator var5);
+ 
+-	protected void func_104088_a(int var1, int var2, Tessellator var3) {
+-	}
+-
+-	protected void func_104089_a(int var1, int var2) {
+-	}
+-
+-	protected void func_104087_b(int var1, int var2) {
+-	}
++	protected void func_104088_a(int par1, int par2, Tessellator par3Tessellator) {}
++
++	protected void func_104089_a(int par1, int par2) {}
++
++	protected void func_104087_b(int par1, int par2) {}
+ 
+ 	private void func_104091_h() {
+ 		int var1 = this.func_104085_d();
+-		if(var1 < 0) {
++
++		if (var1 < 0) {
+ 			var1 /= 2;
+ 		}
+ 
+-		if(this.field_104100_o < 0.0F) {
++		if (this.field_104100_o < 0.0F) {
+ 			this.field_104100_o = 0.0F;
+ 		}
+ 
+-		if(this.field_104100_o > (float)var1) {
++		if (this.field_104100_o > (float)var1) {
+ 			this.field_104100_o = (float)var1;
+ 		}
+-
+ 	}
+ 
+ 	public int func_104085_d() {
+ 		return this.func_130003_b() - (this.field_104096_b - this.field_104098_a - 4);
+ 	}
+ 
+-	public void actionPerformed(GuiButton var1) {
+-		if(var1.enabled) {
+-			if(var1.id == this.field_104104_k) {
++	/**
++	 * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
++	 */
++	public void actionPerformed(GuiButton par1GuiButton) {
++		if (par1GuiButton.enabled) {
++			if (par1GuiButton.id == this.field_104104_k) {
+ 				this.field_104100_o -= (float)(this.field_104097_c * 2 / 3);
+ 				this.field_104102_m = -2.0F;
+ 				this.func_104091_h();
+-			} else if(var1.id == this.field_104101_l) {
++			} else if (par1GuiButton.id == this.field_104101_l) {
+ 				this.field_104100_o += (float)(this.field_104097_c * 2 / 3);
+ 				this.field_104102_m = -2.0F;
+ 				this.func_104091_h();
+ 			}
+-
+ 		}
+ 	}
+ 
+-	public void drawScreen(int var1, int var2, float var3) {
+-		this.field_104094_d = var1;
+-		this.field_104095_e = var2;
++	/**
++	 * Draws the screen and all the components in it.
++	 */
++	public void drawScreen(int par1, int par2, float par3) {
++		this.field_104094_d = par1;
++		this.field_104095_e = par2;
+ 		this.func_130004_c();
+ 		int var4 = this.getSize();
+ 		int var5 = this.func_104090_g();
+@@ -117,37 +128,42 @@
+ 		int var11;
+ 		int var13;
+ 		int var20;
+-		if(Mouse.isButtonDown(0)) {
+-			if(this.field_104102_m == -1.0F) {
+-				boolean var16 = true;
+-				if(var2 >= this.field_104098_a && var2 <= this.field_104096_b) {
++
++		if (Mouse.isButtonDown(0)) {
++			if (this.field_104102_m == -1.0F) {
++				boolean var7 = true;
++
++				if (par2 >= this.field_104098_a && par2 <= this.field_104096_b) {
+ 					int var8 = this.field_104093_g / 2 - 110;
+ 					var9 = this.field_104093_g / 2 + 110;
+-					var10 = var2 - this.field_104098_a - this.field_104107_t + (int)this.field_104100_o - 4;
++					var10 = par2 - this.field_104098_a - this.field_104107_t + (int)this.field_104100_o - 4;
+ 					var11 = var10 / this.field_104097_c;
+-					if(var1 >= var8 && var1 <= var9 && var11 >= 0 && var10 >= 0 && var11 < var4) {
++
++					if (par1 >= var8 && par1 <= var9 && var11 >= 0 && var10 >= 0 && var11 < var4) {
+ 						boolean var12 = var11 == this.field_104111_p && Minecraft.getSystemTime() - this.field_104110_q < 250L;
+ 						this.elementClicked(var11, var12);
+ 						this.field_104111_p = var11;
+ 						this.field_104110_q = Minecraft.getSystemTime();
+-					} else if(var1 >= var8 && var1 <= var9 && var10 < 0) {
+-						this.func_104089_a(var1 - var8, var2 - this.field_104098_a + (int)this.field_104100_o - 4);
+-						var16 = false;
++					} else if (par1 >= var8 && par1 <= var9 && var10 < 0) {
++						this.func_104089_a(par1 - var8, par2 - this.field_104098_a + (int)this.field_104100_o - 4);
++						var7 = false;
+ 					}
+ 
+-					if(var1 >= var5 && var1 <= var6) {
++					if (par1 >= var5 && par1 <= var6) {
+ 						this.field_104099_n = -1.0F;
+ 						var20 = this.func_104085_d();
+-						if(var20 < 1) {
++
++						if (var20 < 1) {
+ 							var20 = 1;
+ 						}
+ 
+ 						var13 = (int)((float)((this.field_104096_b - this.field_104098_a) * (this.field_104096_b - this.field_104098_a)) / (float)this.func_130003_b());
+-						if(var13 < 32) {
++
++						if (var13 < 32) {
+ 							var13 = 32;
+ 						}
+ 
+-						if(var13 > this.field_104096_b - this.field_104098_a - 8) {
++						if (var13 > this.field_104096_b - this.field_104098_a - 8) {
+ 							var13 = this.field_104096_b - this.field_104098_a - 8;
+ 						}
+ 
+@@ -156,36 +172,34 @@
+ 						this.field_104099_n = 1.0F;
+ 					}
+ 
+-					if(var16) {
+-						this.field_104102_m = (float)var2;
++					if (var7) {
++						this.field_104102_m = (float)par2;
+ 					} else {
+ 						this.field_104102_m = -2.0F;
+ 					}
+ 				} else {
+ 					this.field_104102_m = -2.0F;
+ 				}
+-			} else if(this.field_104102_m >= 0.0F) {
+-				this.field_104100_o -= ((float)var2 - this.field_104102_m) * this.field_104099_n;
+-				this.field_104102_m = (float)var2;
++			} else if (this.field_104102_m >= 0.0F) {
++				this.field_104100_o -= ((float)par2 - this.field_104102_m) * this.field_104099_n;
++				this.field_104102_m = (float)par2;
+ 			}
+ 		} else {
+-			while(true) {
+-				if(this.field_104092_f.gameSettings.touchscreen || !Mouse.next()) {
+-					this.field_104102_m = -1.0F;
+-					break;
+-				}
++			while (!this.field_104092_f.gameSettings.touchscreen && Mouse.next()) {
++				int var16 = Mouse.getEventDWheel();
+ 
+-				int var7 = Mouse.getEventDWheel();
+-				if(var7 != 0) {
+-					if(var7 > 0) {
+-						var7 = -1;
+-					} else if(var7 < 0) {
+-						var7 = 1;
++				if (var16 != 0) {
++					if (var16 > 0) {
++						var16 = -1;
++					} else if (var16 < 0) {
++						var16 = 1;
+ 					}
+ 
+-					this.field_104100_o += (float)(var7 * this.field_104097_c / 2);
++					this.field_104100_o += (float)(var16 * this.field_104097_c / 2);
+ 				}
+ 			}
++
++			this.field_104102_m = -1.0F;
+ 		}
+ 
+ 		this.func_104091_h();
+@@ -204,17 +218,21 @@
+ 		var18.draw();
+ 		var9 = this.field_104093_g / 2 - 92 - 16;
+ 		var10 = this.field_104098_a + 4 - (int)this.field_104100_o;
+-		if(this.field_104108_s) {
++
++		if (this.field_104108_s) {
+ 			this.func_104088_a(var9, var10, var18);
+ 		}
+ 
+ 		int var14;
+-		for(var11 = 0; var11 < var4; ++var11) {
++
++		for (var11 = 0; var11 < var4; ++var11) {
+ 			var20 = var10 + var11 * this.field_104097_c + this.field_104107_t;
+ 			var13 = this.field_104097_c - 4;
+-			if(var20 <= this.field_104096_b && var20 + var13 >= this.field_104098_a) {
++
++			if (var20 <= this.field_104096_b && var20 + var13 >= this.field_104098_a) {
+ 				int var15;
+-				if(this.field_104109_r && this.func_104086_b(var11)) {
++
++				if (this.field_104109_r && this.func_104086_b(var11)) {
+ 					var14 = this.field_104093_g / 2 - 110;
+ 					var15 = this.field_104093_g / 2 + 110;
+ 					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+@@ -229,7 +247,7 @@
+ 					GL11.glEnable(GL11.GL_TEXTURE_2D);
+ 				}
+ 
+-				if(this.field_104109_r && this.isSelected(var11)) {
++				if (this.field_104109_r && this.isSelected(var11)) {
+ 					var14 = this.field_104093_g / 2 - 110;
+ 					var15 = this.field_104093_g / 2 + 110;
+ 					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+@@ -279,18 +297,21 @@
+ 		var18.addVertexWithUV((double)this.field_104103_j, (double)(this.field_104096_b - var19), 0.0D, 0.0D, 0.0D);
+ 		var18.draw();
+ 		var20 = this.func_104085_d();
+-		if(var20 > 0) {
++
++		if (var20 > 0) {
+ 			var13 = (this.field_104096_b - this.field_104098_a) * (this.field_104096_b - this.field_104098_a) / this.func_130003_b();
+-			if(var13 < 32) {
++
++			if (var13 < 32) {
+ 				var13 = 32;
+ 			}
+ 
+-			if(var13 > this.field_104096_b - this.field_104098_a - 8) {
++			if (var13 > this.field_104096_b - this.field_104098_a - 8) {
+ 				var13 = this.field_104096_b - this.field_104098_a - 8;
+ 			}
+ 
+ 			var14 = (int)this.field_104100_o * (this.field_104096_b - this.field_104098_a - var13) / var20 + this.field_104098_a;
+-			if(var14 < this.field_104098_a) {
++
++			if (var14 < this.field_104098_a) {
+ 				var14 = this.field_104098_a;
+ 			}
+ 
+@@ -317,7 +338,7 @@
+ 			var18.draw();
+ 		}
+ 
+-		this.func_104087_b(var1, var2);
++		this.func_104087_b(par1, par2);
+ 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+ 		GL11.glShadeModel(GL11.GL_FLAT);
+ 		GL11.glEnable(GL11.GL_ALPHA_TEST);
+@@ -328,18 +349,18 @@
+ 		return this.field_104093_g / 2 + 124;
+ 	}
+ 
+-	private void func_104083_b(int var1, int var2, int var3, int var4) {
++	private void func_104083_b(int par1, int par2, int par3, int par4) {
+ 		Tessellator var5 = Tessellator.instance;
+ 		this.field_104092_f.getTextureManager().bindTexture(Gui.optionsBackground);
+ 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+ 		float var6 = 32.0F;
+ 		var5.startDrawingQuads();
+-		var5.setColorRGBA_I(4210752, var4);
+-		var5.addVertexWithUV(0.0D, (double)var2, 0.0D, 0.0D, (double)((float)var2 / var6));
+-		var5.addVertexWithUV((double)this.field_104093_g, (double)var2, 0.0D, (double)((float)this.field_104093_g / var6), (double)((float)var2 / var6));
+-		var5.setColorRGBA_I(4210752, var3);
+-		var5.addVertexWithUV((double)this.field_104093_g, (double)var1, 0.0D, (double)((float)this.field_104093_g / var6), (double)((float)var1 / var6));
+-		var5.addVertexWithUV(0.0D, (double)var1, 0.0D, 0.0D, (double)((float)var1 / var6));
++		var5.setColorRGBA_I(4210752, par4);
++		var5.addVertexWithUV(0.0D, (double)par2, 0.0D, 0.0D, (double)((float)par2 / var6));
++		var5.addVertexWithUV((double)this.field_104093_g, (double)par2, 0.0D, (double)((float)this.field_104093_g / var6), (double)((float)par2 / var6));
++		var5.setColorRGBA_I(4210752, par3);
++		var5.addVertexWithUV((double)this.field_104093_g, (double)par1, 0.0D, (double)((float)this.field_104093_g / var6), (double)((float)par1 / var6));
++		var5.addVertexWithUV(0.0D, (double)par1, 0.0D, 0.0D, (double)((float)par1 / var6));
+ 		var5.draw();
+ 	}
+ }
